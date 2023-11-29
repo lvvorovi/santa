@@ -14,9 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Gift {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gift_id")
-    private int gift_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "gift_id", nullable = false)
+    private Integer giftId;
+
     private String name;
     private String description;
     private String link;

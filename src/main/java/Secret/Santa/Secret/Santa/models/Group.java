@@ -11,9 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 public class Group {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_id")
-    private int group_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "group_id", nullable = false)
+    private Integer groupId;
+
     private String name;
     //TODO date
     private double budget;

@@ -1,4 +1,7 @@
 package Secret.Santa.Secret.Santa.repos;
 
-public interface IGroupRepo {
+import Secret.Santa.Secret.Santa.models.Group;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IGroupRepo extends JpaRepository<Group, Integer> {
 }
