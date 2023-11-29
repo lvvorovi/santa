@@ -22,6 +22,13 @@ public class GroupServiceImpl implements IGroupService {
     public List<Group> getAllGroups() {
         return groupRepo.findAll();
     }
+
+    @Override
+    public Group getGroupById(int groupId) {
+        return groupRepo.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId));
+    }
+
     @Override
     public Group editByGroupId(GroupDTO groupDTO, int groupId) {
         Optional<Group> optionalGroup = groupRepo.findById(groupId);

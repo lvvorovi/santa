@@ -11,4 +11,5 @@ public interface IGroupService {
     Group editByGroupId(GroupDTO groupDTO, int groupId);
     Group createGroup(GroupDTO groupDTO);
     boolean deleteGroupByGroupId(int groupId);
+    Group getGroupById(int groupId);
 }
