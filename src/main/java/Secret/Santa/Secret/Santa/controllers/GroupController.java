@@ -18,9 +18,6 @@ import java.util.List;
 public class GroupController {
 
     @Autowired
-    private IGroupRepo groupRepo;
-
-    @Autowired
     private IGroupService iGroupService;
 
     @GetMapping
@@ -38,8 +35,9 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<Group> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
         Group group = iGroupService.createGroup(groupDTO);
-        return ResponseEntity.ok(group);
+        return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{groupId}")
     public ResponseEntity<Group> updateGroup(@PathVariable int groupId,@Valid @RequestBody GroupDTO groupDTO) {
