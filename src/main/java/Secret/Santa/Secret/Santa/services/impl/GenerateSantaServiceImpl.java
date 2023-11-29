@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
@@ -38,8 +39,12 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     }
 
     @Override
-    public GenerateSanta createGenerateSanta(GenerateSanta generateSanta) {
-        return generateSantaRepository.save(generateSanta);
+    public GenerateSanta createGenerateSanta(GenerateSantaDTO generateSantaDTO) {
+        GenerateSanta newSanta = new GenerateSanta();
+        newSanta.setSanta(generateSantaDTO.getSanta());
+        newSanta.setGroup(generateSantaDTO.getGroup());
+        newSanta.setRecipient(generateSantaDTO.getRecipient());
+        return generateSantaRepository.save(newSanta);
     }
 
     @Override

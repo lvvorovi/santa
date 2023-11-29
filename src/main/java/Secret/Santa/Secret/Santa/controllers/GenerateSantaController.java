@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.controllers;
 
+import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
@@ -27,10 +28,10 @@ public class GenerateSantaController {
     private IGroupRepo groupRepo;
 
     @PostMapping("/create")// need DTO
-    public ResponseEntity<String> createGenerateSanta(@RequestBody GenerateSanta generateSanta) {
+    public ResponseEntity<String> createGenerateSanta(@RequestBody GenerateSantaDTO generateSantaDTO) {
         // Validate the incoming GenerateSanta object if needed
 
-        GenerateSanta createdSanta = generateSantaService.createGenerateSanta(generateSanta);
+        GenerateSanta createdSanta = generateSantaService.createGenerateSanta(generateSantaDTO);
         if (createdSanta != null) {
             return ResponseEntity.ok("GenerateSanta created successfully with ID: " + createdSanta.getId());
         } else {
@@ -51,7 +52,7 @@ public class GenerateSantaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteGenerateSantaById(@PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteGenerateSantaBySantaId(@PathVariable("id") Integer id) {
         generateSantaService.deleteGenerateSantaById(id);
         return ResponseEntity.ok("GenerateSanta with ID " + id + " deleted successfully");
     }
