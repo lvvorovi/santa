@@ -1,7 +1,6 @@
 package Secret.Santa.Secret.Santa.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Gift {
-    private int gift_id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "gift_id", nullable = false)
+    private Integer giftId;
+
     private String name;
     private String description;
     private String link;
