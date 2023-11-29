@@ -6,39 +6,63 @@ import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGenerateSantaRepo;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
+import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class GenerateSantaServiceImpl {
+public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Autowired
     private IUserRepo userRepository;
-    @Autowired
-    private IGroupRepo groupRepository;
 
     @Autowired
     private IGenerateSantaRepo generateSantaRepository;
 
-    public List<GenerateSanta> getAllGenerateSanta() {
-        return generateSantaRepository.findAll();
+    @Autowired
+    private IGroupRepo groupRepository;
+
+
+    public GenerateSantaServiceImpl(IGenerateSantaRepo generateSantaRepository,
+                                    IUserRepo userRepository) {
+        this.generateSantaRepository = generateSantaRepository;
+        this.userRepository = userRepository;
     }
 
+    @Override
+    public List<GenerateSanta> getAllGenerateSantaByGroup(Integer groupId) {
+        Group group = groupRepository.findById(groupId).orElseThrow();
+        return generateSantaRepository.findByGroup(group);
+    }
+
+    @Override
+    public GenerateSanta createGenerateSanta(GenerateSanta generateSanta) {
+        return generateSantaRepository.save(generateSanta);
+    }
+
+    @Override
     public GenerateSanta getGenerateSantaBySantaAndGroup(Integer santaId, Integer groupId) {
 
-        //  Optional<User> santa = userRepository.findById(santaId);
         User santa = userRepository.findById(santaId).orElseThrow();//() -> new YourCustomException("Group not found"));
-        //  Optional<Group> optionalGroup = groupRepository.findById(groupId);
         Group group = groupRepository.findById(groupId).orElseThrow();//() -> new YourCustomException("Group not found"));
 
         return generateSantaRepository.findBySantaAndGroup(santa, group);
     }
 
+    @Override
+    public void deleteGenerateSantaById(Integer id) {
+        generateSantaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteGenerateSantaByGroup(Integer groupId) {
+
+        Group group = groupRepository.findById(groupId).orElseThrow();
+        generateSantaRepository.deleteByGroup(group);
+    }
+//@Override
 //        public void shuffleAndSaveSecretSantaPairs(Group group) {
 //            // Retrieve users in the given group
 //            List<User> usersInGroup = userRepository.findByGroup(group);
