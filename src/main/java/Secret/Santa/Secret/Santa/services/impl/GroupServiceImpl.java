@@ -8,7 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,9 +40,7 @@ public class GroupServiceImpl implements IGroupService {
             if (Objects.nonNull(groupDTO.getEventDate())) {
                 group.setEventDate(groupDTO.getEventDate());
             }
-            if (Objects.nonNull(groupDTO.getBudget())) {
-                group.setBudget(groupDTO.getBudget());
-            }
+            group.setBudget(groupDTO.getBudget());
             return groupRepo.save(group);
         }
         throw new EntityNotFoundException(" not found with id "+ groupId);

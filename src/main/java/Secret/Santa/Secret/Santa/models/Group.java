@@ -1,6 +1,6 @@
 package Secret.Santa.Secret.Santa.models;
 
-import com.sun.istack.NotNull;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +20,6 @@ public class Group {
     @Setter(value = AccessLevel.NONE)
     private int groupId;
     @Column(name = "Name")
-    @NotNull
     private String name;
     @Column(name = "Date")
     private LocalDate eventDate;
