@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services;
 
+import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface IGiftService {
 
     Gift getGiftById(int giftId);
 
-    Gift createGift(Gift gift);
+    Gift createGift(GiftDTO giftDTO);
 
-    Gift updateGift(int giftId, Gift gift);
+    Gift updateGift(int giftId, GiftDTO giftDTO);
 
     void deleteGift(int giftId);
 

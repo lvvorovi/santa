@@ -17,7 +17,6 @@ public class Gift {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "gift_id", nullable = false)
     private Integer giftId;
-
     private String name;
     private String description;
     private String link;
