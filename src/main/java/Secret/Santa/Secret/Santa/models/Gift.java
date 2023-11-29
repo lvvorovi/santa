@@ -16,7 +16,7 @@ public class Gift {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "gift_id", nullable = false)
-    private Integer gift_id;
+    private Integer giftId;
 
     private String name;
     private String description;

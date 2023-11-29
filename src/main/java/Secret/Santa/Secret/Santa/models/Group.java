@@ -13,7 +13,7 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "group_id", nullable = false)
-    private Integer group_id;
+    private Integer groupId;
 
     private String name;
     //TODO date
