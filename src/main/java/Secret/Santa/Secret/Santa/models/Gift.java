@@ -24,6 +24,7 @@ public class Gift {
     private double price;
     private int created_by;
 
-    //TODO oneToMany group_id
-
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }
