@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -32,11 +33,10 @@ public class Group {
             referencedColumnName = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "group")
-    private ArrayList<Gift> gifts;
-
-    @OneToMany(mappedBy = "group")
-    private ArrayList<GenerateSanta> generatedSanta;
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<Gift> gifts;
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<GenerateSanta> generatedSanta;
 
 
 }
