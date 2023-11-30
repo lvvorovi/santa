@@ -1,11 +1,13 @@
 package Secret.Santa.Secret.Santa.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,10 +35,12 @@ public class Group {
     private User user;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private ArrayList<Gift> gifts;
+    @JsonIgnore
+    private List<Gift> gifts;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private ArrayList<GenerateSanta> generatedSanta;
+    @JsonIgnore
+    private List<GenerateSanta> generatedSanta;
 
 
 }

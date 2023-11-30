@@ -39,7 +39,7 @@ public class GroupController {
 
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<Group> updateGroup(@PathVariable int groupId,@Valid @RequestBody GroupDTO groupDTO) {
+    public ResponseEntity<Group> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
         Group group = iGroupService.editByGroupId(groupDTO, groupId);
         return ResponseEntity.ok(group);
     }
@@ -49,8 +49,6 @@ public class GroupController {
         iGroupService.deleteGroupByGroupId(groupId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 
 
 }
