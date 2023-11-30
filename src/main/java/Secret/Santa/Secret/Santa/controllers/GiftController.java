@@ -1,25 +1,25 @@
 package Secret.Santa.Secret.Santa.controllers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
-import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
-import Secret.Santa.Secret.Santa.models.User;
+import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/gifts")
 public class GiftController {
     @Autowired
     private IGiftService giftService;
+
+    @Autowired
+    private IGiftRepo giftRepo;
 
     public GiftController(IGiftService giftService) {
         this.giftService = giftService;
