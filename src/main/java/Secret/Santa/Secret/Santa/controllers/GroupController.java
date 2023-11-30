@@ -37,7 +37,6 @@ public class GroupController {
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{groupId}")
     public ResponseEntity<Group> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
         Group group = iGroupService.editByGroupId(groupDTO, groupId);
