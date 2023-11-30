@@ -22,9 +22,9 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     @Autowired
     private IGenerateSantaRepo generateSantaRepository;
 
-    private GenerateSantaUtils generateSantaUtils;
-    private GroupUtils groupUtils;
-    private UserUtils userUtils;
+    private final GenerateSantaUtils generateSantaUtils;
+    private final GroupUtils groupUtils;
+    private final UserUtils userUtils;
 
 
     public GenerateSantaServiceImpl(IGenerateSantaRepo generateSantaRepository,

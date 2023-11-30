@@ -13,27 +13,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class GiftControllerTest {
-    private MockMvc mockMvc;
-
     @Mock
     private IGiftService giftService;
 
     @InjectMocks
     private GiftController giftController;
 
+    private MockMvc mockMvc;
+
     @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(giftController).build();
+    void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(giftController).build();
     }
 
     @Test
@@ -42,8 +44,8 @@ class GiftControllerTest {
         when(giftService.getAllGifts()).thenReturn(gifts);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/gifts"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(gifts.size()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(gifts.size()));
     }
 
     @Test
@@ -53,51 +55,51 @@ class GiftControllerTest {
         when(giftService.getGiftById(giftId)).thenReturn(gift);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/gifts/{giftId}", giftId))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(gift.getName()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(gift.getName()));
     }
 
     @Test
     void createGift() throws Exception {
-//        GiftDTO giftDto = new GiftDTO();
-//        Gift createdGift = new Gift();
-//
-//        when(giftService.createGift(giftDto)).thenReturn(createdGift);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/gifts")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(giftDto)))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(createdGift.getName()));
-//
-//        verify(giftService, times(1)).createGift(giftDto);
-    }
+        GiftDTO giftDto = new GiftDTO();
+        giftDto.setName("gifty");
+        Gift createdGift = new Gift();
 
+        doReturn(createdGift).when(giftService).createGift(any(GiftDTO.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/gifts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(giftDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(createdGift.getName()));
+
+        verify(giftService, times(1)).createGift(any(GiftDTO.class));
+
+    }
 
     @Test
     void updateGift() throws Exception {
-//        int giftId = 1;
-//        GiftDTO updatedGiftDto = new GiftDTO();
-//        Gift updatedGift = new Gift();
-//
-//        when(giftService.updateGift(eq(giftId), eq(updatedGiftDto))).thenReturn(updatedGift);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/gifts/{giftId}", giftId)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(updatedGiftDto)))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(updatedGift.getName()));
-//
-//        verify(giftService, times(1)).updateGift(giftId, updatedGiftDto);
-    }
+        GiftDTO updatedGiftDTO = new GiftDTO();
+        updatedGiftDTO.setName("Updated Gift");
 
+        Gift updatedGift = new Gift();
+        updatedGift.setGiftId(1);
+        updatedGift.setName(updatedGiftDTO.getName());
+        when(giftService.updateGift(eq(1), any(GiftDTO.class))).thenReturn(updatedGift);
+
+        mockMvc.perform(put("/api/v1/gifts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updatedGiftDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Gift"));
+    }
 
     @Test
     void deleteGift() throws Exception {
         int giftId = 1;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/gifts/{giftId}", giftId))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(status().isNoContent());
 
         verify(giftService, times(1)).deleteGift(giftId);
     }

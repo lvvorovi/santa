@@ -48,7 +48,6 @@ public class GiftController {
     public ResponseEntity<Gift> updateGift(@Valid @PathVariable int giftId, @RequestBody GiftDTO updatedGiftDTO) {
         Gift updated = giftService.updateGift(giftId, updatedGiftDTO);
         return ResponseEntity.ok(updated);
-
     }
 
     @DeleteMapping("/{giftId}")

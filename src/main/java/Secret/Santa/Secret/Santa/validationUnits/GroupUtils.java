@@ -22,5 +22,4 @@ public class GroupUtils {
                 .orElseThrow(() -> new SantaValidationException("Group does not exist", "id",
                         "Group not found", String.valueOf(id)));
     }
-
 }
