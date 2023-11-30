@@ -3,6 +3,10 @@ package Secret.Santa.Secret.Santa.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -11,13 +15,31 @@ import lombok.*;
 @NoArgsConstructor
 public class Group {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "group_id", nullable = false)
-    private Integer groupId;
-
+    @Column(name = "group_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(value = AccessLevel.NONE)
+    private int groupId;
+    @Column(name = "Name")
     private String name;
-    //TODO date
+    @Column(name = "Date")
+    private LocalDate eventDate;
+    @Column(name = "Budget")
     private double budget;
 
-    //TODO user_id with manyToOne
+    @ManyToOne
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<Gift> gifts = new ArrayList<>();
+
+     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<GenerateSanta> generatedSanta = new ArrayList<>();
+
+
+    public Group(String name) {
+        this.name = name;
+    }
 }

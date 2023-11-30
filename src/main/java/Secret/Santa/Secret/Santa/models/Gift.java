@@ -17,10 +17,15 @@ public class Gift {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gift_id")
     private int giftId;
+    @Column(name = "Name")
     private String name;
+    @Column(name = "Description")
     private String description;
+    @Column(name = "Link")
     private String link;
+    @Column(name = "Price")
     private double price;
+    @Column(name = "Created_by")
     private int created_by;
 
     @ManyToOne
