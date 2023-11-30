@@ -3,7 +3,6 @@ package Secret.Santa.Secret.Santa.controllers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
-import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
