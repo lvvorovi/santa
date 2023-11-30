@@ -21,7 +21,7 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Autowired
     private IGenerateSantaRepo generateSantaRepository;
-    
+
     private GenerateSantaUtils generateSantaUtils;
     private GroupUtils groupUtils;
     private UserUtils userUtils;
@@ -75,7 +75,8 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
         GenerateSanta generateSanta = generateSantaUtils.getBySantaAndGroup(user, group);//generateSantaRepository.findBySantaAndGroup(user, group);
         GenerateSanta generateSantaRecipient = generateSantaUtils.getByUserAndGroup(user, group);//generateSantaRepository.findByUserAndGroup(user, group);
 
-        generateSantaRepository.deleteByGroup(group);
+        generateSantaRecipient.setRecipient(generateSanta.getRecipient());
+        generateSantaRepository.delete(generateSanta);
     }
 //@Override
 //        public void randomSantaGenerator(Group group) {

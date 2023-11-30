@@ -34,29 +34,16 @@ public class GenerateSantaUtils {
     }
 
     public GenerateSanta getBySantaAndGroup(User user, Group group) {
-        //GenerateSanta generateSanta = generateSantaRepo.findBySantaAndGroup(user, group);
         return generateSantaRepo.findBySantaAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
                         "Generate_Santa not found", String.valueOf(user.getUser_id())));
-//        if (generateSanta != null) {
-//            return generateSanta;
-//        } else {
-//            throw new SantaValidationException("Generate_Santa does not exist", "id",
-//                    "Generate_Santa not found for user and group", String.valueOf(user.getUser_id()));
-//        }
     }
 
     public GenerateSanta getByUserAndGroup(User user, Group group) {
-        //GenerateSanta generateSanta = generateSantaRepo.findByRecipientAndGroup(user, group);
         return generateSantaRepo.findByRecipientAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
                         "Generate_Santa not found", String.valueOf(user.getUser_id())));
-//        if (generateSanta != null) {
-//            return generateSanta;
-//        } else {
-//            throw new SantaValidationException("Generate_Santa does not exist", "id",
-//                    "Generate_Santa not found for user and group", String.valueOf(user.getUser_id()));
-//        }
+//
     }
 
 //    public boolean existsByName(String name) {

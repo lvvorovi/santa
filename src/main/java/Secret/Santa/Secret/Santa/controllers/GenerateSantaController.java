@@ -56,14 +56,14 @@ public class GenerateSantaController {
         return ResponseEntity.ok("GenerateSanta with ID " + id + " deleted successfully");
     }
 
-    @DeleteMapping("/deletebygroup/{groupId}")
+    @DeleteMapping("/groups/{groupId}")
     public void deleteGenerateSantaByGroup(@PathVariable("groupId") Integer groupId) {
 
         generateSantaService.deleteGenerateSantaByGroup(groupId);
         //ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
     }
 
-    @DeleteMapping("/deletebyuser/{userId}")
+    @DeleteMapping("/users/{userId}")
     public void deleteGenerateSantaByUser(@PathVariable("userId") Integer userId,
                                           @RequestParam Integer groupId) {
 
