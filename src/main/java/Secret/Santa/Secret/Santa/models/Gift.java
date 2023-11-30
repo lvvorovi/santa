@@ -14,9 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Gift {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "gift_id", nullable = false)
-    private Integer giftId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "gift_id")
+    private int giftId;
     private String name;
     private String description;
     private String link;
@@ -24,6 +24,9 @@ public class Gift {
     private int created_by;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(
+            name = "group_id",
+            referencedColumnName = "group_id")
     private Group group;
+
 }
