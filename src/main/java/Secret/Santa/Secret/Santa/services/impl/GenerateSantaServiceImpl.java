@@ -12,6 +12,8 @@ import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static Secret.Santa.Secret.Santa.mappers.GenerateSantaMapper.toSanta;
@@ -20,11 +22,11 @@ import static Secret.Santa.Secret.Santa.mappers.GenerateSantaMapper.toSanta;
 public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Autowired
-    private IGenerateSantaRepo generateSantaRepository;
+    private final IGenerateSantaRepo generateSantaRepository;
 
-    private GenerateSantaUtils generateSantaUtils;
-    private GroupUtils groupUtils;
-    private UserUtils userUtils;
+    private final GenerateSantaUtils generateSantaUtils;
+    private final GroupUtils groupUtils;
+    private final UserUtils userUtils;
 
 
     public GenerateSantaServiceImpl(IGenerateSantaRepo generateSantaRepository,
@@ -37,7 +39,7 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Override
     public List<GenerateSanta> getAllGenerateSantaByGroup(Integer groupId) {
-        Group group = groupUtils.getGroupById(groupId);//groupRepository.findById(groupId).orElseThrow();
+        Group group = groupUtils.getGroupById(groupId);
         return generateSantaRepository.findByGroup(group);
     }
 
@@ -72,35 +74,39 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     public void deleteGenerateSantaByUser(Integer userId, Integer groupId) {
         Group group = groupUtils.getGroupById(groupId);
         User user = userUtils.getUserById(userId);
-        GenerateSanta generateSanta = generateSantaUtils.getBySantaAndGroup(user, group);//generateSantaRepository.findBySantaAndGroup(user, group);
-        GenerateSanta generateSantaRecipient = generateSantaUtils.getByUserAndGroup(user, group);//generateSantaRepository.findByUserAndGroup(user, group);
+        GenerateSanta generateSanta = generateSantaUtils.getBySantaAndGroup(user, group);
+        GenerateSanta generateSantaRecipient = generateSantaUtils.getByUserAndGroup(user, group);
 
         generateSantaRecipient.setRecipient(generateSanta.getRecipient());
         generateSantaRepository.delete(generateSanta);
     }
-//@Override
-//        public void randomSantaGenerator(Group group) {
-//            // Retrieve users in the given group
-//            List<User> usersInGroup = userRepository.findByGroup(group);
-//
-//            // Shuffle the users
-//            List<User> shuffledUsers = new ArrayList<>(usersInGroup);
-//            Collections.shuffle(shuffledUsers);
-//
-//            // Pair users and save into GenerateSanta entity
-//            for (int i = 0; i < shuffledUsers.size(); i++) {
-//                User santa = shuffledUsers.get(i);
-//                User recipient = shuffledUsers.get((i + 1) % shuffledUsers.size());
-//
-//                // Create GenerateSanta entity for each pair
-//                GenerateSanta santaPair = new GenerateSanta();
-//                santaPair.setGroup(group);
-//                santaPair.setSanta(santa);
-//                santaPair.setRecipient(recipient);
-//
-//                // Save the pair into the database
-//                generateSantaRepository.save(santaPair);
-//            }
-//        }
+
+    @Override
+    public void randomSantaGenerator(Integer groupId) {
+        Group group = groupUtils.getGroupById(groupId);
+        List<User> usersInGroup = userUtils.getUsersInGroup(group);
+        List<User> shuffledUsers = new ArrayList<>(usersInGroup);
+        Collections.shuffle(shuffledUsers);
+
+        List<User> recipients = new ArrayList<>(shuffledUsers);
+
+        for (int i = 0; i < shuffledUsers.size(); i++) {
+            User santa = shuffledUsers.get(i);
+            User recipient = recipients.get(i);
+
+            while (santa.equals(recipient) || generateSantaUtils.alreadyPaired(santa, recipient)) {
+                Collections.shuffle(recipients);
+                recipient = recipients.get(i);
+            }
+
+            GenerateSanta santaPair = new GenerateSanta();
+            santaPair.setGroup(group);
+            santaPair.setSanta(santa);
+            santaPair.setRecipient(recipient);
+
+            generateSantaRepository.save(santaPair);
+        }
+    }
+
 
 }
