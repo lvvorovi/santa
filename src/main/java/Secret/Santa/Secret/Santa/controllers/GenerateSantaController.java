@@ -27,9 +27,8 @@ public class GenerateSantaController {
     @Autowired
     private IGroupRepo groupRepo;
 
-    @PostMapping("/create")// need DTO
+    @PostMapping("/create")
     public ResponseEntity<String> createGenerateSanta(@RequestBody GenerateSantaDTO generateSantaDTO) {
-        // Validate the incoming GenerateSanta object if needed
 
         GenerateSanta createdSanta = generateSantaService.createGenerateSanta(generateSantaDTO);
         if (createdSanta != null) {
@@ -60,9 +59,17 @@ public class GenerateSantaController {
     @DeleteMapping("/deletebygroup/{groupId}")
     public void deleteGenerateSantaByGroup(@PathVariable("groupId") Integer groupId) {
 
-        // Group group = groupRepo.getById(groupId); //fix
         generateSantaService.deleteGenerateSantaByGroup(groupId);
         //ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
     }
+
+    @DeleteMapping("/deletebyuser/{userId}")
+    public void deleteGenerateSantaByUser(@PathVariable("userId") Integer userId,
+                                          @RequestParam Integer groupId) {
+
+        generateSantaService.deleteGenerateSantaByUser(userId, groupId);
+        //ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
+    }
+
 
 }

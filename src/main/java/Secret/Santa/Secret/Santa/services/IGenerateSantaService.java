@@ -18,5 +18,7 @@ public interface IGenerateSantaService {
 
     void deleteGenerateSantaByGroup(Integer groupId);
 
+    void deleteGenerateSantaByUser(Integer userId, Integer groupId);
+
 //    void shuffleAndSaveSecretSantaPairs(Group group);
 }
