@@ -3,7 +3,6 @@ package Secret.Santa.Secret.Santa.controllers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
-import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<Group> updateGroup(@PathVariable int groupId,@Valid @RequestBody GroupDTO groupDTO) {
+    public ResponseEntity<Group> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
         Group group = iGroupService.editByGroupId(groupDTO, groupId);
         return ResponseEntity.ok(group);
     }
@@ -49,8 +48,6 @@ public class GroupController {
         iGroupService.deleteGroupByGroupId(groupId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 
 
 }

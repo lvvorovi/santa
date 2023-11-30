@@ -1,54 +1,59 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGenerateSantaRepo;
-import Secret.Santa.Secret.Santa.repos.IGroupRepo;
-import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
+import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
+import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static Secret.Santa.Secret.Santa.mappers.GenerateSantaMapper.toSanta;
+
 @Service
 public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Autowired
-    private IUserRepo userRepository;
-
-    @Autowired
     private IGenerateSantaRepo generateSantaRepository;
 
-    @Autowired
-    private IGroupRepo groupRepository;
+    private GenerateSantaUtils generateSantaUtils;
+    private GroupUtils groupUtils;
+    private UserUtils userUtils;
 
 
     public GenerateSantaServiceImpl(IGenerateSantaRepo generateSantaRepository,
-                                    IUserRepo userRepository) {
+                                    GenerateSantaUtils generateSantaUtils, GroupUtils groupUtils, UserUtils userUtils) {
         this.generateSantaRepository = generateSantaRepository;
-        this.userRepository = userRepository;
+        this.generateSantaUtils = generateSantaUtils;
+        this.groupUtils = groupUtils;
+        this.userUtils = userUtils;
     }
 
     @Override
     public List<GenerateSanta> getAllGenerateSantaByGroup(Integer groupId) {
-        Group group = groupRepository.findById(groupId).orElseThrow();
+        Group group = groupUtils.getGroupById(groupId);//groupRepository.findById(groupId).orElseThrow();
         return generateSantaRepository.findByGroup(group);
     }
 
     @Override
-    public GenerateSanta createGenerateSanta(GenerateSanta generateSanta) {
-        return generateSantaRepository.save(generateSanta);
+    public GenerateSanta createGenerateSanta(GenerateSantaDTO generateSantaDTO) {
+
+        return generateSantaRepository.save(toSanta(generateSantaDTO));
     }
 
     @Override
     public GenerateSanta getGenerateSantaBySantaAndGroup(Integer santaId, Integer groupId) {
 
-        User santa = userRepository.findById(santaId).orElseThrow();//() -> new YourCustomException("Group not found"));
-        Group group = groupRepository.findById(groupId).orElseThrow();//() -> new YourCustomException("Group not found"));
+        User santa = userUtils.getUserById(santaId);
+        Group group = groupUtils.getGroupById(groupId);
 
-        return generateSantaRepository.findBySantaAndGroup(santa, group);
+        return generateSantaUtils.getBySantaAndGroup(santa, group);
     }
 
     @Override
@@ -59,11 +64,22 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     @Override
     public void deleteGenerateSantaByGroup(Integer groupId) {
 
-        Group group = groupRepository.findById(groupId).orElseThrow();
+        Group group = groupUtils.getGroupById(groupId);
         generateSantaRepository.deleteByGroup(group);
     }
+
+    @Override
+    public void deleteGenerateSantaByUser(Integer userId, Integer groupId) {
+        Group group = groupUtils.getGroupById(groupId);
+        User user = userUtils.getUserById(userId);
+        GenerateSanta generateSanta = generateSantaUtils.getBySantaAndGroup(user, group);//generateSantaRepository.findBySantaAndGroup(user, group);
+        GenerateSanta generateSantaRecipient = generateSantaUtils.getByUserAndGroup(user, group);//generateSantaRepository.findByUserAndGroup(user, group);
+
+        generateSantaRecipient.setRecipient(generateSanta.getRecipient());
+        generateSantaRepository.delete(generateSanta);
+    }
 //@Override
-//        public void shuffleAndSaveSecretSantaPairs(Group group) {
+//        public void randomSantaGenerator(Group group) {
 //            // Retrieve users in the given group
 //            List<User> usersInGroup = userRepository.findByGroup(group);
 //

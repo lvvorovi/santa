@@ -1,5 +1,7 @@
 package Secret.Santa.Secret.Santa.models;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,14 +34,13 @@ public class Group {
             referencedColumnName = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<Gift> gifts = new ArrayList<>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Gift> gifts;
 
-     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<GenerateSanta> generatedSanta = new ArrayList<>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<GenerateSanta> generatedSanta;
 
 
-    public Group(String name) {
-        this.name = name;
-    }
 }

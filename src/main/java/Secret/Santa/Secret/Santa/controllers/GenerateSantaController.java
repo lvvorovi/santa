@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.controllers;
 
+import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
@@ -26,11 +27,10 @@ public class GenerateSantaController {
     @Autowired
     private IGroupRepo groupRepo;
 
-    @PostMapping("/create")// need DTO
-    public ResponseEntity<String> createGenerateSanta(@RequestBody GenerateSanta generateSanta) {
-        // Validate the incoming GenerateSanta object if needed
+    @PostMapping("/create")
+    public ResponseEntity<String> createGenerateSanta(@RequestBody GenerateSantaDTO generateSantaDTO) {
 
-        GenerateSanta createdSanta = generateSantaService.createGenerateSanta(generateSanta);
+        GenerateSanta createdSanta = generateSantaService.createGenerateSanta(generateSantaDTO);
         if (createdSanta != null) {
             return ResponseEntity.ok("GenerateSanta created successfully with ID: " + createdSanta.getId());
         } else {
@@ -51,17 +51,25 @@ public class GenerateSantaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteGenerateSantaById(@PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteGenerateSantaBySantaId(@PathVariable("id") Integer id) {
         generateSantaService.deleteGenerateSantaById(id);
         return ResponseEntity.ok("GenerateSanta with ID " + id + " deleted successfully");
     }
 
-    @DeleteMapping("/deletebygroup/{groupId}")
+    @DeleteMapping("/groups/{groupId}")
     public void deleteGenerateSantaByGroup(@PathVariable("groupId") Integer groupId) {
 
-        // Group group = groupRepo.getById(groupId); //fix
         generateSantaService.deleteGenerateSantaByGroup(groupId);
         //ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
     }
+
+    @DeleteMapping("/users/{userId}")
+    public void deleteGenerateSantaByUser(@PathVariable("userId") Integer userId,
+                                          @RequestParam Integer groupId) {
+
+        generateSantaService.deleteGenerateSantaByUser(userId, groupId);
+        //ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
+    }
+
 
 }

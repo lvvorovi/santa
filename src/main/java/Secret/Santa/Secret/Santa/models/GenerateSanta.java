@@ -2,7 +2,6 @@ package Secret.Santa.Secret.Santa.models;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,5 +28,6 @@ public class GenerateSanta {
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     private User recipient;
+
 
 }
