@@ -22,8 +22,5 @@ public class GiftDTO {
     private String link;
     private double price;
     private int created_by;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
     private Group group;
 }
