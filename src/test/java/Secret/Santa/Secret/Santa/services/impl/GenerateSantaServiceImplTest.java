@@ -11,6 +11,7 @@ import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
 import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +47,9 @@ class GenerateSantaServiceImplTest {
 
     @InjectMocks
     private GenerateSantaServiceImpl generateSantaService;
+
+    @Mock
+    private Logger logger;
 
     @Test
     void getAllGenerateSantaByGroup() {

@@ -64,7 +64,8 @@ public class GenerateSantaController {
                                                             @RequestParam Integer groupId) {
 
         generateSantaService.deleteGenerateSantaByUser(userId, groupId);
-        return ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
+        return ResponseEntity.ok("GenerateSanta entries for User ID " + userId + " in Group ID " + groupId + " deleted successfully");
+
     }
 
     @PostMapping("/random/{groupId}")
