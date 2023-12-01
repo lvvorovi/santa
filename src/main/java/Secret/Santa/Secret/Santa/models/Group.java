@@ -1,6 +1,7 @@
 package Secret.Santa.Secret.Santa.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,22 +28,20 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-
-    @ManyToOne //fix to manytomany
+    @ManyToOne
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Gift> gifts;
+
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<GenerateSanta> generatedSanta;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "user_id",
-            referencedColumnName = "user_id")
     private User owner;
 
 }

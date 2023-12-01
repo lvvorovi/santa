@@ -1,21 +1,22 @@
 package Secret.Santa.Secret.Santa.models.DTO;
 
-import Secret.Santa.Secret.Santa.models.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupDTO {
+public class UserDTO {
+    @NotBlank(message = "Name is required")
     private String name;
-    private LocalDate eventDate;
-    private double budget;
+    @Email
+    private String email;
+    private String password;
 }
