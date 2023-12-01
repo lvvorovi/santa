@@ -2,8 +2,9 @@ package Secret.Santa.Secret.Santa.mappers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class GiftMapper {
     public static Gift toGift(GiftDTO giftDTO) {
 

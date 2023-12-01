@@ -1,5 +1,7 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.exception.SantaValidationException;
+import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
@@ -9,13 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class GiftServiceImpl implements IGiftService {
+    private final GiftMapper giftMapper;
     @Autowired
     IGiftRepo iGiftRepo;
+
+    public GiftServiceImpl(GiftMapper giftMapper) {
+        this.giftMapper = giftMapper;
+    }
+
+    @Autowired
+    public GiftServiceImpl(GiftMapper giftMapper, IGiftRepo iGiftRepo) {
+        this.giftMapper = giftMapper;
+        this.iGiftRepo = iGiftRepo;
+    }
 
     @Override
     public List<Gift> getAllGifts() {
@@ -30,6 +42,10 @@ public class GiftServiceImpl implements IGiftService {
 
     @Override
     public Gift createGift(GiftDTO giftDTO) {
+        if (giftDTO.getPrice() < 0) {
+            throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
+        }
+
         Gift gift = new Gift();
         gift.setName(giftDTO.getName());
         gift.setDescription(giftDTO.getDescription());
@@ -40,37 +56,34 @@ public class GiftServiceImpl implements IGiftService {
         return iGiftRepo.save(gift);
     }
 
-
     @Override
-    public Gift updateGift(int giftId, GiftDTO updatedGiftDTO) {
+    public GiftDTO updateGift(int giftId, GiftDTO giftDTO) {
+
+        if (!iGiftRepo.existsById(giftId)) {
+            throw new EntityNotFoundException("Gift not found with id " + giftId);
+        }
+
+        Gift requestEntity = giftMapper.toGift(giftDTO);
         Optional<Gift> existingGift = iGiftRepo.findById(giftId);
 
-        if (existingGift.isPresent()) {
-            Gift gift = existingGift.get();
+        Gift savedEntity = existingGift.get();
+        savedEntity.setName(requestEntity.getName());
+        savedEntity.setDescription(requestEntity.getDescription());
+        savedEntity.setLink(requestEntity.getLink());
+        savedEntity.setPrice(requestEntity.getPrice());
+        savedEntity.setGroup(requestEntity.getGroup());
 
-            if (Objects.nonNull(updatedGiftDTO.getName())) {
-                gift.setName(updatedGiftDTO.getName());
-            }
-            if (Objects.nonNull(updatedGiftDTO.getDescription())) {
-                gift.setDescription(updatedGiftDTO.getDescription());
-            }
-            if (Objects.nonNull(updatedGiftDTO.getLink())) {
-                gift.setLink(updatedGiftDTO.getLink());
-            }
-            if (Objects.nonNull(updatedGiftDTO.getPrice())) {
-                gift.setPrice(updatedGiftDTO.getPrice());
-            }
-            if (Objects.nonNull(updatedGiftDTO.getGroup())) {
-                gift.setGroup(updatedGiftDTO.getGroup());
-            }
+        savedEntity = iGiftRepo.save(savedEntity);
 
-            return iGiftRepo.save(gift);
-        }
-        throw new EntityNotFoundException(" not found with id " + giftId);
+        return giftMapper.toGiftDTO(savedEntity);
     }
+
 
     @Override
     public void deleteGift(int giftId) {
+        if (!iGiftRepo.existsById(giftId)) {
+            throw new EntityNotFoundException("Gift not found with id " + giftId);
+        }
         iGiftRepo.deleteById(giftId);
     }
 }

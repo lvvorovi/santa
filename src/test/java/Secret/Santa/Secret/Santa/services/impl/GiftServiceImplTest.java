@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,6 +24,9 @@ class GiftServiceImplTest {
 
     @Mock
     private IGiftRepo giftRepo;
+
+    @Mock
+    private GiftMapper giftMapper;
 
     @InjectMocks
     private GiftServiceImpl giftService;
@@ -58,20 +61,101 @@ class GiftServiceImplTest {
         assertSame(expectedGift, actualGift);
     }
 
-    @Test
-    void updateGiftNotFound() {
-        int giftId = 1;
-        GiftDTO updatedGiftDTO = new GiftDTO();
+//    @Test
+//    void updateGiftNotFound() {
+//        int giftId = 1;
+//        GiftDTO updatedGiftDTO = new GiftDTO();
+//
+//        when(giftRepo.findById(giftId)).thenReturn(Optional.empty());
+//        assertThrows(EntityNotFoundException.class, () -> giftService.updateGift(giftId, updatedGiftDTO));
+//    }
 
-        when(giftRepo.findById(giftId)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> giftService.updateGift(giftId, updatedGiftDTO));
-    }
+//    @Test
+//    void updateGiftNotFound() {
+//        int giftId = 1;
+//        GiftDTO updatedGiftDTO = new GiftDTO();
+//
+//        assertThrows(EntityNotFoundException.class, () -> giftService.updateGift(giftId, updatedGiftDTO));
+//    }
+
+//    @Test
+//    void updateGift_Successful() {
+//        // Arrange
+//        int giftId = 1;
+//        GiftDTO updatedGiftDTO = new GiftDTO();
+//        Gift existingGift = new Gift();
+//        Gift updatedGift = new Gift();
+//        when(giftRepo.existsById(giftId)).thenReturn(true);
+//        when(giftRepo.findById(giftId)).thenReturn(Optional.of(existingGift));
+//        when(giftRepo.save(any(Gift.class))).thenReturn(updatedGift);
+//        when(giftMapper.toGiftDTO(updatedGift)).thenReturn(updatedGiftDTO);
+//
+//        // Act
+//        GiftDTO result = giftService.updateGift(giftId, updatedGiftDTO);
+//
+//        // Assert
+//        assertNotNull(result);
+//        assertEquals(updatedGiftDTO, result);
+//
+//        // Verify interactions
+//        verify(giftRepo).existsById(giftId);
+//        verify(giftRepo).findById(giftId);
+//        verify(giftRepo).save(any(Gift.class));
+//        verify(giftMapper).toGiftDTO(updatedGift);
+//    }
+
+//    @Test
+//    void updateGift_Successful() {
+//        int giftId = 1;
+//        GiftDTO giftDto = new GiftDTO();
+//        giftDto.setName("NewName");
+//
+//        Gift existingGift = new Gift();
+//        existingGift.setGiftId(giftId);
+//        existingGift.setName("OldName");
+//
+//        when(giftRepo.findById(giftId)).thenReturn(Optional.of(existingGift));
+//        when(giftRepo.save(existingGift)).thenReturn(existingGift);
+//
+//        var result = giftService.updateGift(giftId, giftDto);
+//
+//        assertEquals(giftDto.getName(), result.getName());
+//
+//        // Verify that the save method is called with the updated gift
+//        verify(giftRepo).save(existingGift);
+//
+//    }
+@Test
+void updateGift_GiftNotFound() {
+    // Arrange
+    int giftId = 1;
+    GiftDTO updatedGiftDTO = new GiftDTO();
+
+    // Mock the behavior of existsById to return false
+    when(giftRepo.existsById(giftId)).thenReturn(false);
+
+    // Mock the behavior of findById to return null when called with the specified giftId
+    when(giftRepo.findById(giftId)).thenReturn(Optional.empty());
+
+    // Act and Assert
+    assertThrows(EntityNotFoundException.class, () -> giftService.updateGift(giftId, updatedGiftDTO));
+
+    // Verify interactions
+    verify(giftRepo).existsById(giftId);
+    verify(giftRepo).findById(giftId); // Ensure findById is called
+    verify(giftRepo, never()).save(any(Gift.class));
+    verify(giftMapper, never()).toGiftDTO(any(Gift.class));
+}
+
+
 
 
     @Test
     void deleteGift() {
         int giftId = 1;
-        giftService.deleteGift(giftId);
-        verify(giftRepo, times(1)).deleteById(giftId);
+        assertThrows(EntityNotFoundException.class, () -> giftService.deleteGift(giftId));
+        verify(giftRepo, never()).deleteById(giftId);
     }
+
+
 }

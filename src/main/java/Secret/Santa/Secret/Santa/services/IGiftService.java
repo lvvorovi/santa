@@ -13,7 +13,7 @@ public interface IGiftService {
 
     Gift createGift(GiftDTO giftDTO);
 
-    Gift updateGift(int giftId, GiftDTO giftDTO);
+    GiftDTO updateGift(int giftId, GiftDTO giftDTO);
 
     void deleteGift(int giftId);
 

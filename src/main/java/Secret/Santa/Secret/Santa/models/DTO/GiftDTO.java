@@ -6,21 +6,25 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Validated
 public class GiftDTO {
     @NotBlank(message = "Name is required")
     private String name;
     private String description;
     private String link;
+    @Positive
     private double price;
+    @NotNull
     private int created_by;
+    @NotNull
     private Group group;
 }
