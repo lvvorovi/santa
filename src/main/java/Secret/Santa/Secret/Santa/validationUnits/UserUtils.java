@@ -26,12 +26,6 @@ public class UserUtils {
                         "User not found", String.valueOf(id)));
     }
 
-//    public List<User> getUsersInGroup(Group group) {
-//        return (List<User>) userRepository.findByGroups(group)
-//                .orElseThrow(() -> new SantaValidationException("No users in group", "id",
-//                        "User not found", String.valueOf(group.getGroupId())));
-//    }
-
     public List<User> getUsersInGroup(Group group) {
         List<User> usersInGroup = userRepository.findByGroups(group);
 

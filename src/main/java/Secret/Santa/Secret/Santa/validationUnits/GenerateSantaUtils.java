@@ -13,19 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class GenerateSantaUtils {
 
-    //    @Autowired
-//    private IGroupRepo groupRepository;
-//
-//    @Autowired
-//    private IUserRepo userRepository;
     @Autowired
     private final IGenerateSantaRepo generateSantaRepo;
 
-    public GenerateSantaUtils(IGenerateSantaRepo generateSantaRepo
-                              //,IGroupRepo groupRepository, IUserRepo userRepository
-    ) {
-//        this.groupRepository = groupRepository;
-//        this.userRepository = userRepository;
+    public GenerateSantaUtils(IGenerateSantaRepo generateSantaRepo) {
+
         this.generateSantaRepo = generateSantaRepo;
     }
 
