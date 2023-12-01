@@ -36,13 +36,13 @@ public class GenerateSantaUtils {
     public GenerateSanta getBySantaAndGroup(User user, Group group) {
         return generateSantaRepo.findBySantaAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
-                        "Generate_Santa not found", String.valueOf(user.getUser_id())));
+                        "Generate_Santa not found", String.valueOf(user.getUserId())));
     }
 
     public GenerateSanta getByUserAndGroup(User user, Group group) {
         return generateSantaRepo.findByRecipientAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
-                        "Generate_Santa not found", String.valueOf(user.getUser_id())));
+                        "Generate_Santa not found", String.valueOf(user.getUserId())));
 //
     }
 
