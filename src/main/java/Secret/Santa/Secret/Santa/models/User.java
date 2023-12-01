@@ -1,6 +1,7 @@
 package Secret.Santa.Secret.Santa.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -36,9 +37,13 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Group> groups;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Group> ownedGroups;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @JoinTable(name = "users_in_groups",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"))
+    private List<Group> groups;
 }
+

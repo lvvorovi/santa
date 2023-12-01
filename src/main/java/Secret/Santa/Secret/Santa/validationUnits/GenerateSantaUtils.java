@@ -13,17 +13,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class GenerateSantaUtils {
 
+    //    @Autowired
+//    private IGroupRepo groupRepository;
+//
+//    @Autowired
+//    private IUserRepo userRepository;
     @Autowired
-    private IGroupRepo groupRepository;
+    private final IGenerateSantaRepo generateSantaRepo;
 
-    @Autowired
-    private IUserRepo userRepository;
-    @Autowired
-    private IGenerateSantaRepo generateSantaRepo;
-
-    public GenerateSantaUtils(IGroupRepo groupRepository, IUserRepo userRepository, IGenerateSantaRepo generateSantaRepo) {
-        this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
+    public GenerateSantaUtils(IGenerateSantaRepo generateSantaRepo
+                              //,IGroupRepo groupRepository, IUserRepo userRepository
+    ) {
+//        this.groupRepository = groupRepository;
+//        this.userRepository = userRepository;
         this.generateSantaRepo = generateSantaRepo;
     }
 
@@ -43,7 +45,11 @@ public class GenerateSantaUtils {
         return generateSantaRepo.findByRecipientAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
                         "Generate_Santa not found", String.valueOf(user.getUserId())));
-//
+    }
+
+    public boolean alreadyPaired(User user1, User user2) {
+        return generateSantaRepo.existsBySantaAndRecipient(user1, user2) ||
+                generateSantaRepo.existsBySantaAndRecipient(user2, user1);
     }
 
 //    public boolean existsByName(String name) {
