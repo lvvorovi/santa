@@ -52,6 +52,7 @@ public class GenerateSantaUtils {
                 generateSantaRepo.existsBySantaAndRecipient(user2, user1);
     }
 
+
 //    public boolean existsByName(String name) {
 //        return generateSantaRepo.existsByNameIgnoreCase(name);
 //    }

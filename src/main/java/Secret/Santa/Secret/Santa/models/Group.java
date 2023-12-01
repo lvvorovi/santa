@@ -43,7 +43,7 @@ public class Group {
     private List<Gift> gifts;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    @JsonIgnore
+//    @JsonIgnore
     private List<GenerateSanta> generatedSanta;
 
     @ManyToOne

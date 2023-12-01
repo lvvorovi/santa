@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
@@ -9,6 +10,8 @@ import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
 import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,7 @@ import static Secret.Santa.Secret.Santa.mappers.GenerateSantaMapper.toSanta;
 
 @Service
 public class GenerateSantaServiceImpl implements IGenerateSantaService {
-
+    private static final Logger logger = LogManager.getLogger(GenerateSantaServiceImpl.class);
     @Autowired
     private final IGenerateSantaRepo generateSantaRepository;
 
@@ -85,27 +88,38 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     public void randomSantaGenerator(Integer groupId) {
         Group group = groupUtils.getGroupById(groupId);
         List<User> usersInGroup = userUtils.getUsersInGroup(group);
+
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
 
         List<User> recipients = new ArrayList<>(shuffledUsers);
 
+        int maxAttempts = 100;
         for (int i = 0; i < shuffledUsers.size(); i++) {
             User santa = shuffledUsers.get(i);
-            User recipient = recipients.get(i);
+            int attempts = 0;
 
-            while (santa.equals(recipient) || generateSantaUtils.alreadyPaired(santa, recipient)) {
-                Collections.shuffle(recipients);
-                recipient = recipients.get(i);
-            }
+            do {
+                User recipient = recipients.get((i + attempts) % shuffledUsers.size()); // Circular selection of recipients
+                attempts++;
 
-            GenerateSanta santaPair = new GenerateSanta();
-            santaPair.setGroup(group);
-            santaPair.setSanta(santa);
-            santaPair.setRecipient(recipient);
+                if (attempts > maxAttempts) {
+                    logger.error("Exceeded maximum attempts to find a recipient for Santa: " + santa);
+                    break;
+                }
 
-            generateSantaRepository.save(santaPair);
+                if (!santa.equals(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient)) {
+                    GenerateSanta santaPair = new GenerateSanta();
+                    santaPair.setGroup(group);
+                    santaPair.setSanta(santa);
+                    santaPair.setRecipient(recipient);
+
+                    generateSantaRepository.save(santaPair);
+                    break;
+                }
+            } while (true);
         }
+
     }
 
 

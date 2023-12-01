@@ -26,10 +26,22 @@ public class UserUtils {
                         "User not found", String.valueOf(id)));
     }
 
+//    public List<User> getUsersInGroup(Group group) {
+//        return (List<User>) userRepository.findByGroups(group)
+//                .orElseThrow(() -> new SantaValidationException("No users in group", "id",
+//                        "User not found", String.valueOf(group.getGroupId())));
+//    }
+
     public List<User> getUsersInGroup(Group group) {
-        return (List<User>) userRepository.findByGroups(group)
-                .orElseThrow(() -> new SantaValidationException("No users in group", "id",
-                        "User not found", String.valueOf(group.getGroupId())));
+        List<User> usersInGroup = userRepository.findByGroups(group);
+
+        if (usersInGroup.isEmpty()) {
+            throw new SantaValidationException("No users in group", "id",
+                    "Users not found in the group", String.valueOf(group.getGroupId()));
+        }
+
+        return usersInGroup;
     }
+
 
 }
