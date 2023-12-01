@@ -28,7 +28,7 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-    @ManyToOne
+    @ManyToOne// fix to manytomany
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id")
@@ -42,5 +42,10 @@ public class Group {
     @JsonIgnore
     private List<GenerateSanta> generatedSanta;
 
+    @ManyToOne// fix to manytomany
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "user_id")
+    private User owner;
 
 }
