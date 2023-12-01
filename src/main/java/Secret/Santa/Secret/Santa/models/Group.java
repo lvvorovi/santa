@@ -27,7 +27,8 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-    @ManyToOne
+
+    @ManyToOne //fix to manytomany
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id")
@@ -38,5 +39,10 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<GenerateSanta> generatedSanta;
 
+    @ManyToOne
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "user_id")
+    private User owner;
 
 }

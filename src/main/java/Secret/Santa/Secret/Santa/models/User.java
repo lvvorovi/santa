@@ -3,7 +3,7 @@ package Secret.Santa.Secret.Santa.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,5 +22,9 @@ public class User {
 
 
     @OneToMany(mappedBy = "user")
-    private ArrayList<Group> groups;
+    private List<Group> groups;
+
+    @OneToMany(mappedBy = "user")
+    private List<Group> ownedGroups;
+
 }
