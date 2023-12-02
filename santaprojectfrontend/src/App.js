@@ -5,6 +5,7 @@ import { GroupList } from "./components/GroupList";
 import { ViewGroup } from "./components/ViewGroup";
 import { CreateUser } from "./components/CreateUser";
 import { CreateGift } from "./components/CreateGift";
+import { CreateGroup } from "./components/CreateGroup";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route parh="/users" element={<CreateUser />} />
             <Route parh="/gifts" element={<CreateGift />} />
             <Route path="/groups/:id" element={<ViewGroup />} />
+            <Route path="/create/group" element={<CreateGroup />} />
           </Routes>
         </div>
       </HashRouter>
