@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Icon } from "semantic-ui-react";
 import { Link, useNavigate } from "react-router-dom";
+// import { apiUrl } from "../App";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",
@@ -19,6 +20,29 @@ export function CreateGroup() {
   const [name, setName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [budget, setBudget] = useState("");
+  const [users, setUsers] = useState([]);
+  const [userList, setUserList] = useState([]);
+
+  // useEffect(() => {
+  //   fetch(`/api/v1/users/`)
+  //     .then(response => response.json())
+  //     .then(setUserList)
+
+  // }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch("/api/v1/users");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const jsonResponse = await response.json();
+      setUserList(jsonResponse);
+      console.log("Fetched Groups:", jsonResponse);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
 
   const createGroup = () => {
     fetch("/api/v1/groups", {
@@ -28,11 +52,16 @@ export function CreateGroup() {
         name,
         eventDate,
         budget,
+        //groupDto does not have users
       }),
     })
       //   .then(applyResult)
       .then(() => navigate("/"));
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <div class="ui one column centered equal width grid">
@@ -70,9 +99,18 @@ export function CreateGroup() {
           </Form.Field>
           <Form.Select
             label="Participants"
-            options={options}
+            value={users}
+            onChange={(e, { value }) => setUsers([...value])}
             placeholder="Participants"
-          ></Form.Select>
+            options={userList.map((user) => ({
+              key: user.user_id, // Assuming user.userId is unique for each user
+              text: user.name,
+              value: user.user_id,
+            }))}
+            multiple // Allow multiple selections
+          />
+
+
           <Button icon labelPosition="left" className="" as={Link} exact to="/">
             <Icon name="arrow left" />
             Back
