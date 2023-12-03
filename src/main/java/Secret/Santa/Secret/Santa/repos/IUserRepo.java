@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface IUserRepo extends JpaRepository<User, Integer> {
 
-    List<User> findByGroups(Group group);
+//    List<User> findByGroups(Group group);
 }

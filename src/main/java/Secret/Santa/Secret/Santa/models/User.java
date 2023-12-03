@@ -35,15 +35,15 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Group> ownedGroups;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
-    @JoinTable(name = "users_in_groups",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"))
-    private List<Group> groups;
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private List<Group> ownedGroups;
+//
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JsonIgnore
+//    @JoinTable(name = "users_in_groups",
+//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"))
+//    private List<Group> groups;
 }
 

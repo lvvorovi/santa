@@ -87,8 +87,8 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     @Override
     public void randomSantaGenerator(Integer groupId) {
         Group group = groupUtils.getGroupById(groupId);
-        List<User> usersInGroup = userUtils.getUsersInGroup(group);
-
+        List<User> usersInGroup = group.getUser();//userUtils.getUsersInGroup(group);
+        
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
 
