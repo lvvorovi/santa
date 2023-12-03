@@ -103,9 +103,9 @@ export function CreateGroup() {
             onChange={(e, { value }) => setUsers([...value])}
             placeholder="Participants"
             options={userList.map((user) => ({
-              key: user.user_id, // Assuming user.userId is unique for each user
+              key: user.userId, // Assuming user.userId is unique for each user
               text: user.name,
-              value: user.user_id,
+              value: user.userId,
             }))}
             multiple // Allow multiple selections
           />
