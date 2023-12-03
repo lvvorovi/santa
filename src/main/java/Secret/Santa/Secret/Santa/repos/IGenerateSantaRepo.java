@@ -24,4 +24,6 @@ public interface IGenerateSantaRepo extends JpaRepository<GenerateSanta, Integer
     void deleteByGroup(Group group);
 
     Optional<GenerateSanta> findByRecipientAndGroup(User user, Group group);
+
+    boolean existsBySantaAndRecipient(User user1, User user2);
 }

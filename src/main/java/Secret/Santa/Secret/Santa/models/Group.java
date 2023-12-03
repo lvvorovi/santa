@@ -1,7 +1,9 @@
 package Secret.Santa.Secret.Santa.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,19 +30,26 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "user_id",
-            referencedColumnName = "user_id")
-    private User user;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
+    @JoinTable(name = "users_in_groups",
+            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"))
+    private List<User> user;
+
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Gift> gifts;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    @JsonIgnore
+//    @JsonIgnore
     private List<GenerateSanta> generatedSanta;
 
+    @ManyToOne
+    @JoinColumn(
+            name = "owner_id",
+            referencedColumnName = "user_id")
+    private User owner;
 
 }

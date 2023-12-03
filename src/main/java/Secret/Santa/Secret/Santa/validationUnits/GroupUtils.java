@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class GroupUtils {
 
     @Autowired
-    private IGroupRepo groupRepository;
+    private final IGroupRepo groupRepository;
 
 
     public GroupUtils(IGroupRepo groupRepository) {

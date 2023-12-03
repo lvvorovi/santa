@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,11 +15,12 @@ import lombok.NoArgsConstructor;
 public class GenerateSanta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "generate_santa_id", nullable = false)
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonIgnore
     private Group group;
 
     @ManyToOne
