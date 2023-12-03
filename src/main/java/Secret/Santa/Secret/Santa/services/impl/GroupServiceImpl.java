@@ -1,8 +1,11 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
+import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import java.util.Optional;
 public class GroupServiceImpl implements IGroupService {
     @Autowired
     IGroupRepo groupRepo;
+    @Autowired
+    IUserRepo userRepo;
 
     @Override
     public List<Group> getAllGroups() {
@@ -62,5 +67,25 @@ public class GroupServiceImpl implements IGroupService {
         return false;
     }
 
+    public Group addUserToGroup(int groupId, int userId) {
+        var existingGroup = groupRepo.findById(groupId)
+                .orElseThrow(() -> new SantaValidationException("Group does not exist",
+                        "id", "Group not found", String.valueOf(groupId)));
+
+        var existingUser = userRepo.findById(userId)
+                .orElseThrow(() -> new SantaValidationException("User does not exist",
+                        "id", "User not found", String.valueOf(userId)));
+
+        List<User> existingUserList = existingGroup.getUser();
+        existingUserList.add(existingUser);
+        existingGroup.setUser(existingUserList);
+
+        return groupRepo.save(existingGroup);
+    }
+
+    public List<User> getAllUsersById(int groupId) {
+        return groupRepo.findById(groupId).get().getUser();
+
+    }
 
 }
