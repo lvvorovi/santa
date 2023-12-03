@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class GenerateSanta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "generate_santa_id", nullable = false)
     private Integer id;
     @ManyToOne
