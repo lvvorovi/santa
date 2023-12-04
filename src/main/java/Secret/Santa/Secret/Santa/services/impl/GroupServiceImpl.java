@@ -57,13 +57,9 @@ public class GroupServiceImpl implements IGroupService {
                 group.setBudget(groupDTO.getBudget());
 
                 return groupRepo.save(group);
-            } else {
-                throw new RuntimeException("Group not found with id: " + groupId);
             }
+            throw new RuntimeException("Group not found with id: " + groupId);
         } catch (RuntimeException e) {
-            logger.error("Group not found with ID: {}", groupId, e);
-            throw e;
-        } catch (Exception e) {
             logger.error("Error occurred while updating group with ID: {}", groupId, e);
             throw e;
         }
