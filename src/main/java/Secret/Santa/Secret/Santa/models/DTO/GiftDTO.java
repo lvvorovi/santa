@@ -24,7 +24,7 @@ public class GiftDTO {
     @Positive
     private double price;
     @NotNull
-    private int created_by;
+    private int createdBy;
     @NotNull
     private Group group;
 }

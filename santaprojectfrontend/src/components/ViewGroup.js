@@ -35,10 +35,10 @@ export function ViewGroup() {
                 </span>
               </Card.Meta>
               <Card.Description>
-                Event budget is {group.budget}
+                Event budget is {group.budget}Є
               </Card.Description>
             </Card.Content>
-            <Card.Content extra>
+            <Card.Content extra className="info">
               <a>
                 <h3>Participants:</h3>
                 <Icon name="user" />
@@ -59,7 +59,7 @@ export function ViewGroup() {
                 </Button>
               </a>
             </Card.Content>
-            <Button className="generate-button"inverted color="red">
+            <Button className="" inverted color="red" size="large">
               GENERATE
             </Button>
             {/* <Card.Content extra>

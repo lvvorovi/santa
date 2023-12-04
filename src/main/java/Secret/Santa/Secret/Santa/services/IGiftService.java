@@ -17,4 +17,7 @@ public interface IGiftService {
 
     void deleteGift(int giftId);
 
-}
+    List<Gift> getGiftsCreatedBy(int userId);
+
+
+    }

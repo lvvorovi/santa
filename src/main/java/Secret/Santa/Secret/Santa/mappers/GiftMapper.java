@@ -13,7 +13,7 @@ public class GiftMapper {
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
-        gift.setCreated_by(giftDTO.getCreated_by());
+        gift.setCreatedBy(giftDTO.getCreatedBy());
         gift.setGroup(giftDTO.getGroup());
 
         return gift;
@@ -27,7 +27,7 @@ public class GiftMapper {
         giftDTO.setDescription(gift.getDescription());
         giftDTO.setLink(gift.getLink());
         giftDTO.setPrice(gift.getPrice());
-        giftDTO.setCreated_by(gift.getCreated_by());
+        giftDTO.setCreatedBy(gift.getCreatedBy());
         giftDTO.setGroup(gift.getGroup());
 
         return giftDTO;

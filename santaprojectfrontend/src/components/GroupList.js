@@ -6,6 +6,16 @@ import "./SecretSanta.css";
 export function GroupList() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
+  const [imageUrls, setImageUrls] = useState([
+    "/images/santa1.jpg",
+    "/images/santa2.jpg",
+    "/images/santa3.jpg",
+    "/images/santa4.jpg",
+    "/images/santa5.jpg",
+    "/images/santa6.jpg",
+    "/images/santa7.jpg",
+  ]);
+
 
   const fetchGroups = async () => {
     try {
@@ -26,21 +36,26 @@ export function GroupList() {
     navigate(`/groups/${groupId}`);
   };
 
+  const getRandomImageUrl = () => {
+    const randomIndex = Math.floor(Math.random() * imageUrls.length);
+    return imageUrls[randomIndex];
+  };
+
   useEffect(() => {
     fetchGroups();
   }, []);
 
   return (
     <div class="ui one column centered equal width grid">
-      <div className="d-flex justify-content-center m-3 centered">
+      <div className="d-flex justify-content-center m-3 centered backgroundImage">
         {groups.map((group) => (
           <div
             key={group.id}
-            className="m-3 cursor-pointer"
+            className="m-3"
             onDoubleClick={() => handleCardDoubleClick(group.groupId)}
           >
             <Card centered m-3 className="card">
-              <Image src="/images/santa.jpg" wrapped ui={false} />
+              <Image src={getRandomImageUrl()} wrapped ui={false} />
               <Card.Content>
                 <Card.Header>{group.name}</Card.Header>
                 <Card.Meta>
@@ -49,7 +64,7 @@ export function GroupList() {
                   </span>
                 </Card.Meta>
                 <Card.Description>
-                  Event budget is {group.budget}
+                  Event budget is {group.budget}Є
                 </Card.Description>
               </Card.Content>
             </Card>
@@ -60,7 +75,6 @@ export function GroupList() {
             basic
             color="red"
             icon
-            labelPosition="left"
             className="controls"
             as={Link}
             to="/create/group"
