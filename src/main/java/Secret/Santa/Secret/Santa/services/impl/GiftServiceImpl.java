@@ -4,8 +4,11 @@ import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
+import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
+import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +22,15 @@ public class GiftServiceImpl implements IGiftService {
     @Autowired
     IGiftRepo iGiftRepo;
 
-    public GiftServiceImpl(GiftMapper giftMapper) {
-        this.giftMapper = giftMapper;
-    }
+    private final GroupUtils groupUtils;
+    private final UserUtils userUtils;
 
     @Autowired
-    public GiftServiceImpl(GiftMapper giftMapper, IGiftRepo iGiftRepo) {
+    public GiftServiceImpl(GiftMapper giftMapper, IGiftRepo iGiftRepo, GroupUtils groupUtils, UserUtils userUtils) {
         this.giftMapper = giftMapper;
         this.iGiftRepo = iGiftRepo;
+        this.groupUtils = groupUtils;
+        this.userUtils = userUtils;
     }
 
     @Override
@@ -51,8 +55,13 @@ public class GiftServiceImpl implements IGiftService {
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
+
+        userUtils.getUserById(giftDTO.getCreatedBy());
         gift.setCreatedBy(giftDTO.getCreatedBy());
-        gift.setGroup(giftDTO.getGroup());
+
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        gift.setGroup(group);
+        //gift.setGroup(giftDTO.getGroup());
 
         return iGiftRepo.save(gift);
     }
@@ -72,8 +81,13 @@ public class GiftServiceImpl implements IGiftService {
         savedEntity.setDescription(requestEntity.getDescription());
         savedEntity.setLink(requestEntity.getLink());
         savedEntity.setPrice(requestEntity.getPrice());
+
+        userUtils.getUserById(requestEntity.getCreatedBy());
         savedEntity.setCreatedBy(requestEntity.getCreatedBy());
-        savedEntity.setGroup(requestEntity.getGroup());
+
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        savedEntity.setGroup(group);
+        //savedEntity.setGroup(requestEntity.getGroup());
 
         savedEntity = iGiftRepo.save(savedEntity);
 

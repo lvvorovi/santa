@@ -26,5 +26,7 @@ public class GiftDTO {
     @NotNull
     private int createdBy;
     @NotNull
-    private Group group;
+    private int groupId;
+//    @NotNull
+//    private Group group;
 }

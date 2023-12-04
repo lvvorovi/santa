@@ -136,7 +136,7 @@ export function ViewUser() {
               color="blue"
               className="controls"
               as={Link}
-              to="/create/group"
+              to="/create/gift"
             >
               Create Gift
             </Button>

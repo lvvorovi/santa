@@ -18,8 +18,8 @@ function App() {
         <div className="container">
           <Routes>
             <Route path="/" element={<GroupList />} />
-            <Route parh="/users" element={<CreateUser />} />
-            <Route parh="/gifts" element={<CreateGift />} />
+            <Route path="/users" element={<CreateUser />} />
+            <Route path="/create/gift" element={<CreateGift />} />
             <Route path="/groups/:id" element={<ViewGroup />} />
             <Route path="/create/group" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
