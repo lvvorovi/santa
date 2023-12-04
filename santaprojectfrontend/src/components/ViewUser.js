@@ -64,8 +64,6 @@ export function ViewUser() {
     navigate(`/gifts/${giftId}`);
   };
 
-  // const handleCreateGift
-
   useEffect(() => {
     fetchUser();
     fetchGroups();
@@ -126,7 +124,6 @@ export function ViewUser() {
           </div>
         </div>
 
-
         <div className="column">
           <div className="ui" style={{ textAlign: "center" }}>
             <Header as="h2">
@@ -164,8 +161,6 @@ export function ViewUser() {
             ))}
           </div>
         </div>
-
-
       </div>
     </div>
   );
