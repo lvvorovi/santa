@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Card, Image, Header } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function ViewUser() {
+  const navigate = useNavigate();
+  const [groups, setGroups] = useState([]);
+  const [ownedGroups, setOwnedGroups] = useState([]);
   const params = useParams();
   const [user, setUser] = useState({
     name: "",
     email: "",
   });
-  const [groups, setGroups] = useState([]);
-  const [ownedGroups, setOwnedGroups] = useState([]);
-
   const fetchUser = async () => {
     try {
       const response = await fetch("/api/v1/users/" + params.id);
@@ -27,7 +28,7 @@ export function ViewUser() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("/api/v1/groups/user/"+ params.id +"/groups"); // fix to fetch user groups
+      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); // fix to fetch user groups
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -41,7 +42,7 @@ export function ViewUser() {
 
   const fetchOwnedGroups = async () => {
     try {
-      const response = await fetch("/api/v1/groups/owner/"+ params.id +"/groups"); // fix to fetch user owned groups
+      const response = await fetch("/api/v1/groups/owner/" + params.id + "/groups"); // fix to fetch user owned groups
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -51,6 +52,10 @@ export function ViewUser() {
     } catch (error) {
       console.error("Error fetching owned groups:", error);
     }
+  };
+  const handleCardDoubleClick = (groupId) => {
+    console.log(`Card clicked for group ID ${groupId}`);
+    navigate(`/groups/${groupId}`);
   };
 
   useEffect(() => {
@@ -79,7 +84,10 @@ export function ViewUser() {
             <Header as="h2">Groups</Header>
             <div className="ui centered cards">
               {groups.map((group) => (
-                <Card key={group.id}>
+                <Card key={group.id}
+                  className="m-3 cursor-pointer"
+                  onDoubleClick={() => handleCardDoubleClick(group.groupId)}
+                >
                   <Image src="/images/santa.jpg" wrapped ui={false} />
                   <Card.Content>
                     <Card.Header>{group.name}</Card.Header>
@@ -99,7 +107,10 @@ export function ViewUser() {
             <Header as="h2">Owned Groups</Header>
             <div className="ui centered cards">
               {ownedGroups.map((group) => (
-                <Card key={group.id}>
+                <Card key={group.id}
+                  className="m-3 cursor-pointer"
+                  onDoubleClick={() => handleCardDoubleClick(group.groupId)}
+                >
                   <Image src="/images/santa.jpg" wrapped ui={false} />
                   <Card.Content>
                     <Card.Header>{group.name}</Card.Header>
