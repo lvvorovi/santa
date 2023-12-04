@@ -13,6 +13,10 @@ public interface IGroupService {
 
     Group createGroup(GroupDTO groupDTO);
 
+    List<Group> getAllGroupsForUser(Integer userId);
+
+    List<Group> getAllGroupsForOwner(Integer userId);
+
     boolean deleteGroupByGroupId(int groupId);
 
     Group getGroupById(int groupId);

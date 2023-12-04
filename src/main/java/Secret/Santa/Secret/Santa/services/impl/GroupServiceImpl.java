@@ -7,6 +7,7 @@ import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,16 @@ import java.util.Optional;
 public class GroupServiceImpl implements IGroupService {
     @Autowired
     IGroupRepo groupRepo;
+
     @Autowired
     IUserRepo userRepo;
+
+    private final UserUtils userUtils;
+
+    public GroupServiceImpl(UserUtils userUtils) {
+        this.userUtils = userUtils;
+    }
+
 
     @Override
     public List<Group> getAllGroups() {
@@ -48,8 +57,9 @@ public class GroupServiceImpl implements IGroupService {
             group.setBudget(groupDTO.getBudget());
             return groupRepo.save(group);
         }
-        throw new EntityNotFoundException(" not found with id "+ groupId);
+        throw new EntityNotFoundException(" not found with id " + groupId);
     }
+
     @Override
     public Group createGroup(GroupDTO groupDTO) {
         Group group = new Group();
@@ -58,6 +68,19 @@ public class GroupServiceImpl implements IGroupService {
         group.setBudget(groupDTO.getBudget());
         return groupRepo.save(group);
     }
+
+    @Override
+    public List<Group> getAllGroupsForUser(Integer userId) {
+        User user = userUtils.getUserById(userId);
+        return groupRepo.findByUserContaining(user);
+    }
+
+    @Override
+    public List<Group> getAllGroupsForOwner(Integer userId) {
+        User user = userUtils.getUserById(userId);
+        return groupRepo.findByOwner(user);
+    }
+
     @Override
     public boolean deleteGroupByGroupId(int groupId) {
         if (groupRepo.existsById(groupId)) {

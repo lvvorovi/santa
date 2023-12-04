@@ -19,7 +19,9 @@ public class UserServiceImpl implements IUserService {
     IUserRepo iUserRepo;
 
     @Override
-    public List<User> getAllUsers() {return iUserRepo.findAll();}
+    public List<User> getAllUsers() {
+        return iUserRepo.findAll();
+    }
 
     @Override
     public User findByUserid(int userid) {
@@ -54,7 +56,7 @@ public class UserServiceImpl implements IUserService {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-        user.setGroups(new ArrayList<>());
+//        user.setGroups(new ArrayList<>());
         return iUserRepo.save(user);
     }
 

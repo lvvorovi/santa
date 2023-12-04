@@ -47,6 +47,18 @@ public class GroupController {
         return ok(group);
     }
 
+    @GetMapping("/user/{userId}/groups")
+    public List<Group> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
+
+        return iGroupService.getAllGroupsForUser(userId);
+    }
+
+    @GetMapping("/owner/{userId}/groups")
+    public List<Group> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
+
+        return iGroupService.getAllGroupsForOwner(userId);
+    }
+
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteGroup(@PathVariable int groupId) {
         iGroupService.deleteGroupByGroupId(groupId);
