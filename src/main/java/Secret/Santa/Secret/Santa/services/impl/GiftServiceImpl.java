@@ -51,6 +51,7 @@ public class GiftServiceImpl implements IGiftService {
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
+        gift.setCreatedBy(giftDTO.getCreatedBy());
         gift.setGroup(giftDTO.getGroup());
 
         return iGiftRepo.save(gift);
@@ -71,6 +72,7 @@ public class GiftServiceImpl implements IGiftService {
         savedEntity.setDescription(requestEntity.getDescription());
         savedEntity.setLink(requestEntity.getLink());
         savedEntity.setPrice(requestEntity.getPrice());
+        savedEntity.setCreatedBy(requestEntity.getCreatedBy());
         savedEntity.setGroup(requestEntity.getGroup());
 
         savedEntity = iGiftRepo.save(savedEntity);
@@ -85,5 +87,9 @@ public class GiftServiceImpl implements IGiftService {
             throw new EntityNotFoundException("Gift not found with id " + giftId);
         }
         iGiftRepo.deleteById(giftId);
+    }
+
+    public List<Gift> getGiftsCreatedBy(int userId) {
+        return iGiftRepo.findByCreatedBy(userId);
     }
 }

@@ -60,4 +60,10 @@ public class GiftController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/createdBy/{userId}")
+    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId) {
+        List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
+        return ResponseEntity.ok(userGifts);
+    }
+
 }

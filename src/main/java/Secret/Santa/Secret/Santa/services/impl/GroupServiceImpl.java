@@ -21,13 +21,16 @@ import java.util.Optional;
 public class GroupServiceImpl implements IGroupService {
     @Autowired
     IGroupRepo groupRepo;
+
     @Autowired
     IUserRepo userRepo;
+
     private final UserUtils userUtils;
 
     public GroupServiceImpl(UserUtils userUtils) {
         this.userUtils = userUtils;
     }
+
 
     @Override
     public List<Group> getAllGroups() {
@@ -54,8 +57,9 @@ public class GroupServiceImpl implements IGroupService {
             group.setBudget(groupDTO.getBudget());
             return groupRepo.save(group);
         }
-        throw new EntityNotFoundException(" not found with id "+ groupId);
+        throw new EntityNotFoundException(" not found with id " + groupId);
     }
+
     @Override
     public Group createGroup(GroupDTO groupDTO) {
         Group group = new Group();

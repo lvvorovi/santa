@@ -5,7 +5,6 @@ import Secret.Santa.Secret.Santa.models.GenerateSanta;
 
 public class GenerateSantaMapper {
 
-
     public static GenerateSanta toSanta(GenerateSantaDTO generateSantaDTO) {
 
         GenerateSanta generateSanta = new GenerateSanta();

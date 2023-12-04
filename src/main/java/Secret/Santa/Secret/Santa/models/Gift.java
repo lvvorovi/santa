@@ -26,8 +26,7 @@ public class Gift {
     @Column(name = "Price")
     private double price;
     @Column(name = "Created_by")
-    private int created_by;
-
+    private int createdBy;
     @ManyToOne
     @JoinColumn(
             name = "group_id",
