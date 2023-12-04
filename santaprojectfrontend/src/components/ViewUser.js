@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Header } from "semantic-ui-react";
+import { Card, Image, Header, Button } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -7,7 +7,6 @@ export function ViewUser() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [gifts, setGifts] = useState([]);
-  const [ownedGroups, setOwnedGroups] = useState([]);
   const params = useParams();
   const [user, setUser] = useState({
     name: "",
@@ -41,23 +40,9 @@ export function ViewUser() {
     }
   };
 
-  const fetchOwnedGroups = async () => {
-    try {
-      const response = await fetch("/api/v1/groups/owner/" + params.id + "/groups"); // fix to fetch user owned groups
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const jsonResponse = await response.json();
-      setOwnedGroups(jsonResponse);
-      console.log("Fetched Owned Groups:", jsonResponse);
-    } catch (error) {
-      console.error("Error fetching owned groups:", error);
-    }
-  };
-
   const fetchGifts = async () => {
     try {
-      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); // fix to fetch user groups
+      const response = await fetch("/api/v1/gifts/createdBy/" + params.id);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -79,10 +64,11 @@ export function ViewUser() {
     navigate(`/gifts/${giftId}`);
   };
 
+  // const handleCreateGift
+
   useEffect(() => {
     fetchUser();
     fetchGroups();
-    fetchOwnedGroups();
     fetchGifts();
   }, [params]);
 
@@ -108,52 +94,78 @@ export function ViewUser() {
       </div>
       <div className="ui two column stackable grid">
         <div className="column">
-          <div className="ui segment" style={{ textAlign: "center" }}>
-            <Header as="h2">Groups</Header>
-            <div className="ui centered cards">
-              {groups.map((group) => (
-                <Card key={group.id}
-                  className="m-3 cursor-pointer"
-                  onDoubleClick={() => handleGroupDoubleClick(group.groupId)}
-                >
-                  <Image src="/images/santa.jpg" wrapped ui={false} />
-                  <Card.Content>
-                    <Card.Header>{group.name}</Card.Header>
-                    <Card.Meta>
-                      <span className="date">Event date is set to {group.eventDate}</span>
-                    </Card.Meta>
-                    <Card.Description>Event budget is {group.budget}</Card.Description>
-                  </Card.Content>
-                </Card>
-              ))}
-            </div>
+          <div className="ui" style={{ textAlign: "center" }}>
+            <Header as="h2">
+              Group List
+            </Header>
+            <Button
+              color="blue"
+              className="controls"
+              as={Link}
+              to="/create/group"
+            >
+              Create Group
+            </Button>
+          </div>
+          <div className="ui centered cards">
+            {groups.map((group) => (
+              <Card key={group.id}
+                className="m-3 cursor-pointer"
+                onDoubleClick={() => handleGroupDoubleClick(group.groupId)}
+              >
+                <Image src="/images/santa.jpg" wrapped ui={false} />
+                <Card.Content>
+                  <Card.Header>{group.name}</Card.Header>
+                  <Card.Meta>
+                    <span className="date">Event date is set to {group.eventDate}</span>
+                  </Card.Meta>
+                  <Card.Description>Event budget is {group.budget}</Card.Description>
+                </Card.Content>
+              </Card>
+            ))}
           </div>
         </div>
 
+
         <div className="column">
-          <div className="ui segment" style={{ textAlign: "center" }}>
-            <Header as="h2">Gift List</Header>
-            <div className="ui centered cards">
-              {/* Change the ownedGroups.map to giftList.map */}
-              {gifts.map((gift) => (
-                <Card key={gift.id}
-                  className="m-3 cursor-pointer"
-                  onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
-                >
-                  <Image src="/images/santa.jpg" wrapped ui={false} />
-                  <Card.Content>
-                    <Card.Header>{gift.name}</Card.Header>
-                    <Card.Meta>
-                      <span className="date">Description {gift.description}</span>
-                    </Card.Meta>
-                    <Card.Description>Link to the gift {gift.link}</Card.Description>
-                    <Card.Description>Gift price {gift.price}</Card.Description>
-                  </Card.Content>
-                </Card>
-              ))}
-            </div>
+          <div className="ui" style={{ textAlign: "center" }}>
+            <Header as="h2">
+              Gift List
+            </Header>
+            <Button
+              color="blue"
+              className="controls"
+              as={Link}
+              to="/create/group"
+            >
+              Create Gift
+            </Button>
+          </div>
+          <div className="ui centered cards">
+            {gifts.map((gift) => (
+              <Card
+                key={gift.id}
+                className="m-3 cursor-pointer"
+                onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
+              >
+                <Image src="/images/gifts.jpg" wrapped ui={false} />
+                <Card.Content>
+                  <Card.Header>{gift.name}</Card.Header>
+                  <Card.Meta>
+                    <span className="date">Belongs in group {gift.group.name}</span>
+                  </Card.Meta>
+                  <Card.Meta>
+                    <span className="date">Description {gift.description}</span>
+                  </Card.Meta>
+                  Link to the gift: <a href={gift.link} target="_blank" rel="noopener noreferrer">{gift.link}</a>
+                  <Card.Description>Gift price {gift.price}</Card.Description>
+                </Card.Content>
+              </Card>
+            ))}
           </div>
         </div>
+
+
       </div>
     </div>
   );
