@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, Icon, Image, Button } from "semantic-ui-react";
 import { Link, useNavigate } from "react-router-dom";
+import "./SecretSanta.css";
 
 export function GroupList() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export function GroupList() {
             className="m-3 cursor-pointer"
             onDoubleClick={() => handleCardDoubleClick(group.groupId)}
           >
-            <Card>
+            <Card centered m-3 className="card">
               <Image src="/images/santa.jpg" wrapped ui={false} />
               <Card.Content>
                 <Card.Header>{group.name}</Card.Header>

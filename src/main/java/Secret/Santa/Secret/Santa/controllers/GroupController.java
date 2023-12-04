@@ -3,6 +3,7 @@ package Secret.Santa.Secret.Santa.controllers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static Secret.Santa.Secret.Santa.mappers.GroupMapper.toGroupDTO;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/v1/groups")
@@ -22,13 +26,13 @@ public class GroupController {
     @GetMapping
     public ResponseEntity<List<Group>> getAllGroups() {
         List<Group> groups = iGroupService.getAllGroups();
-        return ResponseEntity.ok(groups);
+        return ok(groups);
     }
 
     @GetMapping("/{groupId}")
     public ResponseEntity<Group> getGroupById(@PathVariable int groupId) {
         Group group = iGroupService.getGroupById(groupId);
-        return ResponseEntity.ok(group);
+        return ok(group);
     }
 
     @PostMapping
@@ -40,7 +44,7 @@ public class GroupController {
     @PutMapping("/{groupId}")
     public ResponseEntity<Group> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
         Group group = iGroupService.editByGroupId(groupDTO, groupId);
-        return ResponseEntity.ok(group);
+        return ok(group);
     }
 
     @GetMapping("/user/{userId}/groups")
@@ -61,5 +65,18 @@ public class GroupController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/{groupId}/users/{userId}/newUsers")
+    public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @Valid @PathVariable int userId) {
+
+        var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
+
+        return ok(toGroupDTO(updatedGroup));
+    }
+
+    @GetMapping(value = "/{groupId}/users")
+    @ResponseBody
+    public List<User> getAllUsersById(@PathVariable int groupId) {
+        return iGroupService.getAllUsersById(groupId);
+    }
 
 }

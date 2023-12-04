@@ -1,9 +1,11 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
+import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +21,8 @@ import java.util.Optional;
 public class GroupServiceImpl implements IGroupService {
     @Autowired
     IGroupRepo groupRepo;
+    @Autowired
+    IUserRepo userRepo;
     private final UserUtils userUtils;
 
     public GroupServiceImpl(UserUtils userUtils) {
@@ -50,9 +54,8 @@ public class GroupServiceImpl implements IGroupService {
             group.setBudget(groupDTO.getBudget());
             return groupRepo.save(group);
         }
-        throw new EntityNotFoundException(" not found with id " + groupId);
+        throw new EntityNotFoundException(" not found with id "+ groupId);
     }
-
     @Override
     public Group createGroup(GroupDTO groupDTO) {
         Group group = new Group();
@@ -83,5 +86,25 @@ public class GroupServiceImpl implements IGroupService {
         return false;
     }
 
+    public Group addUserToGroup(int groupId, int userId) {
+        var existingGroup = groupRepo.findById(groupId)
+                .orElseThrow(() -> new SantaValidationException("Group does not exist",
+                        "id", "Group not found", String.valueOf(groupId)));
+
+        var existingUser = userRepo.findById(userId)
+                .orElseThrow(() -> new SantaValidationException("User does not exist",
+                        "id", "User not found", String.valueOf(userId)));
+
+        List<User> existingUserList = existingGroup.getUser();
+        existingUserList.add(existingUser);
+        existingGroup.setUser(existingUserList);
+
+        return groupRepo.save(existingGroup);
+    }
+
+    public List<User> getAllUsersById(int groupId) {
+        return groupRepo.findById(groupId).get().getUser();
+
+    }
 
 }

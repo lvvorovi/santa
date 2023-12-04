@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Image, Card, Icon } from "semantic-ui-react";
+import { Button, Image, Card, Icon } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export function ViewGroup() {
@@ -10,8 +10,8 @@ export function ViewGroup() {
     name: "",
     eventDate: "",
     budget: "",
-    // user: [],
-    // gifts: [],
+    user: [],
+    gifts: [],
     // generatedSanta: [],
   });
 
@@ -40,11 +40,47 @@ export function ViewGroup() {
             </Card.Content>
             <Card.Content extra>
               <a>
+                <h3>Participants:</h3>
                 <Icon name="user" />
-                Participants list, Add new Participants, Generate button,
-                Wishlist
+                {group.user.map((user) => (
+                  <Button
+                    className="button"
+                    content="Standard"
+                    basic
+                    key={user.id}
+                  >
+                    {user.name},
+                  </Button>
+                ))}
+                {/* Participants list, Add new Participants, Generate button,
+                Wishlist */}
+                <Button content="Standard" basic className="button">
+                  Add new{" "}
+                </Button>
               </a>
             </Card.Content>
+            <Button className="generate-button"inverted color="red">
+              GENERATE
+            </Button>
+            {/* <Card.Content extra>
+              <a>
+                <h3>Participants:</h3>
+                <Icon name="user" />
+                {group.gifts.map((gift) => (
+                  <Button
+                    className="button"
+                    content="Standard"
+                    basic
+                    key={gift.id}
+                  >
+                    {gift.name},
+                  </Button>
+                ))}
+                <Button content="Standard" basic className="button">
+                  Add new{" "}
+                </Button>
+              </a>
+            </Card.Content> */}
           </Card>
         </div>
       </div>
