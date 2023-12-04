@@ -4,8 +4,9 @@ import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
@@ -15,51 +16,82 @@ import java.util.Optional;
 
 @Service
 public class GroupServiceImpl implements IGroupService {
+    private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
     @Autowired
     IGroupRepo groupRepo;
 
     @Override
     public List<Group> getAllGroups() {
-        return groupRepo.findAll();
+        try {
+            return groupRepo.findAll();
+        } catch (Exception e) {
+            logger.error("Failed to retrieve all groups", e);
+            throw e;
+        }
     }
 
     @Override
     public Group getGroupById(int groupId) {
-        return groupRepo.findById(groupId)
-                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId));
+        try {
+            return groupRepo.findById(groupId)
+                    .orElseThrow(() -> new RuntimeException("Group not found with id: " + groupId));
+        } catch (Exception e) {
+            logger.error("Failed to retrieve group with ID: {}", groupId, e);
+            throw e;
+        }
     }
 
     @Override
     public Group editByGroupId(GroupDTO groupDTO, int groupId) {
-        Optional<Group> optionalGroup = groupRepo.findById(groupId);
-        if (optionalGroup.isPresent()) {
-            Group group = optionalGroup.get();
-            if (Objects.nonNull(groupDTO.getName())) {
-                group.setName(groupDTO.getName());
+        try {
+            Optional<Group> optionalGroup = groupRepo.findById(groupId);
+            if (optionalGroup.isPresent()) {
+                Group group = optionalGroup.get();
+
+                if (Objects.nonNull(groupDTO.getName())) {
+                    group.setName(groupDTO.getName());
+                }
+                if (Objects.nonNull(groupDTO.getEventDate())) {
+                    group.setEventDate(groupDTO.getEventDate());
+                }
+                group.setBudget(groupDTO.getBudget());
+
+                return groupRepo.save(group);
+            } else {
+                throw new RuntimeException("Group not found with id: " + groupId);
             }
-            if (Objects.nonNull(groupDTO.getEventDate())) {
-                group.setEventDate(groupDTO.getEventDate());
-            }
-            group.setBudget(groupDTO.getBudget());
-            return groupRepo.save(group);
+        } catch (RuntimeException e) {
+            logger.error("Group not found with ID: {}", groupId, e);
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error occurred while updating group with ID: {}", groupId, e);
+            throw e;
         }
-        throw new EntityNotFoundException(" not found with id "+ groupId);
     }
     @Override
     public Group createGroup(GroupDTO groupDTO) {
-        Group group = new Group();
-        group.setName(groupDTO.getName());
-        group.setEventDate(groupDTO.getEventDate());
-        group.setBudget(groupDTO.getBudget());
-        return groupRepo.save(group);
+        try {
+            Group group = new Group();
+            group.setName(groupDTO.getName());
+            group.setEventDate(groupDTO.getEventDate());
+            group.setBudget(groupDTO.getBudget());
+            return groupRepo.save(group);
+        } catch (Exception e) {
+            logger.error("Failed to create group", e);
+            throw e;
+        }
     }
-    @Override
     public boolean deleteGroupByGroupId(int groupId) {
-        if (groupRepo.existsById(groupId)) {
+        try {
+            if (!groupRepo.existsById(groupId)) {
+                throw new RuntimeException("Group not found with id: " + groupId);
+            }
             groupRepo.deleteById(groupId);
             return true;
+        } catch (Exception e) {
+            logger.error("Failed to delete group with ID: {}", groupId, e);
+            throw e;
         }
-        return false;
     }
 
 
