@@ -125,6 +125,7 @@ public class GroupServiceImpl implements IGroupService {
             }
         } else {
             logger.error("Attempted to delete a group that does not exist with ID: {}", groupId);
+            throw new EntityNotFoundException("Group not found with id " + groupId);
         }
     }
 
