@@ -15,7 +15,7 @@ public interface IGiftService {
 
     GiftDTO updateGift(int giftId, GiftDTO giftDTO);
 
-    void deleteGift(int giftId);
+    boolean deleteGift(int giftId);
 
     List<Gift> getGiftsCreatedBy(int userId);
 

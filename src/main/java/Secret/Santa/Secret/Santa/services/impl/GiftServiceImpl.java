@@ -11,6 +11,9 @@ import Secret.Santa.Secret.Santa.services.IGiftService;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GiftServiceImpl implements IGiftService {
+    private static final Logger logger = LoggerFactory.getLogger(GiftServiceImpl.class);
     private final GiftMapper giftMapper;
     @Autowired
     IGiftRepo iGiftRepo;
@@ -36,39 +41,49 @@ public class GiftServiceImpl implements IGiftService {
 
     @Override
     public List<Gift> getAllGifts() {
-        return iGiftRepo.findAll();
+        try {
+            return iGiftRepo.findAll();
+        } catch (Exception e) {
+            logger.error("Error retrieving all gifts", e);
+            throw e;
+        }
     }
 
     @Override
     public Gift getGiftById(int giftId) {
-        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
-        return optionalGift.orElseThrow(() -> new EntityNotFoundException("Gift not found with id " + giftId));
+        try {
+            return iGiftRepo.findById(giftId)
+                    .orElseThrow(() -> new RuntimeException("Gift not found with id: " + giftId));
+        } catch (Exception e) {
+            logger.error("Failed to retrieve gift with ID: {}", giftId, e);
+            throw e;
+        }
     }
 
     @Override
     public Gift createGift(Integer userId, GiftDTO giftDTO) {
-        if (giftDTO.getPrice() < 0) {
-            throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
+        try {
+            if (giftDTO.getPrice() < 0) {
+                throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
+            }
+            Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+            if (giftDTO.getPrice() > group.getBudget()) {
+                throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
+            }
+
+            Gift gift = new Gift();
+            gift.setName(giftDTO.getName());
+            gift.setDescription(giftDTO.getDescription());
+            gift.setLink(giftDTO.getLink());
+            gift.setPrice(giftDTO.getPrice());
+            User user = userUtils.getUserById(userId);
+            gift.setCreatedBy(user);
+            gift.setGroup(group);
+            return iGiftRepo.save(gift);
+        } catch (Exception e) {
+            logger.error("Error creating gift", e);
+            throw e;
         }
-        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
-        if (giftDTO.getPrice() > group.getBudget()) {
-            throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
-        }
-
-        Gift gift = new Gift();
-        gift.setName(giftDTO.getName());
-        gift.setDescription(giftDTO.getDescription());
-        gift.setLink(giftDTO.getLink());
-        gift.setPrice(giftDTO.getPrice());
-
-        User user = userUtils.getUserById(userId);
-        gift.setCreatedBy(user);
-
-
-        gift.setGroup(group);
-        //gift.setGroup(giftDTO.getGroup());
-
-        return iGiftRepo.save(gift);
     }
 
     @Override
@@ -103,15 +118,36 @@ public class GiftServiceImpl implements IGiftService {
         savedEntity = iGiftRepo.save(savedEntity);
 
         return giftMapper.toGiftDTO(savedEntity);
+
+//        if (giftDTO == null) {
+//            throw new IllegalArgumentException("GiftDTO cannot be null");
+//        }
+//        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
+//        if (existingGift.isPresent()) {
+//            Gift gift = existingGift.get();
+//            gift = giftMapper.toGift(giftDTO, gift);
+//            iGiftRepo.save(gift);
+//            return giftMapper.toGiftDTO(gift);
+//        }
+//        throw new EntityNotFoundException("User not found with id " + giftId);
     }
 
 
     @Override
-    public void deleteGift(int giftId) {
-        if (!iGiftRepo.existsById(giftId)) {
+    public boolean deleteGift(int giftId) {
+        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
+        if (optionalGift.isPresent()) {
+            try {
+                iGiftRepo.deleteById(giftId);
+                return true;
+            } catch (Exception exception) {
+                logger.error("Exception occurred while deleting gift with ID: {}", giftId, exception);
+                return false;
+            }
+        } else {
+            logger.error("Attempted to delete a gift that does not exist with ID: {}", giftId);
             throw new EntityNotFoundException("Gift not found with id " + giftId);
         }
-        iGiftRepo.deleteById(giftId);
     }
 
     public List<Gift> getGiftsCreatedBy(int userId) {

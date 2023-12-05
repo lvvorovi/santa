@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @Validated
 public class GiftDTO {
+    private int giftId;
     @NotBlank(message = "Name is required")
     private String name;
     private String description;

@@ -25,6 +25,7 @@ public class GroupMapper {
         groupDTO.setName(group.getName());
         groupDTO.setEventDate(group.getEventDate());
         groupDTO.setBudget(group.getBudget());
+
         groupDTO.setUser(group.getUser());
         groupDTO.setGifts(group.getGifts());
         groupDTO.setGeneratedSanta(group.getGeneratedSanta());
@@ -32,6 +33,4 @@ public class GroupMapper {
 
         return groupDTO;
     }
-
-
 }

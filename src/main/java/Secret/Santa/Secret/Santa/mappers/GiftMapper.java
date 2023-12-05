@@ -13,14 +13,14 @@ public class GiftMapper {
     private static GroupUtils groupUtils;
     private static UserUtils userUtils;
 
-
     public GiftMapper(GroupUtils groupUtils, UserUtils userUtils) {
         this.groupUtils = groupUtils;
         this.userUtils = userUtils;
     }
-
-    public static Gift toGift(GiftDTO giftDTO) {
-        Gift gift = new Gift();
+    public static Gift toGift(GiftDTO giftDTO, Gift gift) {
+        if (gift == null){
+            gift = new Gift();
+        }
         gift.setName(giftDTO.getName());
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
@@ -36,7 +36,9 @@ public class GiftMapper {
     }
 
     public static GiftDTO toGiftDTO(Gift gift) {
+
         GiftDTO giftDTO = new GiftDTO();
+
         giftDTO.setName(gift.getName());
         giftDTO.setDescription(gift.getDescription());
         giftDTO.setLink(gift.getLink());
@@ -51,5 +53,6 @@ public class GiftMapper {
 
         return giftDTO;
     }
-}
 
+
+}
