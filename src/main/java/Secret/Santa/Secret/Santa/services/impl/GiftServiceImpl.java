@@ -89,35 +89,10 @@ public class GiftServiceImpl implements IGiftService {
     @Override
     public GiftDTO updateGift(int giftId, GiftDTO giftDTO) {
 
-//        if (!iGiftRepo.existsById(giftId)) {
-//            throw new EntityNotFoundException("Gift not found with id " + giftId);
-//        }
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         if (giftDTO.getPrice() > group.getBudget()) {
             throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
         }
-
-//        Gift requestEntity = giftMapper.toGift(giftDTO);
-//        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
-
-//        Gift savedEntity = existingGift.get();
-//        savedEntity.setName(requestEntity.getName());
-//        savedEntity.setDescription(requestEntity.getDescription());
-//        savedEntity.setLink(requestEntity.getLink());
-//        savedEntity.setPrice(requestEntity.getPrice());
-//
-//        User user = userUtils.getUserById(giftDTO.getCreatedBy());
-//        savedEntity.setCreatedBy(user);
-//        //  userUtils.getUserById(requestEntity.getCreatedBy());
-//        //  savedEntity.setCreatedBy(requestEntity.getCreatedBy());
-//
-//
-//        savedEntity.setGroup(group);
-//        //savedEntity.setGroup(requestEntity.getGroup());
-//
-//        savedEntity = iGiftRepo.save(savedEntity);
-//
-//        return giftMapper.toGiftDTO(savedEntity);
 
         if (giftDTO == null) {
             throw new IllegalArgumentException("GiftDTO cannot be null");
