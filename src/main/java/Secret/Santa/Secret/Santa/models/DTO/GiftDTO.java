@@ -23,7 +23,7 @@ public class GiftDTO {
     private String link;
     @Positive
     private double price;
-    @NotNull
+    //    @NotNull
     private int createdBy;
     @NotNull
     private int groupId;

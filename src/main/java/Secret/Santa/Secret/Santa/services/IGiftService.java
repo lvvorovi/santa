@@ -11,7 +11,7 @@ public interface IGiftService {
 
     Gift getGiftById(int giftId);
 
-    Gift createGift(GiftDTO giftDTO);
+    Gift createGift(Integer userId, GiftDTO giftDTO);
 
     GiftDTO updateGift(int giftId, GiftDTO giftDTO);
 
@@ -20,4 +20,4 @@ public interface IGiftService {
     List<Gift> getGiftsCreatedBy(int userId);
 
 
-    }
+}

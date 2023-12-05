@@ -28,7 +28,7 @@ export function ViewUser() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); // fix to fetch user groups
+      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -62,6 +62,11 @@ export function ViewUser() {
   const handleGiftDoubleClick = (giftId) => {
     console.log(`Card clicked for gift ID ${giftId}`);
     navigate(`/gifts/${giftId}`);
+  };
+
+  const handleCreateGiftClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/gift/${userId}`);
   };
 
   useEffect(() => {
@@ -132,8 +137,9 @@ export function ViewUser() {
             <Button
               color="blue"
               className="controls"
-              as={Link}
-              to="/create/gift"
+              // as={Link}
+              // to="/create/gift"
+              onClick={() => handleCreateGiftClick(params.id)}
             >
               Create Gift
             </Button>

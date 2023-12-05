@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
@@ -45,7 +46,7 @@ public class GiftServiceImpl implements IGiftService {
     }
 
     @Override
-    public Gift createGift(GiftDTO giftDTO) {
+    public Gift createGift(Integer userId, GiftDTO giftDTO) {
         if (giftDTO.getPrice() < 0) {
             throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
         }
@@ -56,8 +57,8 @@ public class GiftServiceImpl implements IGiftService {
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
 
-        userUtils.getUserById(giftDTO.getCreatedBy());
-        gift.setCreatedBy(giftDTO.getCreatedBy());
+        User user = userUtils.getUserById(userId);
+        gift.setCreatedBy(user);
 
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         gift.setGroup(group);
@@ -82,8 +83,10 @@ public class GiftServiceImpl implements IGiftService {
         savedEntity.setLink(requestEntity.getLink());
         savedEntity.setPrice(requestEntity.getPrice());
 
-        userUtils.getUserById(requestEntity.getCreatedBy());
-        savedEntity.setCreatedBy(requestEntity.getCreatedBy());
+        User user = userUtils.getUserById(giftDTO.getCreatedBy());
+        savedEntity.setCreatedBy(user);
+        //  userUtils.getUserById(requestEntity.getCreatedBy());
+        //  savedEntity.setCreatedBy(requestEntity.getCreatedBy());
 
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         savedEntity.setGroup(group);
@@ -104,6 +107,7 @@ public class GiftServiceImpl implements IGiftService {
     }
 
     public List<Gift> getGiftsCreatedBy(int userId) {
-        return iGiftRepo.findByCreatedBy(userId);
+        User user = userUtils.getUserById(userId);
+        return iGiftRepo.findByCreatedBy(user);
     }
 }

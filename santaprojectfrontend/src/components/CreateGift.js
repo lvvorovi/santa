@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Icon } from "semantic-ui-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams} from "react-router-dom";
 // import { apiUrl } from "../App";
 
 const JSON_HEADERS = {
@@ -8,6 +8,7 @@ const JSON_HEADERS = {
 };
 
 export function CreateGift() {
+  const params = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,7 +20,7 @@ export function CreateGift() {
   const [groupList, setGroupList] = useState([]);
 
   const createGift = () => {
-    fetch("/api/v1/gifts", {
+    fetch(`/api/v1/gifts/${params.id}`, { 
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify({
@@ -27,18 +28,25 @@ export function CreateGift() {
         description,
         link,
         price,
-        createdBy,
         groupId,
-        //groupDto does not have users
       }),
     })
-      //   .then(applyResult)
-      .then(() => navigate("/"));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => navigate(`/users/${params.id}`)) 
+      .catch((error) => {
+        console.error("Error creating gift:", error);
+      });
   };
+  
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("/api/v1/groups");
+      const response = await fetch(`/api/v1/groups/user/${params.id}/groups`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -96,18 +104,10 @@ export function CreateGift() {
               onChange={(e) => setPrice(e.target.value)}
             />
           </Form.Field>
-          <Form.Field>
-            <label>Created by</label>
-            <input
-              placeholder="CreatedBy"
-              value={createdBy}
-              onChange={(e) => setCreatedBy(e.target.value)}
-            />
-          </Form.Field>
           <Form.Select
             label="Group"
-            value={groupId} // Assuming 'group' is the selected group ID
-            onChange={(e, { value }) => setGroupId(value)} // Assuming 'setGroup' is the function to set the selected group
+            value={groupId} 
+            onChange={(e, { value }) => setGroupId(value)} 
             placeholder="Select a Group"
             options={groupList.map((group) => ({
               key: group.groupId,
@@ -117,7 +117,8 @@ export function CreateGift() {
           />
 
 
-          <Button icon labelPosition="left" className="" as={Link} exact to="/">
+          <Button icon labelPosition="left" className="" 
+          as={Link} to={`/users/${params.id}`}>
             <Icon name="arrow left" />
             Back
           </Button>

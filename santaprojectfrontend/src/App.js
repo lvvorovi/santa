@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path="/" element={<GroupList />} />
             <Route path="/users" element={<CreateUser />} />
-            <Route path="/create/gift" element={<CreateGift />} />
+            <Route path="/create/gift/:id" element={<CreateGift />} />
             <Route path="/groups/:id" element={<ViewGroup />} />
             <Route path="/create/group" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />

@@ -41,9 +41,9 @@ public class GiftController {
         return ResponseEntity.ok(gift);
     }
 
-    @PostMapping
-    public ResponseEntity<Gift> createGift(@RequestBody @Valid GiftDTO giftDTO) {
-        Gift createdGift = giftService.createGift(giftDTO);
+    @PostMapping("/{userId}")
+    public ResponseEntity<Gift> createGift(@PathVariable int userId, @RequestBody @Valid GiftDTO giftDTO) {
+        Gift createdGift = giftService.createGift(userId, giftDTO);
         return ResponseEntity.ok(createdGift);
     }
 
