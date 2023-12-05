@@ -60,10 +60,9 @@ export function ViewUser() {
     navigate(`/groups/${groupId}`);
   };
 
-  const handleGiftDoubleClick = (giftId) => {
-    console.log("giftId:", typeof giftId);
-    console.log(`Card clicked for gift ID ${giftId}`);
-    navigate(`/gifts/${giftId}`);
+  const handleGiftDoubleClick = (userId, giftId) => {
+    console.log(`Card clicked for gift ID ${giftId} of user ID ${userId}`);
+    navigate(`/users/${userId}/gifts/${giftId}`);
   };
 
   const handleCreateGiftClick = (userId) => {
@@ -152,7 +151,7 @@ export function ViewUser() {
               <Card
               key={gift.id}
               className="m-3 cursor-pointer"
-              onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
+              onDoubleClick={() => handleGiftDoubleClick(params.id, gift.giftId)}
             >
                
                 <Image src="/images/gifts.jpg" wrapped ui={false} />

@@ -24,7 +24,7 @@ function App() {
             <Route path="/groups/:id" element={<ViewGroup />} />
             <Route path="/create/group" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
-            <Route path="/gifts/:giftId" element={<EditGift />} />
+            <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
           </Routes>
         </div>
       </HashRouter>

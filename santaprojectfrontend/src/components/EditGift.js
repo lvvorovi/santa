@@ -12,10 +12,11 @@ export function EditGift() {
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [price, setPrice] = useState("");
+  const [group, setGroup] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchGiftDetails(params.giftId); // Fetch gift details when the component mounts
+    fetchGiftDetails(params.giftId);
   }, [params.giftId]);
 
   const fetchGiftDetails = async (id) => {
@@ -29,15 +30,14 @@ export function EditGift() {
       setDescription(giftData.description);
       setLink(giftData.link);
       setPrice(giftData.price);
-      // Assuming giftData.group is an object, adjust this line accordingly
-      // setGroup(giftData.group);
+      setGroup(giftData.group);
     } catch (error) {
       console.error("Error fetching gift details:", error);
     }
   };
 
   const editGift = () => {
-    fetch(`/api/v1/gifts/${params.id}`, {
+    fetch(`/api/v1/gifts/${params.giftId}`, {
       method: "PUT",
       headers: JSON_HEADERS,
       body: JSON.stringify({
@@ -53,7 +53,7 @@ export function EditGift() {
         }
         return response.json();
       })
-      .then(() => navigate(`/users/:userId`)) // Replace :userId with the actual user ID
+      .then(() => navigate(`/users/${params.userId}`))
       .catch((error) => {
         console.error("Error editing gift:", error);
       });
@@ -116,7 +116,7 @@ export function EditGift() {
               <Button
                 icon
                 labelPosition="left"
-                onClick={() => navigate(`/gifts/${params.id}`)}
+                onClick={() => navigate(`/users/${params.userId}`)}
               >
                 Back
               </Button>
