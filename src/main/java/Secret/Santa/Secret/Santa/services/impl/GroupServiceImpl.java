@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
@@ -7,23 +8,18 @@ import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl implements IGroupService {
-    @Autowired
-    IGroupRepo groupRepo;
+    private final IGroupRepo groupRepo;
     private final UserUtils userUtils;
-
-    public GroupServiceImpl(UserUtils userUtils) {
-        this.userUtils = userUtils;
-    }
+    private final GroupMapper groupMapper;
 
     @Override
     public List<Group> getAllGroups() {
@@ -37,20 +33,32 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public Group editByGroupId(GroupDTO groupDTO, int groupId) {
-        Optional<Group> optionalGroup = groupRepo.findById(groupId);
-        if (optionalGroup.isPresent()) {
-            Group group = optionalGroup.get();
-            if (Objects.nonNull(groupDTO.getName())) {
-                group.setName(groupDTO.getName());
-            }
-            if (Objects.nonNull(groupDTO.getEventDate())) {
-                group.setEventDate(groupDTO.getEventDate());
-            }
-            group.setBudget(groupDTO.getBudget());
-            return groupRepo.save(group);
+    public GroupDTO editByGroupId(GroupDTO groupDTO, int groupId) {
+//        Optional<Group> optionalGroup = groupRepo.findById(groupId);
+//        if (optionalGroup.isPresent()) {
+//            Group group = optionalGroup.get();
+//            if (Objects.nonNull(groupDTO.getName())) {
+//                group.setName(groupDTO.getName());
+//            }
+//            if (Objects.nonNull(groupDTO.getEventDate())) {
+//                group.setEventDate(groupDTO.getEventDate());
+//            }
+//            group.setBudget(groupDTO.getBudget());
+//            return groupRepo.save(group);
+//        }
+//        throw new EntityNotFoundException(" not found with id " + groupId);
+
+        if (groupDTO == null) {
+            throw new IllegalArgumentException("GroupDTO cannot be null");
         }
-        throw new EntityNotFoundException(" not found with id " + groupId);
+        Optional<Group> existingGroup = groupRepo.findById(groupId);
+        if (existingGroup.isPresent()) {
+            Group group = existingGroup.get();
+            group = groupMapper.toGroup(groupDTO, group);
+            groupRepo.save(group);
+            return groupMapper.toGroupDTO(group);
+        }
+        throw new EntityNotFoundException("User not found with id " + groupId);
     }
 
     @Override
@@ -76,11 +84,16 @@ public class GroupServiceImpl implements IGroupService {
 
     @Override
     public boolean deleteGroupByGroupId(int groupId) {
-        if (groupRepo.existsById(groupId)) {
-            groupRepo.deleteById(groupId);
+        Optional<Group> optionalGroup = groupRepo.findById(groupId);
+        if (optionalGroup.isPresent()) {
+            try {
+                groupRepo.deleteById(groupId);
+            } catch (Exception exception) {
+                return false;
+            }
             return true;
         }
-        return false;
+        throw new EntityNotFoundException("Group not found with id " + groupId);
     }
 
 

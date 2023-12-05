@@ -7,6 +7,7 @@ import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,20 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GiftServiceImpl implements IGiftService {
     private final GiftMapper giftMapper;
     @Autowired
     IGiftRepo iGiftRepo;
-
-    public GiftServiceImpl(GiftMapper giftMapper) {
-        this.giftMapper = giftMapper;
-    }
-
-    @Autowired
-    public GiftServiceImpl(GiftMapper giftMapper, IGiftRepo iGiftRepo) {
-        this.giftMapper = giftMapper;
-        this.iGiftRepo = iGiftRepo;
-    }
 
     @Override
     public List<Gift> getAllGifts() {
@@ -59,6 +51,7 @@ public class GiftServiceImpl implements IGiftService {
     @Override
     public GiftDTO updateGift(int giftId, GiftDTO giftDTO) {
 
+/*
         if (!iGiftRepo.existsById(giftId)) {
             throw new EntityNotFoundException("Gift not found with id " + giftId);
         }
@@ -76,14 +69,32 @@ public class GiftServiceImpl implements IGiftService {
         savedEntity = iGiftRepo.save(savedEntity);
 
         return giftMapper.toGiftDTO(savedEntity);
+*/
+        if (giftDTO == null) {
+            throw new IllegalArgumentException("GiftDTO cannot be null");
+        }
+        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
+        if (existingGift.isPresent()) {
+            Gift gift = existingGift.get();
+            gift = giftMapper.toGift(giftDTO, gift);
+            iGiftRepo.save(gift);
+            return giftMapper.toGiftDTO(gift);
+        }
+        throw new EntityNotFoundException("User not found with id " + giftId);
     }
 
 
     @Override
-    public void deleteGift(int giftId) {
-        if (!iGiftRepo.existsById(giftId)) {
-            throw new EntityNotFoundException("Gift not found with id " + giftId);
+    public boolean deleteGift(int giftId) {
+        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
+        if (optionalGift.isPresent()) {
+            try {
+                iGiftRepo.deleteById(giftId);
+            } catch (Exception exception) {
+                return false;
+            }
+            return true;
         }
-        iGiftRepo.deleteById(giftId);
+        throw new EntityNotFoundException("Group not found with id " + giftId);
     }
 }

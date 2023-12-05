@@ -38,8 +38,8 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<Group> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
-        Group group = iGroupService.editByGroupId(groupDTO, groupId);
+    public ResponseEntity<GroupDTO> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
+        GroupDTO group = iGroupService.editByGroupId(groupDTO, groupId);
         return ResponseEntity.ok(group);
     }
 

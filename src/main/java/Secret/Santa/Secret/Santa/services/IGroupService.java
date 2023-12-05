@@ -10,7 +10,7 @@ import java.util.List;
 public interface IGroupService {
     List<Group> getAllGroups();
 
-    Group editByGroupId(GroupDTO groupDTO, int groupId);
+    GroupDTO editByGroupId(GroupDTO groupDTO, int groupId);
 
     Group createGroup(GroupDTO groupDTO);
 

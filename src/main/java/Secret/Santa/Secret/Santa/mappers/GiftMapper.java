@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GiftMapper {
-    public static Gift toGift(GiftDTO giftDTO) {
-
-        Gift gift = new Gift();
+    public static Gift toGift(GiftDTO giftDTO, Gift gift) {
+        if (gift == null){
+            gift = new Gift();
+        }
         gift.setName(giftDTO.getName());
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
         gift.setCreated_by(giftDTO.getCreated_by());
         gift.setGroup(giftDTO.getGroup());
-
         return gift;
     }
 
