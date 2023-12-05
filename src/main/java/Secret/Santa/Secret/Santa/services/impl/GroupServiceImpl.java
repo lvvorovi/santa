@@ -9,6 +9,9 @@ import Secret.Santa.Secret.Santa.services.IGroupService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,19 +20,31 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements IGroupService {
+    private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
+    @Autowired
     private final IGroupRepo groupRepo;
     private final UserUtils userUtils;
     private final GroupMapper groupMapper;
 
     @Override
     public List<Group> getAllGroups() {
-        return groupRepo.findAll();
+        try {
+            return groupRepo.findAll();
+        } catch (Exception e) {
+            logger.error("Failed to retrieve all groups", e);
+            throw e;
+        }
     }
 
     @Override
     public Group getGroupById(int groupId) {
-        return groupRepo.findById(groupId)
-                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId));
+        try {
+            return groupRepo.findById(groupId)
+                    .orElseThrow(() -> new RuntimeException("Group not found with id: " + groupId));
+        } catch (Exception e) {
+            logger.error("Failed to retrieve group with ID: {}", groupId, e);
+            throw e;
+        }
     }
 
     @Override
@@ -63,23 +78,38 @@ public class GroupServiceImpl implements IGroupService {
 
     @Override
     public Group createGroup(GroupDTO groupDTO) {
-        Group group = new Group();
-        group.setName(groupDTO.getName());
-        group.setEventDate(groupDTO.getEventDate());
-        group.setBudget(groupDTO.getBudget());
-        return groupRepo.save(group);
+        try {
+            Group group = new Group();
+            group.setName(groupDTO.getName());
+            group.setEventDate(groupDTO.getEventDate());
+            group.setBudget(groupDTO.getBudget());
+            return groupRepo.save(group);
+        } catch (Exception e) {
+            logger.error("Failed to create group", e);
+            throw e;
+        }
     }
 
     @Override
     public List<Group> getAllGroupsForUser(Integer userId) {
-        User user = userUtils.getUserById(userId);
-        return groupRepo.findByUserContaining(user);
+        try {
+            User user = userUtils.getUserById(userId);
+            return groupRepo.findByUserContaining(user);
+        } catch (Exception e) {
+            logger.error("Error retrieving all groups for user with ID: {}", userId, e);
+            throw e;
+        }
     }
 
     @Override
     public List<Group> getAllGroupsForOwner(Integer userId) {
-        User user = userUtils.getUserById(userId);
-        return groupRepo.findByOwner(user);
+        try {
+            User user = userUtils.getUserById(userId);
+            return groupRepo.findByOwner(user);
+        } catch (Exception e) {
+            logger.error("Error retrieving all groups for owner with ID: {}", userId, e);
+            throw e;
+        }
     }
 
     @Override
@@ -88,12 +118,14 @@ public class GroupServiceImpl implements IGroupService {
         if (optionalGroup.isPresent()) {
             try {
                 groupRepo.deleteById(groupId);
-            } catch (Exception exception) {
+                return true;
+            } catch (Exception e) {
+                logger.error("Error deleting group with ID: {}", groupId, e);
                 return false;
             }
-            return true;
+        } else {
+            logger.error("Attempted to delete a group that does not exist with ID: {}", groupId);
         }
-        throw new EntityNotFoundException("Group not found with id " + groupId);
     }
 
 
