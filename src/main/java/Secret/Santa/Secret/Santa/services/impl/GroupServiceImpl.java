@@ -10,7 +10,6 @@ import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +17,10 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class GroupServiceImpl implements IGroupService {
     private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
     @Autowired
@@ -34,8 +32,12 @@ public class GroupServiceImpl implements IGroupService {
     private final UserUtils userUtils;
     private final GroupMapper groupMapper;
 
-    public GroupServiceImpl(UserUtils userUtils) {
+    @Autowired
+    public GroupServiceImpl(IGroupRepo groupRepo, IUserRepo userRepo, UserUtils userUtils, GroupMapper groupMapper) {
+        this.groupRepo = groupRepo;
+        this.userRepo = userRepo;
         this.userUtils = userUtils;
+        this.groupMapper = groupMapper;
     }
 
     @Override

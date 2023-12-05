@@ -1,12 +1,30 @@
 package Secret.Santa.Secret.Santa.mappers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
+import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GroupMapper {
     public static Group toGroup(GroupDTO groupDTO) {
 
         Group group = new Group();
+        group.setName(groupDTO.getName());
+        group.setEventDate(groupDTO.getEventDate());
+        group.setBudget(groupDTO.getBudget());
+        group.setUser(groupDTO.getUser());
+        group.setGifts(groupDTO.getGifts());
+        group.setGeneratedSanta(groupDTO.getGeneratedSanta());
+        group.setOwner(groupDTO.getOwner());
+
+        return group;
+    }
+
+    public static Group toGroup(GroupDTO groupDTO, Group group) {
+        if (group == null) {
+            group = new Group();
+        }
         group.setName(groupDTO.getName());
         group.setEventDate(groupDTO.getEventDate());
         group.setBudget(groupDTO.getBudget());

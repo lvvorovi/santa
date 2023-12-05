@@ -17,8 +17,27 @@ public class GiftMapper {
         this.groupUtils = groupUtils;
         this.userUtils = userUtils;
     }
+
+    public static Gift toGift(GiftDTO giftDTO) {
+
+        Gift gift = new Gift();
+
+        gift.setName(giftDTO.getName());
+        gift.setDescription(giftDTO.getDescription());
+        gift.setLink(giftDTO.getLink());
+        gift.setPrice(giftDTO.getPrice());
+
+        User user = userUtils.getUserById(giftDTO.getCreatedBy());
+        gift.setCreatedBy(user);
+
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        gift.setGroup(group);
+
+        return gift;
+    }
+
     public static Gift toGift(GiftDTO giftDTO, Gift gift) {
-        if (gift == null){
+        if (gift == null) {
             gift = new Gift();
         }
         gift.setName(giftDTO.getName());
