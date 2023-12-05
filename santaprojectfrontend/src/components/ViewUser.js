@@ -55,11 +55,13 @@ export function ViewUser() {
   };
 
   const handleGroupDoubleClick = (groupId) => {
+    console.log("groupId:", typeof groupId);
     console.log(`Card clicked for group ID ${groupId}`);
     navigate(`/groups/${groupId}`);
   };
 
   const handleGiftDoubleClick = (giftId) => {
+    console.log("giftId:", typeof giftId);
     console.log(`Card clicked for gift ID ${giftId}`);
     navigate(`/gifts/${giftId}`);
   };
@@ -116,6 +118,7 @@ export function ViewUser() {
                 className="m-3 cursor-pointer"
                 onDoubleClick={() => handleGroupDoubleClick(group.groupId)}
               >
+                
                 <Image src="/images/santa.jpg" wrapped ui={false} />
                 <Card.Content>
                   <Card.Header>{group.name}</Card.Header>
@@ -147,10 +150,11 @@ export function ViewUser() {
           <div className="ui centered cards">
             {gifts.map((gift) => (
               <Card
-                key={gift.id}
-                className="m-3 cursor-pointer"
-                onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
-              >
+              key={gift.id}
+              className="m-3 cursor-pointer"
+              onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
+            >
+               
                 <Image src="/images/gifts.jpg" wrapped ui={false} />
                 <Card.Content>
                   <Card.Header>{gift.name}</Card.Header>
