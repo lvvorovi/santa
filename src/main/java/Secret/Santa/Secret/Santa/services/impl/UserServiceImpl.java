@@ -35,12 +35,9 @@ public class UserServiceImpl implements IUserService {
     public User findByUserid(int userid) {
         try {
             Optional<User> optionalLessor = iUserRepo.findById(userid);
-            return optionalLessor.orElseThrow(() -> new EntityNotFoundException("User not found with id " + userid));
-        } catch (EntityNotFoundException e) {
-            logger.error("User not found with ID: {}", userid, e);
-            throw e;
-        } catch (Exception e) {
-            logger.error("Error while retrieving user with ID: {}", userid, e);
+            return optionalLessor.orElseThrow(() -> new RuntimeException("User not found with id: " + userid));
+        } catch (RuntimeException e) {
+            logger.error("Error occurred while retrieving user with ID: {}", userid, e);
             throw e;
         }
     }
