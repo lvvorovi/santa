@@ -50,6 +50,10 @@ public class GiftServiceImpl implements IGiftService {
         if (giftDTO.getPrice() < 0) {
             throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
         }
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        if (giftDTO.getPrice() > group.getBudget()) {
+            throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
+        }
 
         Gift gift = new Gift();
         gift.setName(giftDTO.getName());
@@ -60,7 +64,7 @@ public class GiftServiceImpl implements IGiftService {
         User user = userUtils.getUserById(userId);
         gift.setCreatedBy(user);
 
-        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+
         gift.setGroup(group);
         //gift.setGroup(giftDTO.getGroup());
 
@@ -72,6 +76,10 @@ public class GiftServiceImpl implements IGiftService {
 
         if (!iGiftRepo.existsById(giftId)) {
             throw new EntityNotFoundException("Gift not found with id " + giftId);
+        }
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        if (giftDTO.getPrice() > group.getBudget()) {
+            throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
         }
 
         Gift requestEntity = giftMapper.toGift(giftDTO);
@@ -88,7 +96,7 @@ public class GiftServiceImpl implements IGiftService {
         //  userUtils.getUserById(requestEntity.getCreatedBy());
         //  savedEntity.setCreatedBy(requestEntity.getCreatedBy());
 
-        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+
         savedEntity.setGroup(group);
         //savedEntity.setGroup(requestEntity.getGroup());
 
