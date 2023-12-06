@@ -20,8 +20,8 @@ import java.util.List;
 public class Group {
     @Id
     @Column(name = "group_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(value = AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Setter(value = AccessLevel.NONE)
     private int groupId;
     @Column(name = "Name")
     private String name;

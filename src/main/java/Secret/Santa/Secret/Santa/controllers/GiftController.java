@@ -8,6 +8,7 @@ import Secret.Santa.Secret.Santa.services.IGiftService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +25,18 @@ public class GiftController {
     @Autowired
     private IGiftService giftService;
 
-    private GiftMapper giftMapper;
-    @Autowired
-    private IGiftRepo giftRepo;
+//    private GiftMapper giftMapper;
+//    @Autowired
+//    private IGiftRepo giftRepo;
 
     public GiftController(IGiftService giftService) {
         this.giftService = giftService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Gift>> getAllGifts() {
+    public ResponseEntity<List<GiftDTO>> getAllGifts() {
         try {
-            List<Gift> gifts = giftService.getAllGifts();
+            List<GiftDTO> gifts = giftService.getAllGifts();
             return new ResponseEntity<>(gifts, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error retrieving all gifts", e);
@@ -44,10 +45,12 @@ public class GiftController {
     }
 
     @GetMapping("/{giftId}")
-    public ResponseEntity<Gift> getGiftById(@PathVariable int giftId) {
+    public ResponseEntity<GiftDTO> getGiftById(@Valid
+                                               @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+                                               @PathVariable int giftId) {
         try {
-            Gift gift = giftService.getGiftById(giftId);
-            return ResponseEntity.ok(gift);
+            GiftDTO giftDTO = giftService.getGiftById(giftId);
+            return ResponseEntity.ok(giftDTO);
         } catch (Exception e) {
             logger.error("Error retrieving gift with ID: {}", giftId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -55,23 +58,23 @@ public class GiftController {
     }
 
     @PostMapping
-    public ResponseEntity<Gift> createGift(@RequestBody @Valid GiftDTO giftDTO) {
+    public ResponseEntity<GiftDTO> createGift(@RequestBody @Valid GiftDTO giftDTO) {
         try {
-            Gift createdGift = giftService.createGift(giftDTO);
-            return ResponseEntity.ok(createdGift);
+            GiftDTO createdGiftDTO = giftService.createGift(giftDTO);
+            return ResponseEntity.ok(createdGiftDTO);
         } catch (Exception e) {
             logger.error("Error creating gift", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @PutMapping("/{giftId}")
-    public ResponseEntity<GiftDTO> updateGift(@PathVariable int giftId, @RequestBody GiftDTO giftDTO) {
+    @PutMapping
+    public ResponseEntity<GiftDTO> updateGift(@RequestBody GiftDTO giftDTO) {
         try {
-            GiftDTO updatedGift = giftService.updateGift(giftId, giftDTO);
-            return new ResponseEntity<>(updatedGift, HttpStatus.OK);
+            GiftDTO updatedGiftDTO = giftService.updateGift(giftDTO);
+            return new ResponseEntity<>(updatedGiftDTO, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error updating gift with ID: {}", giftId, e);
+            logger.error("Error updating gift with ID: {}", giftDTO.getGiftId(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -85,6 +88,12 @@ public class GiftController {
             logger.error("Error deleting gift with ID: {}", giftId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/createdBy/{userId}")
+    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId) {
+        List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
+        return ResponseEntity.ok(userGifts);
     }
 
 }

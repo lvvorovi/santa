@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface IUserService extends UserDetailsService {
-    List<User> getAllUsers();
-    User findByUserid(int userid);
-    UserDTO editByUserId(UserDTO lessorDTO, int userid);
-    User createUser(UserDTO lessorDTO);
+    List<UserDTO> getAllUsers();
+    UserDTO findByUserid(int userid);
+    UserDTO editByUserId(UserDTO lessorDTO);
+    UserDTO createUser(UserDTO lessorDTO);
 
     boolean deleteUserByUserid(int userid);
+    List<UserDTO> getUsersByNameContaining(String nameText);
 }

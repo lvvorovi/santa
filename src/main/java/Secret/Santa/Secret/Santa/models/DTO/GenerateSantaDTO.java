@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class GenerateSantaDTO {
+    private Integer generateSantaId;
 
     private Group group;
 

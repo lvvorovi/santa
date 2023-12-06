@@ -25,8 +25,12 @@ public class Gift {
     private String link;
     @Column(name = "Price")
     private double price;
-    @Column(name = "Created_by")
-    private int created_by;
+//    @Column(name = "Created_by")
+//    private int createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "user_id")
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(

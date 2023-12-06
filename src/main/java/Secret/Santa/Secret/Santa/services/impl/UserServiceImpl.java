@@ -11,10 +11,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +42,13 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         try {
-            return iUserRepo.findAll();
+            List<User> users = iUserRepo.findAll();
+
+            return users.stream()
+                    .map(userMapper::toUserDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving all users", e);
             throw e;
@@ -46,10 +56,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User findByUserid(int userid) {
+    public UserDTO findByUserid(int userid) {
         try {
-            Optional<User> optionalLessor = iUserRepo.findById(userid);
-            return optionalLessor.orElseThrow(() -> new RuntimeException("User not found with id: " + userid));
+            Optional<User> optionalUser = iUserRepo.findById(userid);
+
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                return userMapper.toUserDTO(user);
+            }
+            throw new EntityNotFoundException("User not found with id " + userid);
+
         } catch (RuntimeException e) {
             logger.error("Error occurred while retrieving user with ID: {}", userid, e);
             throw e;
@@ -57,29 +73,35 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDTO editByUserId(UserDTO userDTO, int userid) {
+    public UserDTO editByUserId(UserDTO userDTO) {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        Optional<User> existingUser = iUserRepo.findById(userid);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            user = userMapper.toUser(userDTO, user);
-            iUserRepo.save(user);
-            return userMapper.toUserDTO(user);
+        if (userDTO.getUserId() == null) {
+            throw new IllegalArgumentException("This user does not have ID");
         }
-        throw new EntityNotFoundException("User not found with id " + userid);
+        Optional<User> existingUser = iUserRepo.findById(userDTO.getUserId());
+        if (existingUser.isPresent()) {
+            User user = userMapper.toUser(userDTO);
+            User updatedUser = iUserRepo.save(user);
+            return userMapper.toUserDTO(updatedUser);
+        }
+        throw new EntityNotFoundException("User not found with id " + userDTO.getUserId());
     }
 
     @Override
-    public User createUser(UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new IllegalArgumentException("UserDTO cannot be null");
+        }
         try {
             User user = new User();
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
             user.setPassword(userDTO.getPassword());
-            //user.setGroups(new ArrayList<>());
-            return iUserRepo.save(user);
+            User savedUser = iUserRepo.save(user);
+            return userMapper.toUserDTO(savedUser);
+
         } catch (Exception e) {
             logger.error("Error creating user", e);
             throw e;
@@ -101,6 +123,12 @@ public class UserServiceImpl implements IUserService {
             logger.error("Attempted to delete a user that does not exist with ID: {}", userid);
             throw new EntityNotFoundException("User not found with id " + userid);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> getUsersByNameContaining(String nameText) {
+        return iUserRepo.findByNameContainingIgnoreCase(nameText).stream()
+                .map(userMapper::toUserDTO).collect(Collectors.toList());
     }
 
 

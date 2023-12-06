@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @Validated
@@ -26,10 +28,11 @@ public class UserController {
     private IUserService iUserService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+
         try {
-            List<User> users = iUserService.getAllUsers();
-            return ResponseEntity.ok(users);
+            List<UserDTO> userDTOs = iUserService.getAllUsers();
+            return ResponseEntity.ok(userDTOs);
         } catch (Exception e) {
             logger.error("Error retrieving all users", e);
             return ResponseEntity.internalServerError().build();
@@ -37,10 +40,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO) {
+
         try {
-            User user = iUserService.createUser(userDTO);
-            return ResponseEntity.ok(user);
+            UserDTO createdUserDTO = iUserService.createUser(userDTO);
+            return ResponseEntity.ok(createdUserDTO);
         } catch (Exception e) {
             logger.error("Error creating user", e);
             return ResponseEntity.badRequest().build();
@@ -48,28 +52,27 @@ public class UserController {
     }
 
     @GetMapping("/{userid}")
-    public ResponseEntity<User> getUserById(@Valid
+    public ResponseEntity<UserDTO> getUserById(@Valid
                                             @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
                                             @PathVariable int userid) {
+
         try {
-            User user = null;
-            user = iUserService.findByUserid(userid);
-            return ResponseEntity.ok(user);
+            UserDTO userDTO = iUserService.findByUserid(userid);
+            return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             logger.error("Error retrieving user with ID: {}", userid, e);
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/{userid}")
-    public ResponseEntity<UserDTO> updateUser(@Valid
-                                           @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                           @PathVariable int userid, @RequestBody @Valid UserDTO userDTO) {
+    @PutMapping
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {
+
         try {
-            UserDTO user = iUserService.editByUserId(userDTO, userid);
+            UserDTO user = iUserService.editByUserId(userDTO);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            logger.error("Error updating user with ID: {}", userid, e);
+            logger.error("Error updating user with ID: {}", e);
             return ResponseEntity.notFound().build();
         }
     }
@@ -87,6 +90,18 @@ public class UserController {
             logger.error("Error deleting user with ID: {}", userid, e);
             return ResponseEntity.internalServerError().body("Error occurred while deleting user");
         }
+    }
+
+//    @GetMapping(path = "name-filter/{nameText}")
+//    @ResponseBody
+//    public List<UserDTO> getUsersByNameContaining(@PathVariable String nameText) {
+//        return iUserService.getUsersByNameContaining(nameText);
+//    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUsersByName(@RequestParam String name) {
+        List<UserDTO> matchingUsers = iUserService.getUsersByNameContaining(name);
+        return ok(matchingUsers);
     }
 
 }

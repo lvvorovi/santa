@@ -7,14 +7,17 @@ import java.util.List;
 
 public interface IGiftService {
 
-    List<Gift> getAllGifts();
+    List<GiftDTO> getAllGifts();
 
-    Gift getGiftById(int giftId);
+    GiftDTO getGiftById(int giftId);
 
-    Gift createGift(GiftDTO giftDTO);
+    GiftDTO createGift(GiftDTO giftDTO);
 
-    GiftDTO updateGift(int giftId, GiftDTO giftDTO);
+    GiftDTO updateGift(GiftDTO giftDTO);
 
     boolean deleteGift(int giftId);
+
+    List<Gift> getGiftsCreatedBy(int userId);
+
 
 }

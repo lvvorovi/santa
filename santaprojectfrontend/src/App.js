@@ -7,8 +7,10 @@ import { CreateUser } from "./components/CreateUser";
 import { CreateGift } from "./components/CreateGift";
 import { CreateGroup } from "./components/CreateGroup";
 import { ViewUser } from "./components/ViewUser";
+import { EditGift } from "./components/EditGift";
+import ChatRoom from "./components/ChatRoom";
 
-const apiUrl = "http://localhost:8080";
+// const apiUrl = "http://localhost:8085";
 
 function App() {
   return (
@@ -18,11 +20,13 @@ function App() {
         <div className="container">
           <Routes>
             <Route path="/" element={<GroupList />} />
-            <Route parh="/users" element={<CreateUser />} />
-            <Route parh="/gifts" element={<CreateGift />} />
-            <Route path="/groups/:id" element={<ViewGroup />} />
-            <Route path="/create/group" element={<CreateGroup />} />
+            <Route path="/users" element={<CreateUser />} />
+            <Route path="/create/gift/:id" element={<CreateGift />} />
+            <Route path="/users/:userId/groups/:groupId" element={<ViewGroup />} />
+            <Route path="/create/group/:id" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
+            <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
+            <Route path="/chatroom" element={<ChatRoom />} />
           </Routes>
         </div>
       </HashRouter>
@@ -31,4 +35,4 @@ function App() {
 }
 
 export default App;
-export { apiUrl };
+// export { apiUrl };

@@ -1,34 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Icon } from "semantic-ui-react";
-import { Link, useNavigate } from "react-router-dom";
-// import { apiUrl } from "../App";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import "./SecretSanta.css";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
 
-const options = [
-  { key: "t", text: "Tom", value: "Tom" },
-  { key: "m", text: "Mary", value: "Mary" },
-  { key: "l", text: "Lisa", value: "Lisa" },
-  { key: "r", text: "Rose", value: "Rose" },
-  { key: "1", text: "Andrew", value: "Andrew" },
-];
-
 export function CreateGroup() {
+  const params = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [budget, setBudget] = useState("");
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState("");
+  const [groupId, setGroupId] = useState("");
+  const [ownerId, setOwnerId] = useState(parseInt(params.id));
   const [userList, setUserList] = useState([]);
-
-  // useEffect(() => {
-  //   fetch(`/api/v1/users/`)
-  //     .then(response => response.json())
-  //     .then(setUserList)
-
-  // }, []);
 
   const fetchUsers = async () => {
     try {
@@ -38,25 +26,43 @@ export function CreateGroup() {
       }
       const jsonResponse = await response.json();
       setUserList(jsonResponse);
-      console.log("Fetched Groups:", jsonResponse);
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error("Error fetching users:", error);
     }
   };
 
+  //   const createGroup = () => {
+  //     console.log("Selected Users:", user);
+  //     fetch("/api/v1/groups", {
+  //       method: "POST",
+  //       headers: JSON_HEADERS,
+  //       body: JSON.stringify({
+  //         name,
+  //         eventDate,
+  //         budget,
+  //         user,
+  //       }),
+  //     }).then(() => navigate("/"));
+  //   };
+
   const createGroup = () => {
+    console.log("Selected Users:", user);
+    console.log("Owner:", ownerId);
+    const requestBody = {
+      groupId,
+      name,
+      eventDate,
+      budget,
+      user,
+      ownerId,
+    };
+    console.log("Request Body:", JSON.stringify(requestBody));
+
     fetch("/api/v1/groups", {
       method: "POST",
       headers: JSON_HEADERS,
-      body: JSON.stringify({
-        name,
-        eventDate,
-        budget,
-        //groupDto does not have users
-      }),
-    })
-      //   .then(applyResult)
-      .then(() => navigate("/"));
+      body: JSON.stringify(requestBody),
+    }).then(() => navigate(`/users/${params.id}`));
   };
 
   useEffect(() => {
@@ -64,7 +70,7 @@ export function CreateGroup() {
   }, []);
 
   return (
-    <div class="ui one column centered equal width grid">
+    <div className="ui one column centered equal width grid">
       <Card className="m-3 p-3">
         <Form
           className="m-3 p-3"
@@ -97,25 +103,27 @@ export function CreateGroup() {
               onChange={(e) => setBudget(e.target.value)}
             />
           </Form.Field>
-          <Form.Select
+          <Form.Dropdown
             label="Participants"
-            value={users}
-            onChange={(e, { value }) => setUsers([...value])}
+            value={user}
+            onChange={(e, { value }) => setUser(value)}
             placeholder="Participants"
             options={userList.map((user) => ({
-              key: user.userId, // Assuming user.userId is unique for each user
+              key: user.userId,
               text: user.name,
-              value: user.userId,
+              value: user,
             }))}
-            multiple // Allow multiple selections
+            selection
+            multiple
           />
 
-
-          <Button icon labelPosition="left" className="" as={Link} exact to="/">
+          <Button icon basic labelPosition="left" className="" as={Link} to={`/users/${params.id}`}>
             <Icon name="arrow left" />
             Back
           </Button>
-          <Button type="submit">Submit</Button>
+          <Button className="button" type="submit" basic color="red">
+            Submit
+          </Button>
         </Form>
       </Card>
     </div>

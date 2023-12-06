@@ -15,7 +15,7 @@ public class SantaValidationException extends RuntimeException {
         super(message);
         this.field = field;
         this.error = error;
-        this.rejectedValue = rejectedValue != null ? rejectedValue.toString() : null;
+        this.rejectedValue = rejectedValue;
     }
 
     public String getField() {
