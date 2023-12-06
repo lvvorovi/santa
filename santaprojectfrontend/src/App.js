@@ -21,8 +21,8 @@ function App() {
             <Route path="/" element={<GroupList />} />
             <Route path="/users" element={<CreateUser />} />
             <Route path="/create/gift/:id" element={<CreateGift />} />
-            <Route path="/groups/:id" element={<ViewGroup />} />
-            <Route path="/create/group" element={<CreateGroup />} />
+            <Route path="/users/:userId/groups/:groupId" element={<ViewGroup />} />
+            <Route path="/create/group/:id" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
             <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
           </Routes>

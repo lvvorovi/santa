@@ -15,16 +15,20 @@ export function ViewGroup() {
     budget: "",
     user: [],
     gifts: [],
+    owner: [],
     // generatedSanta: [],
   });
 
   const fetchGroups = async () => {
-    fetch("/api/v1/groups/" + params.id)
+
+    fetch("/api/v1/groups/" + params.groupId)
       .then((response) => response.json())
       .then(setGroup);
+    console.log("group:", group);
   };
 
   const fetchUsers = async () => {
+
     fetch("/api/v1/users")
       .then((response) => response.json())
       .then(setUsers);
@@ -37,6 +41,10 @@ export function ViewGroup() {
   const handleNewUserInputChange = (e) => {
     setNewUserName(e.target.value);
   };
+
+  useEffect(() => {
+    console.log("Updated group:", group); // This log will show the updated group value
+  }, [group]);
 
   //   const fetchFilteredUsers = async () => {
   //     fetch(`/api/v1/users/name-filter/${nameText}?`)
@@ -79,7 +87,7 @@ export function ViewGroup() {
 
         // Use the fetched user details to add the user to the group
         const addResponse = await fetch(
-          `/api/v1/groups/${params.id}/users/${user.id}/newUsers`,
+          `/api/v1/groups/${params.groupId}/users/${user.id}/newUsers`,
           {
             method: "POST",
             headers: {
@@ -106,7 +114,10 @@ export function ViewGroup() {
   useEffect(() => {
     fetchGroups();
     fetchUsers();
-  }, [params]);
+    console.log("group:", group);
+    console.log("groupId:", params.groupId);
+    console.log("userId:", params.userId);
+  }, [params.groupId]);
 
   useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();
@@ -139,12 +150,13 @@ export function ViewGroup() {
                     content="Standard"
                     basic
                     key={user.id}
-                                        
+
                   >
                     {user.name}
                   </Button>
                 ))}
-                {addingUser ? (
+                {group.owner && group.owner.userId === Number(params.userId) ? (
+                addingUser ? (
                   <div>
                     <Input
                       placeholder="Enter name"
@@ -175,12 +187,14 @@ export function ViewGroup() {
                   >
                     Add new
                   </Button>
-                )}
+                )) : null}
               </a>
             </Card.Content>
-            <button className="generate-button" size="large">
-              GENERATE
-            </button>
+            {group.owner && group.owner.userId === Number(params.userId) ? (
+                <button className="generate-button" size="large">
+                  GENERATE
+                </button>
+              ) : null}
 
             {/* <Card.Content extra>
               <a>

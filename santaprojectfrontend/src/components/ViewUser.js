@@ -54,10 +54,10 @@ export function ViewUser() {
     }
   };
 
-  const handleGroupDoubleClick = (groupId) => {
+  const handleGroupDoubleClick = (userId, groupId) => {
     console.log("groupId:", typeof groupId);
     console.log(`Card clicked for group ID ${groupId}`);
-    navigate(`/groups/${groupId}`);
+    navigate(`/users/${userId}/groups/${groupId}`);
   };
 
   const handleGiftDoubleClick = (userId, giftId) => {
@@ -105,8 +105,9 @@ export function ViewUser() {
             <Button
               color="blue"
               className="controls"
-              as={Link}
-              to="/create/group"
+              onClick={() => navigate(`/create/group/${params.id}`)}
+              // as={Link}
+              // to="/create/group/"
             >
               Create Group
             </Button>
@@ -115,7 +116,7 @@ export function ViewUser() {
             {groups.map((group) => (
               <Card key={group.id}
                 className="m-3 cursor-pointer"
-                onDoubleClick={() => handleGroupDoubleClick(group.groupId)}
+                onDoubleClick={() => handleGroupDoubleClick(params.id, group.groupId)}
               >
                 
                 <Image src="/images/santa.jpg" wrapped ui={false} />
