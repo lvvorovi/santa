@@ -16,7 +16,7 @@ public class Gift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gift_id")
-    private int giftId;
+    private Integer giftId;
     @Column(name = "Name")
     private String name;
     @Column(name = "Description")

@@ -22,7 +22,7 @@ public class Group {
     @Column(name = "group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Setter(value = AccessLevel.NONE)
-    private int groupId;
+    private Integer groupId;
     @Column(name = "Name")
     private String name;
     @Column(name = "Date")

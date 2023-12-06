@@ -26,9 +26,9 @@ public class GiftDTO {
     @NotNull
     private double price;
     //    @NotNull
-    private int createdBy;
+    private Integer createdBy;
     @NotNull
-    private int groupId;
+    private Integer groupId;
 //    @NotNull
 //    private Group group;
 }
