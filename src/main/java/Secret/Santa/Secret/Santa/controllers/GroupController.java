@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,37 +21,39 @@ public class GroupController {
     private IGroupService iGroupService;
 
     @GetMapping
-    public ResponseEntity<List<Group>> getAllGroups() {
-        List<Group> groups = iGroupService.getAllGroups();
-        return ResponseEntity.ok(groups);
+    public ResponseEntity<List<GroupDTO>> getAllGroups() {
+        List<GroupDTO> groupDTOs = iGroupService.getAllGroups();
+        return ResponseEntity.ok(groupDTOs);
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<Group> getGroupById(@PathVariable int groupId) {
-        Group group = iGroupService.getGroupById(groupId);
-        return ResponseEntity.ok(group);
+    public ResponseEntity<GroupDTO> getGroupById(@Valid
+                                                 @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+                                                 @PathVariable int groupId) {
+        GroupDTO groupDTO = iGroupService.getGroupById(groupId);
+        return ResponseEntity.ok(groupDTO);
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
-        Group group = iGroupService.createGroup(groupDTO);
-        return new ResponseEntity<>(group, HttpStatus.CREATED);
+    public ResponseEntity<GroupDTO> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
+        GroupDTO createdGroupDTO = iGroupService.createGroup(groupDTO);
+        return ResponseEntity.ok(createdGroupDTO);
     }
 
-    @PutMapping("/{groupId}")
-    public ResponseEntity<GroupDTO> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
-        GroupDTO group = iGroupService.editByGroupId(groupDTO, groupId);
+    @PutMapping
+    public ResponseEntity<GroupDTO> updateGroup(@Valid @RequestBody GroupDTO groupDTO) {
+        GroupDTO group = iGroupService.editByGroupId(groupDTO);
         return ResponseEntity.ok(group);
     }
 
     @GetMapping("/user/{userId}/groups")
-    public List<Group> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
 
         return iGroupService.getAllGroupsForUser(userId);
     }
 
     @GetMapping("/owner/{userId}/groups")
-    public List<Group> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
 
         return iGroupService.getAllGroupsForOwner(userId);
     }

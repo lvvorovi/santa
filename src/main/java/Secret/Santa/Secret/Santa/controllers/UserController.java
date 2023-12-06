@@ -23,25 +23,28 @@ public class UserController {
     private IUserService iUserService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = iUserService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> userDTOs = iUserService.getAllUsers();
+        return ResponseEntity.ok(userDTOs);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid UserDTO userDTO) {
-        User user = iUserService.createUser(userDTO);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO) {
+        UserDTO createdUserDTO = iUserService.createUser(userDTO);
+        return ResponseEntity.ok(createdUserDTO);
     }
 
     @GetMapping("/{userid}")
-    public ResponseEntity<User> getUserById(@Valid
-                                            @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                            @PathVariable int userid) {
-        User user = null;
-        user = iUserService.findByUserid(userid);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUserById(
+            @Valid
+            @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+            @PathVariable int userid) {
+
+        UserDTO userDTO = iUserService.findByUserid(userid);
+
+        return ResponseEntity.ok(userDTO);
     }
+
 
     @PutMapping
     public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {

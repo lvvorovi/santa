@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +22,25 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepo iUserRepo;
 
     @Override
-    public List<User> getAllUsers() {
-        return iUserRepo.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> users = iUserRepo.findAll();
+
+        return users.stream()
+                .map(userMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public User findByUserid(int userid) {
-        Optional<User> optionalLessor = iUserRepo.findById(userid);
 
-        return optionalLessor.orElseThrow(() -> new EntityNotFoundException("User not found with id " + userid));
+    @Override
+    public UserDTO findByUserid(int userid) {
+        Optional<User> optionalUser = iUserRepo.findById(userid);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return userMapper.toUserDTO(user);
+        }
+
+        throw new EntityNotFoundException("User not found with id " + userid);
     }
 
     @Override
@@ -50,13 +61,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User createUser(UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new IllegalArgumentException("UserDTO cannot be null");
+        }
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-//        user.setGroups(new ArrayList<>());
-        return iUserRepo.save(user);
+        User savedUser = iUserRepo.save(user);
+        return userMapper.toUserDTO(savedUser);
     }
 
     @Override

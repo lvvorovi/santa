@@ -4,6 +4,7 @@ import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,20 +24,33 @@ public class GiftServiceImpl implements IGiftService {
     IGiftRepo iGiftRepo;
 
     @Override
-    public List<Gift> getAllGifts() {
-        return iGiftRepo.findAll();
+    public List<GiftDTO> getAllGifts() {
+        List<Gift> users = iGiftRepo.findAll();
+
+        return users.stream()
+                .map(giftMapper::toGiftDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Gift getGiftById(int giftId) {
+    public GiftDTO getGiftById(int giftId) {
         Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
-        return optionalGift.orElseThrow(() -> new EntityNotFoundException("Gift not found with id " + giftId));
+
+        if (optionalGift.isPresent()) {
+            Gift gift = optionalGift.get();
+            return giftMapper.toGiftDTO(gift);
+        }
+
+        throw new EntityNotFoundException("Gift not found with id " + giftId);
     }
 
     @Override
-    public Gift createGift(GiftDTO giftDTO) {
+    public GiftDTO createGift(GiftDTO giftDTO) {
         if (giftDTO.getPrice() < 0) {
             throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
+        }
+        if (giftDTO == null) {
+            throw new IllegalArgumentException("GiftDTO cannot be null");
         }
 
         Gift gift = new Gift();
@@ -44,43 +59,25 @@ public class GiftServiceImpl implements IGiftService {
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
         gift.setGroup(giftDTO.getGroup());
-
-        return iGiftRepo.save(gift);
+        Gift savedGift = iGiftRepo.save(gift);
+        return giftMapper.toGiftDTO(savedGift);
     }
 
     @Override
-    public GiftDTO updateGift(int giftId, GiftDTO giftDTO) {
-
-/*
-        if (!iGiftRepo.existsById(giftId)) {
-            throw new EntityNotFoundException("Gift not found with id " + giftId);
-        }
-
-        Gift requestEntity = giftMapper.toGift(giftDTO);
-        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
-
-        Gift savedEntity = existingGift.get();
-        savedEntity.setName(requestEntity.getName());
-        savedEntity.setDescription(requestEntity.getDescription());
-        savedEntity.setLink(requestEntity.getLink());
-        savedEntity.setPrice(requestEntity.getPrice());
-        savedEntity.setGroup(requestEntity.getGroup());
-
-        savedEntity = iGiftRepo.save(savedEntity);
-
-        return giftMapper.toGiftDTO(savedEntity);
-*/
+    public GiftDTO updateGift(GiftDTO giftDTO) {
         if (giftDTO == null) {
             throw new IllegalArgumentException("GiftDTO cannot be null");
         }
-        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
-        if (existingGift.isPresent()) {
-            Gift gift = existingGift.get();
-            gift = giftMapper.toGift(giftDTO, gift);
-            iGiftRepo.save(gift);
-            return giftMapper.toGiftDTO(gift);
+        if (giftDTO.getGiftId() == null){
+            throw new IllegalArgumentException("This gift does not have ID");
         }
-        throw new EntityNotFoundException("User not found with id " + giftId);
+        Optional<Gift> existingGift = iGiftRepo.findById(giftDTO.getGiftId());
+        if (existingGift.isPresent()) {
+            Gift gift = giftMapper.toGift(giftDTO);
+            Gift updatedGift = iGiftRepo.save(gift);
+            return giftMapper.toGiftDTO(updatedGift);
+        }
+        throw new EntityNotFoundException("User not found with id " + giftDTO.getGiftId());
     }
 
 

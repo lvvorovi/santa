@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IGroupService {
-    List<Group> getAllGroups();
+    List<GroupDTO> getAllGroups();
 
-    GroupDTO editByGroupId(GroupDTO groupDTO, int groupId);
+    GroupDTO editByGroupId(GroupDTO groupDTO);
 
-    Group createGroup(GroupDTO groupDTO);
+    GroupDTO createGroup(GroupDTO groupDTO);
 
-    List<Group> getAllGroupsForUser(Integer userId);
+    List<GroupDTO> getAllGroupsForUser(Integer userId);
 
-    List<Group> getAllGroupsForOwner(Integer userId);
+    List<GroupDTO> getAllGroupsForOwner(Integer userId);
 
     boolean deleteGroupByGroupId(int groupId);
 
-    Group getGroupById(int groupId);
+    GroupDTO getGroupById(int groupId);
 }

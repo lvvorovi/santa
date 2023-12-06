@@ -6,6 +6,7 @@ import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,34 +31,40 @@ public class GiftController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Gift>> getAllGifts() {
-        List<Gift> gifts = giftService.getAllGifts();
+    public ResponseEntity<List<GiftDTO>> getAllGifts() {
+        List<GiftDTO> gifts = giftService.getAllGifts();
         return new ResponseEntity<>(gifts, HttpStatus.OK);
     }
 
     @GetMapping("/{giftId}")
-    public ResponseEntity<Gift> getGiftById(@PathVariable int giftId) {
-        Gift gift = giftService.getGiftById(giftId);
-        return ResponseEntity.ok(gift);
+    public ResponseEntity<GiftDTO> getGiftById(
+            @Valid
+            @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+            @PathVariable int giftId) {
+        GiftDTO giftDTO = giftService.getGiftById(giftId);
+        return ResponseEntity.ok(giftDTO);
     }
 
     @PostMapping
-    public ResponseEntity<Gift> createGift(@RequestBody @Valid GiftDTO giftDTO) {
-        Gift createdGift = giftService.createGift(giftDTO);
-        return ResponseEntity.ok(createdGift);
+    public ResponseEntity<GiftDTO> createGift(@RequestBody @Valid GiftDTO giftDTO) {
+        GiftDTO createdGiftDTO = giftService.createGift(giftDTO);
+        return ResponseEntity.ok(createdGiftDTO);
     }
 
     @PutMapping("/{giftId}")
-    public ResponseEntity<GiftDTO> updateGift(@PathVariable int giftId, @RequestBody GiftDTO giftDTO) {
+    public ResponseEntity<GiftDTO> updateGift(@RequestBody GiftDTO giftDTO) {
 
-        GiftDTO updatedGift = giftService.updateGift(giftId, giftDTO);
+        GiftDTO updatedGift = giftService.updateGift(giftDTO);
         return new ResponseEntity<>(updatedGift, HttpStatus.OK);
     }
 
     @DeleteMapping("/{giftId}")
-    public ResponseEntity<Void> deleteGift(@PathVariable int giftId) {
-        giftService.deleteGift(giftId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> deleteGift(@PathVariable int giftId) {
+        if (Boolean.TRUE.equals(giftService.deleteGift(giftId))) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.badRequest().body("Delete failed");
     }
 
 }
