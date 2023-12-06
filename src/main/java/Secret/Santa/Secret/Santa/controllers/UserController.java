@@ -43,11 +43,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{userid}")
-    public ResponseEntity<UserDTO> updateUser(@Valid
-                                           @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                           @PathVariable int userid, @RequestBody @Valid UserDTO userDTO) {
-        UserDTO user = iUserService.editByUserId(userDTO, userid);
+    @PutMapping
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {
+        UserDTO user = iUserService.editByUserId(userDTO);
         return ResponseEntity.ok(user);
     }
 

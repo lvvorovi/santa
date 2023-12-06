@@ -33,18 +33,20 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDTO editByUserId(UserDTO userDTO, int userid) {
+    public UserDTO editByUserId(UserDTO userDTO) {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        Optional<User> existingUser = iUserRepo.findById(userid);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            user = userMapper.toUser(userDTO, user);
-            iUserRepo.save(user);
-            return userMapper.toUserDTO(user);
+        if (userDTO.getUserId() == null){
+            throw new IllegalArgumentException("This user does not have ID");
         }
-        throw new EntityNotFoundException("User not found with id " + userid);
+        Optional<User> existingUser = iUserRepo.findById(userDTO.getUserId());
+        if (existingUser.isPresent()) {
+            User user = userMapper.toUser(userDTO);
+            User updatedUser = iUserRepo.save(user);
+            return userMapper.toUserDTO(updatedUser);
+        }
+        throw new EntityNotFoundException("User not found with id " + userDTO.getUserId());
     }
 
     @Override

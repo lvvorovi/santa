@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupDTO {
-    private int groupId;
+    private Integer groupId;
     private String name;
     private LocalDate eventDate;
     private double budget;
