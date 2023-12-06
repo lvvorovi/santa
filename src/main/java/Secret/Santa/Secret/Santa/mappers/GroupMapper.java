@@ -16,7 +16,7 @@ public class GroupMapper {
         this.userUtils = userUtils;
     }
 
-    public static Group toGroup(GroupDTO groupDTO) {
+    public Group toGroup(GroupDTO groupDTO) {
 
         Group group = new Group();
         group.setName(groupDTO.getName());
@@ -31,27 +31,11 @@ public class GroupMapper {
         return group;
     }
 
-    public static Group toGroup(GroupDTO groupDTO, Group group) {
-        if (group == null) {
-            group = new Group();
-        }
-        group.setName(groupDTO.getName());
-        group.setEventDate(groupDTO.getEventDate());
-        group.setBudget(groupDTO.getBudget());
-        group.setUser(groupDTO.getUser());
-        group.setGifts(groupDTO.getGifts());
-        group.setGeneratedSanta(groupDTO.getGeneratedSanta());
-        User owner = userUtils.getUserById(groupDTO.getOwnerId());
 
-        group.setOwner(owner);
-
-        return group;
-    }
-
-    public static GroupDTO toGroupDTO(Group group) {
+    public GroupDTO toGroupDTO(Group group) {
 
         GroupDTO groupDTO = new GroupDTO();
-
+        groupDTO.setGroupId(group.getGroupId());
         groupDTO.setName(group.getName());
         groupDTO.setEventDate(group.getEventDate());
         groupDTO.setBudget(group.getBudget());

@@ -7,6 +7,7 @@ import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,10 @@ public class GroupController {
     private IGroupService iGroupService;
 
     @GetMapping
-    public ResponseEntity<List<Group>> getAllGroups() {
+    public ResponseEntity<List<GroupDTO>> getAllGroups() {
         try {
-            List<Group> groups = iGroupService.getAllGroups();
-            return new ResponseEntity<>(groups, HttpStatus.OK);
+            List<GroupDTO> groupsDTOs = iGroupService.getAllGroups();
+            return new ResponseEntity<>(groupsDTOs, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Failed to get all groups", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,10 +40,12 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<Group> getGroupById(@PathVariable int groupId) {
+    public ResponseEntity<GroupDTO> getGroupById(@Valid
+                                                     @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+                                                     @PathVariable int groupId) {
         try {
-            Group group = iGroupService.getGroupById(groupId);
-            return ResponseEntity.ok(group);
+            GroupDTO groupDTO = iGroupService.getGroupById(groupId);
+            return ResponseEntity.ok(groupDTO);
         } catch (Exception e) {
             logger.error("Failed to get group with ID: {}", groupId, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,21 +53,21 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
+    public ResponseEntity<GroupDTO> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
         try {
-            Group group = iGroupService.createGroup(groupDTO);
-            return new ResponseEntity<>(group, HttpStatus.CREATED);
+            GroupDTO createdGroupDTO = iGroupService.createGroup(groupDTO);
+            return new ResponseEntity<>(createdGroupDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Failed to create group", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/{groupId}")
-    public ResponseEntity<GroupDTO> updateGroup(@PathVariable int groupId, @Valid @RequestBody GroupDTO groupDTO) {
+    @PutMapping
+    public ResponseEntity<GroupDTO> updateGroup(@Valid @RequestBody GroupDTO groupDTO) {
         try {
-            GroupDTO group = iGroupService.editByGroupId(groupDTO, groupId);
-            return ResponseEntity.ok(group);
+            GroupDTO editedGroupDTO = iGroupService.editByGroupId(groupDTO);
+            return ResponseEntity.ok(editedGroupDTO);
         } catch (Exception e) {
             logger.error("Failed to update group with ID: {}", groupId, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -72,7 +75,7 @@ public class GroupController {
     }
 
     @GetMapping("/user/{userId}/groups")
-    public List<Group> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
         try {
             return iGroupService.getAllGroupsForUser(userId);
         } catch (Exception e) {
@@ -82,7 +85,7 @@ public class GroupController {
     }
 
     @GetMapping("/owner/{userId}/groups")
-    public List<Group> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
         try {
             return iGroupService.getAllGroupsForOwner(userId);
         } catch (Exception e) {

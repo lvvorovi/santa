@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Validated
 public class GroupDTO {
-    private int groupId;
+    private Integer groupId;
     @NotBlank(message = "Name is required")
     private String name;
     @NotNull(message = "Event date is required")

@@ -6,6 +6,7 @@ import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +42,13 @@ public class GiftServiceImpl implements IGiftService {
     }
 
     @Override
-    public List<Gift> getAllGifts() {
+    public List<GiftDTO> getAllGifts() {
         try {
-            return iGiftRepo.findAll();
+            List<Gift> users = iGiftRepo.findAll();
+
+            return users.stream()
+                    .map(giftMapper::toGiftDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving all gifts", e);
             throw e;
@@ -50,30 +56,47 @@ public class GiftServiceImpl implements IGiftService {
     }
 
     @Override
-    public Gift getGiftById(int giftId) {
+    public GiftDTO getGiftById(int giftId) {
         try {
-            return iGiftRepo.findById(giftId)
+
+            Gift gift = iGiftRepo.findById(giftId)
                     .orElseThrow(() -> new RuntimeException("Gift not found with id: " + giftId));
+            return giftMapper.toGiftDTO(gift);
         } catch (Exception e) {
             logger.error("Failed to retrieve gift with ID: {}", giftId, e);
             throw e;
         }
     }
+    @Override
+    public GiftDTO getGiftById(int giftId) {
+        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
+
+        if (optionalGift.isPresent()) {
+            Gift gift = optionalGift.get();
+            return giftMapper.toGiftDTO(gift);
+        }
+
+        throw new EntityNotFoundException("Gift not found with id " + giftId);
+    }
 
     @Override
-    public Gift createGift(Integer userId, GiftDTO giftDTO) {
+    public GiftDTO createGift(GiftDTO giftDTO) {
         try {
             if (giftDTO.getPrice() < 0) {
                 throw new SantaValidationException("Price cannot be negative", "price", "NegativeValue", String.valueOf(giftDTO.getPrice()));
+            }
+            if (giftDTO == null) {
+                throw new IllegalArgumentException("GiftDTO cannot be null");
             }
             Group group = groupUtils.getGroupById(giftDTO.getGroupId());
             if (giftDTO.getPrice() > group.getBudget()) {
                 throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
             }
 
-            giftDTO.setCreatedBy(userId);
+            //giftDTO.setCreatedBy(userId);
             Gift gift = giftMapper.toGift(giftDTO);
-            return iGiftRepo.save(gift);
+            Gift savedGift = iGiftRepo.save(gift);
+            return giftMapper.toGiftDTO(savedGift);
         } catch (Exception e) {
             logger.error("Error creating gift", e);
             throw e;
@@ -81,8 +104,10 @@ public class GiftServiceImpl implements IGiftService {
     }
 
     @Override
-    public GiftDTO updateGift(int giftId, GiftDTO giftDTO) {
-
+    public GiftDTO updateGift(GiftDTO giftDTO) {
+        if (giftDTO == null) {
+            throw new IllegalArgumentException("GiftDTO cannot be null");
+        }
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         if (giftDTO.getPrice() > group.getBudget()) {
             throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
@@ -91,14 +116,16 @@ public class GiftServiceImpl implements IGiftService {
         if (giftDTO == null) {
             throw new IllegalArgumentException("GiftDTO cannot be null");
         }
-        Optional<Gift> existingGift = iGiftRepo.findById(giftId);
-        if (existingGift.isPresent()) {
-            Gift gift = existingGift.get();
-            gift = giftMapper.toGift(giftDTO, gift);
-            iGiftRepo.save(gift);
-            return giftMapper.toGiftDTO(gift);
+        if (giftDTO.getGiftId() == null){
+            throw new IllegalArgumentException("This gift does not have ID");
         }
-        throw new EntityNotFoundException("User not found with id " + giftId);
+        Optional<Gift> existingGift = iGiftRepo.findById(giftDTO.getGiftId());
+        if (existingGift.isPresent()) {
+            Gift gift = giftMapper.toGift(giftDTO);
+            Gift updatedGift = iGiftRepo.save(gift);
+            return giftMapper.toGiftDTO(updatedGift);
+        }
+        throw new EntityNotFoundException("User not found with id " + giftDTO.getGiftId());
     }
 
 
