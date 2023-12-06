@@ -3,7 +3,6 @@ package Secret.Santa.Secret.Santa.services.impl;
 import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
-import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor
@@ -42,9 +42,14 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public List<Group> getAllGroups() {
+    public List<GroupDTO> getAllGroups() {
         try {
-            return groupRepo.findAll();
+            List<Group> groups = groupRepo.findAll();
+
+            return groups.stream()
+                    .map(groupMapper::toGroupDTO)
+                    .collect(Collectors.toList());
+
         } catch (Exception e) {
             logger.error("Failed to retrieve all groups", e);
             throw e;
@@ -52,10 +57,15 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public Group getGroupById(int groupId) {
+    public GroupDTO getGroupById(int groupId) {
         try {
-            return groupRepo.findById(groupId)
-                    .orElseThrow(() -> new RuntimeException("Group not found with id: " + groupId));
+            Optional<Group> optionalGroup = groupRepo.findById(groupId);
+
+            if (optionalGroup.isPresent()) {
+                Group group = optionalGroup.get();
+                return groupMapper.toGroupDTO(group);
+            }
+            throw new EntityNotFoundException("Group not found with id " + groupId);
         } catch (Exception e) {
             logger.error("Failed to retrieve group with ID: {}", groupId, e);
             throw e;
@@ -63,70 +73,80 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public GroupDTO editByGroupId(GroupDTO groupDTO, int groupId) {
-//        Optional<Group> optionalGroup = groupRepo.findById(groupId);
-//        if (optionalGroup.isPresent()) {
-//            Group group = optionalGroup.get();
-//            if (Objects.nonNull(groupDTO.getName())) {
-//                group.setName(groupDTO.getName());
-//            }
-//            if (Objects.nonNull(groupDTO.getEventDate())) {
-//                group.setEventDate(groupDTO.getEventDate());
-//            }
-//            group.setBudget(groupDTO.getBudget());
-//            return groupRepo.save(group);
-//        }
-//        throw new EntityNotFoundException(" not found with id " + groupId);
-
+    public GroupDTO editByGroupId(GroupDTO groupDTO) {
         if (groupDTO == null) {
             throw new IllegalArgumentException("GroupDTO cannot be null");
         }
-        Optional<Group> existingGroup = groupRepo.findById(groupId);
-        if (existingGroup.isPresent()) {
-            Group group = existingGroup.get();
-            group = groupMapper.toGroup(groupDTO, group);
-            groupRepo.save(group);
-            return groupMapper.toGroupDTO(group);
+        if (groupDTO.getGroupId() == null) {
+            throw new IllegalArgumentException("This user does not have ID");
         }
-        throw new EntityNotFoundException("User not found with id " + groupId);
+        Optional<Group> existingGroup = groupRepo.findById(groupDTO.getGroupId());
+        if (existingGroup.isPresent()) {
+            Group group = groupMapper.toGroup(groupDTO);
+            Group updatedGroup = groupRepo.save(group);
+            return groupMapper.toGroupDTO(updatedGroup);
+        }
+        throw new EntityNotFoundException("User not found with id " + groupDTO.getGroupId());
     }
 
     @Override
-    public Group createGroup(GroupDTO groupDTO) {
-
+    public GroupDTO createGroup(GroupDTO groupDTO) {
+        if (groupDTO == null) {
+            throw new IllegalArgumentException("GroupDTO cannot be null");
+        }
         try {
-            Group group = new Group();
-            group.setName(groupDTO.getName());
-            group.setEventDate(groupDTO.getEventDate());
-            group.setBudget(groupDTO.getBudget());
-            return groupRepo.save(group);
+            Group savedGroup = groupRepo.save(groupMapper.toGroup(groupDTO));
+            return groupMapper.toGroupDTO(savedGroup);
+
         } catch (Exception e) {
             logger.error("Failed to create group", e);
             throw e;
         }
     }
 
+    //    @Override
+//    public List<Group> getAllGroupsForUser(Integer userId) {
+//        User user = userUtils.getUserById(userId);
+//        return groupRepo.findByUserContaining(user);
+//    }
     @Override
-    public List<Group> getAllGroupsForUser(Integer userId) {
+    public List<GroupDTO> getAllGroupsForUser(Integer userId) {
         try {
             User user = userUtils.getUserById(userId);
-            return groupRepo.findByUserContaining(user);
+            List<Group> groups = groupRepo.findByUserContaining(user);
+
+            // Assuming groupMapper is a mapper class you have
+            return groups.stream()
+                    .map(groupMapper::toGroupDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving all groups for user with ID: {}", userId, e);
             throw e;
         }
     }
 
+    //
+//    @Override
+//    public List<Group> getAllGroupsForOwner(Integer userId) {
+//        User user = userUtils.getUserById(userId);
+//        return groupRepo.findByOwner(user);
+//    }
     @Override
-    public List<Group> getAllGroupsForOwner(Integer userId) {
+    public List<GroupDTO> getAllGroupsForOwner(Integer userId) {
         try {
             User user = userUtils.getUserById(userId);
-            return groupRepo.findByOwner(user);
+            List<Group> groups = groupRepo.findByOwner(user);
+
+            // Assuming groupMapper is a mapper class you have
+            return groups.stream()
+                    .map(groupMapper::toGroupDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving all groups for owner with ID: {}", userId, e);
             throw e;
         }
     }
+
 
     @Override
     public boolean deleteGroupByGroupId(int groupId) {
@@ -145,7 +165,7 @@ public class GroupServiceImpl implements IGroupService {
         }
     }
 
-    public Group addUserToGroup(int groupId, int userId) {
+    public GroupDTO addUserToGroup(int groupId, int userId) {
         var existingGroup = groupRepo.findById(groupId)
                 .orElseThrow(() -> new SantaValidationException("Group does not exist",
                         "id", "Group not found", String.valueOf(groupId)));
@@ -161,8 +181,8 @@ public class GroupServiceImpl implements IGroupService {
         List<User> existingUserList = existingGroup.getUser();
         existingUserList.add(existingUser);
         existingGroup.setUser(existingUserList);
-
-        return groupRepo.save(existingGroup);
+        GroupDTO savedGroupDTO = groupMapper.toGroupDTO(groupRepo.save(existingGroup));
+        return savedGroupDTO;
     }
 
 

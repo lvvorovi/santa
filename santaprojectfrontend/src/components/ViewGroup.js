@@ -9,23 +9,26 @@ export function ViewGroup() {
   const [newUserName, setNewUserName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [users, setUsers] = useState([]);
-  const [generated, setGenerated] = useState(false);
   const [group, setGroup] = useState({
+    groupId: "",
     name: "",
     eventDate: "",
     budget: "",
     user: [],
     gifts: [],
+    ownerId: "",
     // generatedSanta: [],
   });
 
   const fetchGroups = async () => {
-    fetch("/api/v1/groups/" + Number(params.id))
+
+    fetch("/api/v1/groups/" + parseInt(params.groupId))
       .then((response) => response.json())
       .then(setGroup);
   };
 
   const fetchUsers = async () => {
+
     fetch("/api/v1/users")
       .then((response) => response.json())
       .then(setUsers);
@@ -38,6 +41,7 @@ export function ViewGroup() {
   const handleNewUserInputChange = (e) => {
     setNewUserName(e.target.value);
   };
+
 
   //   const fetchFilteredUsers = async () => {
   //     fetch(`/api/v1/users/name-filter/${nameText}?`)
@@ -65,6 +69,7 @@ export function ViewGroup() {
     }
   };
 
+  
   const handleAddUser = async (selectedUser) => {
     setNewUserName(selectedUser.name);
     setFilteredUsers([]);
@@ -108,17 +113,12 @@ export function ViewGroup() {
   };
 
 
-  const handleGenerateButtonClick = async () => {
-    // Perform generation logic here
-
-    // Simulate a delay (replace this with your actual generation logic)
-    setGenerated(true);
-  };
 
   useEffect(() => {
     fetchGroups();
     fetchUsers();
-  }, [params]);
+    console.log("groupId:", typeof params.groupId);
+  }, [params.groupId]);
 
   useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();
@@ -145,22 +145,23 @@ export function ViewGroup() {
               <a>
                 <h3>Participants:</h3>
                 <Icon name="user" />
-                {group.user &&
-                  group.user.map((user) => (
-                    <Button
-                      className="button"
-                      content="Standard"
-                      basic
-                      key={user.id}
-                    >
-                      {user.name}
-                    </Button>
-                  ))}
-                {addingUser ? (
+                {group.user.map((user) => (
+                  <Button
+                    className="button"
+                    content="Standard"
+                    basic
+                    key={user.id}
+
+                  >
+                    {user.name}
+                  </Button>
+                ))}
+                {group.ownerId && group.ownerId === parseInt(params.userId) ? (
+                addingUser ? (
                   <div>
                     <Input
                       placeholder="Enter name"
-                      value={newUserName}
+                      value={newUserName} // Change 'nameText' to 'newUserName'
                       onChange={handleNewUserInputChange}
                       onKeyPress={(e) => {
                         if (e.key === "Enter") {
@@ -168,6 +169,7 @@ export function ViewGroup() {
                         }
                       }}
                     />
+
                     <div>
                       {filteredUsers.map((user) => (
                         <div key={user.id} onClick={() => handleAddUser(user)}>
@@ -186,39 +188,34 @@ export function ViewGroup() {
                   >
                     Add new
                   </Button>
-                )}
+                )) : null}
               </a>
             </Card.Content>
-            {/* <button className="generate-button" size="large">
-              GENERATE
-            </button> */}
-               <button
-              className="generate-button"
-              size="large"
-              onClick={handleGenerateButtonClick}
-              disabled={generated}
-            >
-              {generated ? "You are secret santa to: SOMEONE" : "GENERATE"}
-            </button>
+            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
+                <button className="generate-button" size="large">
+                  GENERATE
+                </button>
+              ) : null}
+
             {/* <Card.Content extra>
-                <a>
-                  <h3>Participants:</h3>
-                  <Icon name="user" />
-                  {group.gifts.map((gift) => (
-                    <Button
-                      className="button"
-                      content="Standard"
-                      basic
-                      key={gift.id}
-                    >
-                      {gift.name},
-                    </Button>
-                  ))}
-                  <Button content="Standard" basic className="button">
-                    Add new{" "}
+              <a>
+                <h3>Participants:</h3>
+                <Icon name="user" />
+                {group.gifts.map((gift) => (
+                  <Button
+                    className="button"
+                    content="Standard"
+                    basic
+                    key={gift.id}
+                  >
+                    {gift.name},
                   </Button>
-                </a>
-              </Card.Content> */}
+                ))}
+                <Button content="Standard" basic className="button">
+                  Add new{" "}
+                </Button>
+              </a>
+            </Card.Content> */}
           </Card>
         </div>
       </div>

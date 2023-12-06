@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Validated
 public class GroupDTO {
-    private int groupId;
+    private Integer groupId;
     @NotBlank(message = "Name is required")
     private String name;
     @NotNull(message = "Event date is required")
@@ -32,5 +32,7 @@ public class GroupDTO {
     private List<User> user;
     private List<Gift> gifts;
     private List<GenerateSanta> generatedSanta;
-    private User owner;
+    //    @NotBlank(message = "Owner is required")
+    private Integer ownerId;
+//    private User owner;
 }
