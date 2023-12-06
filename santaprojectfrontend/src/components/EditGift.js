@@ -33,8 +33,8 @@ export function EditGift() {
             setDescription(giftData.description);
             setLink(giftData.link);
             setPrice(giftData.price);
-            setCreatedBy(giftData.createdBy.createdBy);
-            setGroup(giftData.group.groupId);
+            setCreatedBy(giftData.createdBy);
+            setGroup(giftData.groupId);
             
         } catch (error) {
             console.error("Error fetching gift details:", error);

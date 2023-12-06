@@ -14,21 +14,24 @@ export function CreateGift() {
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [price, setPrice] = useState("");
-  const [createdBy, setCreatedBy] = useState("");
+  const [createdBy, setCreatedBy] = useState(parseInt(params.id));
   const [groupId, setGroupId] = useState("");
+  const [giftId, setGiftId] = useState("");
   const [users, setUsers] = useState([]);
   const [groupList, setGroupList] = useState([]);
 
   const createGift = () => {
-    fetch(`/api/v1/gifts/${params.id}`, { 
+    fetch(`/api/v1/gifts`, { 
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify({
+        giftId,
         name,
         description,
         link,
         price,
         groupId,
+        createdBy,
       }),
     })
       .then((response) => {

@@ -12,7 +12,7 @@ import { LoginPage } from "./components/LoginPage";
 import { Navbar } from "./components/Navbar";
 import ChatRoom from "./components/ChatRoom";
 
-const apiUrl = "http://localhost:8080";
+// const apiUrl = "http://localhost:8085";
 
 function App() {
   return (
@@ -38,4 +38,4 @@ function App() {
 }
 
 export default App;
-export { apiUrl };
+// export { apiUrl };
