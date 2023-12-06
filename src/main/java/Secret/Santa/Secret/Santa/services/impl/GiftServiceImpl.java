@@ -71,14 +71,8 @@ public class GiftServiceImpl implements IGiftService {
                 throw new SantaValidationException("Price cannot be bigger than group budget", "price", "BiggerThanBudget", String.valueOf(giftDTO.getPrice()));
             }
 
-            Gift gift = new Gift();
-            gift.setName(giftDTO.getName());
-            gift.setDescription(giftDTO.getDescription());
-            gift.setLink(giftDTO.getLink());
-            gift.setPrice(giftDTO.getPrice());
-            User user = userUtils.getUserById(userId);
-            gift.setCreatedBy(user);
-            gift.setGroup(group);
+            giftDTO.setCreatedBy(userId);
+            Gift gift = giftMapper.toGift(giftDTO);
             return iGiftRepo.save(gift);
         } catch (Exception e) {
             logger.error("Error creating gift", e);
