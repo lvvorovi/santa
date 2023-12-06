@@ -67,17 +67,17 @@ public class GiftServiceImpl implements IGiftService {
             throw e;
         }
     }
-    @Override
-    public GiftDTO getGiftById(int giftId) {
-        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
-
-        if (optionalGift.isPresent()) {
-            Gift gift = optionalGift.get();
-            return giftMapper.toGiftDTO(gift);
-        }
-
-        throw new EntityNotFoundException("Gift not found with id " + giftId);
-    }
+//    @Override
+//    public GiftDTO getGiftById(int giftId) {
+//        Optional<Gift> optionalGift = iGiftRepo.findById(giftId);
+//
+//        if (optionalGift.isPresent()) {
+//            Gift gift = optionalGift.get();
+//            return giftMapper.toGiftDTO(gift);
+//        }
+//
+//        throw new EntityNotFoundException("Gift not found with id " + giftId);
+//    }
 
     @Override
     public GiftDTO createGift(GiftDTO giftDTO) {
@@ -116,7 +116,7 @@ public class GiftServiceImpl implements IGiftService {
         if (giftDTO == null) {
             throw new IllegalArgumentException("GiftDTO cannot be null");
         }
-        if (giftDTO.getGiftId() == null){
+        if (giftDTO.getGiftId() == null) {
             throw new IllegalArgumentException("This gift does not have ID");
         }
         Optional<Gift> existingGift = iGiftRepo.findById(giftDTO.getGiftId());

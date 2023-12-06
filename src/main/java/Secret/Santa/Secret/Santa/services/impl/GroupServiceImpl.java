@@ -3,7 +3,6 @@ package Secret.Santa.Secret.Santa.services.impl;
 import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
-import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
@@ -65,7 +64,9 @@ public class GroupServiceImpl implements IGroupService {
             if (optionalGroup.isPresent()) {
                 Group group = optionalGroup.get();
                 return groupMapper.toGroupDTO(group);
-            } } catch (Exception e) {
+            }
+            throw new EntityNotFoundException("Group not found with id " + groupId);
+        } catch (Exception e) {
             logger.error("Failed to retrieve group with ID: {}", groupId, e);
             throw e;
         }
@@ -168,7 +169,7 @@ public class GroupServiceImpl implements IGroupService {
         }
     }
 
-    public Group addUserToGroup(int groupId, int userId) {
+    public GroupDTO addUserToGroup(int groupId, int userId) {
         var existingGroup = groupRepo.findById(groupId)
                 .orElseThrow(() -> new SantaValidationException("Group does not exist",
                         "id", "Group not found", String.valueOf(groupId)));
@@ -184,8 +185,8 @@ public class GroupServiceImpl implements IGroupService {
         List<User> existingUserList = existingGroup.getUser();
         existingUserList.add(existingUser);
         existingGroup.setUser(existingUserList);
-
-        return groupRepo.save(existingGroup);
+        GroupDTO savedGroupDTO = groupMapper.toGroupDTO(groupRepo.save(existingGroup));
+        return savedGroupDTO;
     }
 
 

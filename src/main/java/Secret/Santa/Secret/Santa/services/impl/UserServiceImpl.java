@@ -55,12 +55,13 @@ public class UserServiceImpl implements IUserService {
             throw e;
         }
     }
+
     @Override
     public UserDTO editByUserId(UserDTO userDTO) {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        if (userDTO.getUserId() == null){
+        if (userDTO.getUserId() == null) {
             throw new IllegalArgumentException("This user does not have ID");
         }
         Optional<User> existingUser = iUserRepo.findById(userDTO.getUserId());
@@ -111,7 +112,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public List<UserDTO> getUsersByNameContaining(String nameText) {
         return iUserRepo.findByNameContainingIgnoreCase(nameText).stream()
-                .map(UserMapper::toUserDTO).collect(Collectors.toList());
+                .map(userMapper::toUserDTO).collect(Collectors.toList());
     }
 
 

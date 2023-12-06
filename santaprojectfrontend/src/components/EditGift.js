@@ -14,6 +14,7 @@ export function EditGift() {
     const [price, setPrice] = useState("");
     const [createdBy, setCreatedBy] = useState("");
     const [groupId, setGroup] = useState("");
+    const [giftId, setGiftId] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,23 +28,26 @@ export function EditGift() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const giftData = await response.json();
+            setGiftId(giftData.giftId);
             setName(giftData.name);
             setDescription(giftData.description);
             setLink(giftData.link);
             setPrice(giftData.price);
-            setCreatedBy(giftData.createdBy.userId);
+            setCreatedBy(giftData.createdBy.createdBy);
             setGroup(giftData.group.groupId);
+            
         } catch (error) {
             console.error("Error fetching gift details:", error);
         }
     };
 
     const editGift = () => {
-        // console.log("group:", group);
-        fetch(`/api/v1/gifts/${params.giftId}`, {
+         console.log("group:", groupId);
+        fetch(`/api/v1/gifts`, {
             method: "PUT",
             headers: JSON_HEADERS,
             body: JSON.stringify({
+                giftId,
                 name,
                 description,
                 link,

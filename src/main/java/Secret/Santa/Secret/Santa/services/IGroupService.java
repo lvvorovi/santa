@@ -23,7 +23,7 @@ public interface IGroupService {
 
     GroupDTO getGroupById(int groupId);
 
-    Group addUserToGroup(int groupId, int userId);
+    GroupDTO addUserToGroup(int groupId, int userId);
 
     List<User> getAllUsersById(int groupId);
 }

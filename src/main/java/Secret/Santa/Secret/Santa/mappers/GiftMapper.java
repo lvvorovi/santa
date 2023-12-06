@@ -18,7 +18,7 @@ public class GiftMapper {
         this.userUtils = userUtils;
     }
 
-    public static Gift toGift(GiftDTO giftDTO) {
+    public Gift toGift(GiftDTO giftDTO) {
 
         Gift gift = new Gift();
         gift.setGiftId(giftDTO.getGiftId());

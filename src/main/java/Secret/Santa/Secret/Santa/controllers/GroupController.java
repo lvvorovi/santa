@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static Secret.Santa.Secret.Santa.mappers.GroupMapper.toGroupDTO;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -41,8 +40,8 @@ public class GroupController {
 
     @GetMapping("/{groupId}")
     public ResponseEntity<GroupDTO> getGroupById(@Valid
-                                                     @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                                     @PathVariable int groupId) {
+                                                 @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+                                                 @PathVariable int groupId) {
         try {
             GroupDTO groupDTO = iGroupService.getGroupById(groupId);
             return ResponseEntity.ok(groupDTO);
@@ -69,7 +68,7 @@ public class GroupController {
             GroupDTO editedGroupDTO = iGroupService.editByGroupId(groupDTO);
             return ResponseEntity.ok(editedGroupDTO);
         } catch (Exception e) {
-            logger.error("Failed to update group with ID: {}", groupId, e);
+            logger.error("Failed to update group with ID: {}", groupDTO.getGroupId(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -112,9 +111,9 @@ public class GroupController {
     @PostMapping("/{groupId}/users/{userId}/newUsers")
     public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @Valid @PathVariable int userId) {
 
-        var updatedGroup = iGroupService.addUserToGroup(groupId, userId );
+        var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
 
-        return ok(toGroupDTO(updatedGroup));
+        return ok(updatedGroup);
     }
 
     @GetMapping(value = "/{groupId}/users")

@@ -46,8 +46,8 @@ public class GiftController {
 
     @GetMapping("/{giftId}")
     public ResponseEntity<GiftDTO> getGiftById(@Valid
-                                                   @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                                   @PathVariable int giftId) {
+                                               @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
+                                               @PathVariable int giftId) {
         try {
             GiftDTO giftDTO = giftService.getGiftById(giftId);
             return ResponseEntity.ok(giftDTO);
@@ -74,7 +74,7 @@ public class GiftController {
             GiftDTO updatedGiftDTO = giftService.updateGift(giftDTO);
             return new ResponseEntity<>(updatedGiftDTO, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error updating gift with ID: {}", e);
+            logger.error("Error updating gift with ID: {}", giftDTO.getGiftId(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
