@@ -96,9 +96,8 @@ public class GroupServiceImpl implements IGroupService {
 
         try {
             Group group = new Group();
-            group.setName(groupDTO.getName());
-            group.setEventDate(groupDTO.getEventDate());
-            group.setBudget(groupDTO.getBudget());
+            group = groupMapper.toGroup(groupDTO);
+
             return groupRepo.save(group);
         } catch (Exception e) {
             logger.error("Failed to create group", e);

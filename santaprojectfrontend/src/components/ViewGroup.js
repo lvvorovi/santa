@@ -24,7 +24,6 @@ export function ViewGroup() {
     fetch("/api/v1/groups/" + params.groupId)
       .then((response) => response.json())
       .then(setGroup);
-    console.log("group:", group);
   };
 
   const fetchUsers = async () => {
@@ -42,9 +41,6 @@ export function ViewGroup() {
     setNewUserName(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("Updated group:", group); // This log will show the updated group value
-  }, [group]);
 
   //   const fetchFilteredUsers = async () => {
   //     fetch(`/api/v1/users/name-filter/${nameText}?`)
@@ -114,9 +110,6 @@ export function ViewGroup() {
   useEffect(() => {
     fetchGroups();
     fetchUsers();
-    console.log("group:", group);
-    console.log("groupId:", params.groupId);
-    console.log("userId:", params.userId);
   }, [params.groupId]);
 
   useEffect(() => {

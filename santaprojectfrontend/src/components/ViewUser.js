@@ -69,6 +69,10 @@ export function ViewUser() {
     console.log(`Card clicked for gift ID ${userId}`);
     navigate(`/create/gift/${userId}`);
   };
+  const handleCreateGroupClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/group/${userId}`);
+  };
 
   useEffect(() => {
     fetchUser();
@@ -105,9 +109,7 @@ export function ViewUser() {
             <Button
               color="blue"
               className="controls"
-              onClick={() => navigate(`/create/group/${params.id}`)}
-              // as={Link}
-              // to="/create/group/"
+              onClick={() => handleCreateGroupClick(params.id)}
             >
               Create Group
             </Button>

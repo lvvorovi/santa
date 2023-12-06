@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Icon } from "semantic-ui-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./SecretSanta.css";
 
 const JSON_HEADERS = {
@@ -8,11 +8,13 @@ const JSON_HEADERS = {
 };
 
 export function CreateGroup() {
+  const params = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [budget, setBudget] = useState("");
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState("");
+  const [ownerId, setOwnerId] = useState(Number(params.id));
   const [userList, setUserList] = useState([]);
 
   const fetchUsers = async () => {
@@ -44,11 +46,13 @@ export function CreateGroup() {
 
   const createGroup = () => {
     console.log("Selected Users:", user);
+    console.log("Owner:", ownerId);
     const requestBody = {
       name,
       eventDate,
       budget,
       user,
+      ownerId,
     };
     console.log("Request Body:", JSON.stringify(requestBody));
 
@@ -56,7 +60,7 @@ export function CreateGroup() {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify(requestBody),
-    }).then(() => navigate("/"));
+    }).then(() => navigate(`/users/${params.id}`));
   };
 
   useEffect(() => {
@@ -111,7 +115,7 @@ export function CreateGroup() {
             multiple
           />
 
-          <Button icon basic labelPosition="left" className="" as={Link} to="/">
+          <Button icon basic labelPosition="left" className="" as={Link} to={`/users/${params.id}`}>
             <Icon name="arrow left" />
             Back
           </Button>
