@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @Validated
@@ -25,13 +27,13 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = iUserService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ok(users);
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody @Valid UserDTO userDTO) {
         User user = iUserService.createUser(userDTO);
-        return ResponseEntity.ok(user);
+        return ok(user);
     }
 
     @GetMapping("/{userid}")
@@ -40,7 +42,7 @@ public class UserController {
                                             @PathVariable int userid) {
         User user = null;
         user = iUserService.findByUserid(userid);
-        return ResponseEntity.ok(user);
+        return ok(user);
     }
 
     @PutMapping("/{userid}")
@@ -48,7 +50,7 @@ public class UserController {
                                            @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
                                            @PathVariable int userid, @RequestBody @Valid UserDTO userDTO) {
         User user = iUserService.editByUserId(userDTO, userid);
-        return ResponseEntity.ok(user);
+        return ok(user);
     }
 
     @DeleteMapping("/{userid}")
@@ -59,6 +61,18 @@ public class UserController {
         }
 
         return ResponseEntity.badRequest().body("Delete failed");
+    }
+
+//    @GetMapping(path = "name-filter/{nameText}")
+//    @ResponseBody
+//    public List<UserDTO> getUsersByNameContaining(@PathVariable String nameText) {
+//        return iUserService.getUsersByNameContaining(nameText);
+//    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUsersByName(@RequestParam String name) {
+        List<UserDTO> matchingUsers = iUserService.getUsersByNameContaining(name);
+        return ok(matchingUsers);
     }
 
 }

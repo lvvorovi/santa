@@ -21,10 +21,7 @@ public class GroupDTO {
     private LocalDate eventDate;
     private double budget;
     private List<User> user;
-
     private List<Gift> gifts;
-
     private List<GenerateSanta> generatedSanta;
-
     private User owner;
 }

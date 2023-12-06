@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.mappers.UserMapper;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
@@ -7,11 +8,13 @@ import Secret.Santa.Secret.Santa.services.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -63,6 +66,12 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean deleteUserByUserid(int userid) {
         return false;
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> getUsersByNameContaining(String nameText) {
+        return iUserRepo.findByNameContainingIgnoreCase(nameText).stream()
+                .map(UserMapper::toUserDTO).collect(Collectors.toList());
     }
 
 

@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface IGiftRepo extends JpaRepository<Gift, Integer> {
 
-//    @Query("SELECT g FROM Gift g WHERE g.created_by = :userId")
-//    List<Gift> findByCreatedBy(@Param("userId") int userId);
     List<Gift> findByCreatedBy(int createdBy);
 
 

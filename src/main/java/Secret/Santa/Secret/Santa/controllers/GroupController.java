@@ -2,6 +2,7 @@ package Secret.Santa.Secret.Santa.controllers;
 
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
+import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.services.IGroupService;
@@ -68,7 +69,7 @@ public class GroupController {
     @PostMapping("/{groupId}/users/{userId}/newUsers")
     public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @Valid @PathVariable int userId) {
 
-        var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
+        var updatedGroup = iGroupService.addUserToGroup(groupId, userId );
 
         return ok(toGroupDTO(updatedGroup));
     }
