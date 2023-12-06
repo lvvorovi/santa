@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
     public User toUser(UserDTO userDTO) {
         User user = new User();
-        user.setUserId(userDTO.getUserId());
+        if (userDTO.getUserId() != null) {
+            user.setUserId(userDTO.getUserId());
+        }
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword((userDTO.getPassword()));
