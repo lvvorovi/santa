@@ -30,7 +30,6 @@ public class GiftMapper {
         gift.setPrice(giftDTO.getPrice());
         User user = userUtils.getUserById(giftDTO.getCreatedBy());
         gift.setCreatedBy(user);
-
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         gift.setGroup(group);
 
@@ -41,18 +40,15 @@ public class GiftMapper {
     public GiftDTO toGiftDTO(Gift gift) {
 
         GiftDTO giftDTO = new GiftDTO();
-        giftDTO.setGiftId(gift.getGiftId());
+        if (gift.getGiftId() != null) {
+            giftDTO.setGiftId(gift.getGiftId());
+        }
         giftDTO.setName(gift.getName());
         giftDTO.setDescription(gift.getDescription());
         giftDTO.setLink(gift.getLink());
         giftDTO.setPrice(gift.getPrice());
-        if (gift.getCreatedBy() != null) {
-            giftDTO.setCreatedBy(gift.getCreatedBy().getUserId());
-        }
-
-        if (gift.getGroup() != null) {
-            giftDTO.setGroupId(gift.getGroup().getGroupId());
-        }
+        giftDTO.setCreatedBy(gift.getCreatedBy().getUserId());
+        giftDTO.setGroupId(gift.getGroup().getGroupId());
 
         return giftDTO;
     }
