@@ -17,13 +17,14 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @Validated
 public class GiftDTO {
+    private int giftId;
     @NotBlank(message = "Name is required")
     private String name;
     private String description;
     private String link;
     @Positive
     private double price;
-    @NotNull
+    //    @NotNull
     private int createdBy;
     @NotNull
     private int groupId;

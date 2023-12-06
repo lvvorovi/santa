@@ -3,26 +3,51 @@ package Secret.Santa.Secret.Santa.mappers;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
+import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GiftMapper {
     private static GroupUtils groupUtils;
+    private static UserUtils userUtils;
 
-    public GiftMapper(GroupUtils groupUtils) {
+    public GiftMapper(GroupUtils groupUtils, UserUtils userUtils) {
         this.groupUtils = groupUtils;
+        this.userUtils = userUtils;
     }
 
     public static Gift toGift(GiftDTO giftDTO) {
+
         Gift gift = new Gift();
+
         gift.setName(giftDTO.getName());
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
-        gift.setCreatedBy(giftDTO.getCreatedBy());
 
-        // Assuming you have a GroupRepository to fetch the Group based on groupId
+        User user = userUtils.getUserById(giftDTO.getCreatedBy());
+        gift.setCreatedBy(user);
+
+        Group group = groupUtils.getGroupById(giftDTO.getGroupId());
+        gift.setGroup(group);
+
+        return gift;
+    }
+
+    public static Gift toGift(GiftDTO giftDTO, Gift gift) {
+        if (gift == null) {
+            gift = new Gift();
+        }
+        gift.setName(giftDTO.getName());
+        gift.setDescription(giftDTO.getDescription());
+        gift.setLink(giftDTO.getLink());
+        gift.setPrice(giftDTO.getPrice());
+
+        User user = userUtils.getUserById(giftDTO.getCreatedBy());
+        gift.setCreatedBy(user);
+
         Group group = groupUtils.getGroupById(giftDTO.getGroupId());
         gift.setGroup(group);
 
@@ -30,18 +55,23 @@ public class GiftMapper {
     }
 
     public static GiftDTO toGiftDTO(Gift gift) {
+
         GiftDTO giftDTO = new GiftDTO();
+
         giftDTO.setName(gift.getName());
         giftDTO.setDescription(gift.getDescription());
         giftDTO.setLink(gift.getLink());
         giftDTO.setPrice(gift.getPrice());
-        giftDTO.setCreatedBy(gift.getCreatedBy());
+        if (gift.getCreatedBy() != null) {
+            giftDTO.setCreatedBy(gift.getCreatedBy().getUserId());
+        }
 
         if (gift.getGroup() != null) {
-            giftDTO.setGroupId(gift.getGroup().getGroupId()); // Assuming groupId is accessible
+            giftDTO.setGroupId(gift.getGroup().getGroupId());
         }
 
         return giftDTO;
     }
-}
 
+
+}

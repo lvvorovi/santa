@@ -5,11 +5,14 @@ import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IGroupService {
     List<Group> getAllGroups();
-    Group editByGroupId(GroupDTO groupDTO, int groupId);
+
+    GroupDTO editByGroupId(GroupDTO groupDTO, int groupId);
+
     Group createGroup(GroupDTO groupDTO);
 
     List<Group> getAllGroupsForUser(Integer userId);

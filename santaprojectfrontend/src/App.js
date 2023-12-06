@@ -7,6 +7,7 @@ import { CreateUser } from "./components/CreateUser";
 import { CreateGift } from "./components/CreateGift";
 import { CreateGroup } from "./components/CreateGroup";
 import { ViewUser } from "./components/ViewUser";
+import { EditGift } from "./components/EditGift";
 
 const apiUrl = "http://localhost:8080";
 
@@ -19,10 +20,11 @@ function App() {
           <Routes>
             <Route path="/" element={<GroupList />} />
             <Route path="/users" element={<CreateUser />} />
-            <Route path="/create/gift" element={<CreateGift />} />
+            <Route path="/create/gift/:id" element={<CreateGift />} />
             <Route path="/groups/:id" element={<ViewGroup />} />
             <Route path="/create/group" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
+            <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
           </Routes>
         </div>
       </HashRouter>

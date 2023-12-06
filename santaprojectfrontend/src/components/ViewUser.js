@@ -28,7 +28,7 @@ export function ViewUser() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); // fix to fetch user groups
+      const response = await fetch("/api/v1/groups/user/" + params.id + "/groups"); 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -55,13 +55,19 @@ export function ViewUser() {
   };
 
   const handleGroupDoubleClick = (groupId) => {
+    console.log("groupId:", typeof groupId);
     console.log(`Card clicked for group ID ${groupId}`);
     navigate(`/groups/${groupId}`);
   };
 
-  const handleGiftDoubleClick = (giftId) => {
-    console.log(`Card clicked for gift ID ${giftId}`);
-    navigate(`/gifts/${giftId}`);
+  const handleGiftDoubleClick = (userId, giftId) => {
+    console.log(`Card clicked for gift ID ${giftId} of user ID ${userId}`);
+    navigate(`/users/${userId}/gifts/${giftId}`);
+  };
+
+  const handleCreateGiftClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/gift/${userId}`);
   };
 
   useEffect(() => {
@@ -111,6 +117,7 @@ export function ViewUser() {
                 className="m-3 cursor-pointer"
                 onDoubleClick={() => handleGroupDoubleClick(group.groupId)}
               >
+                
                 <Image src="/images/santa.jpg" wrapped ui={false} />
                 <Card.Content>
                   <Card.Header>{group.name}</Card.Header>
@@ -132,8 +139,9 @@ export function ViewUser() {
             <Button
               color="blue"
               className="controls"
-              as={Link}
-              to="/create/gift"
+              // as={Link}
+              // to="/create/gift"
+              onClick={() => handleCreateGiftClick(params.id)}
             >
               Create Gift
             </Button>
@@ -141,10 +149,11 @@ export function ViewUser() {
           <div className="ui centered cards">
             {gifts.map((gift) => (
               <Card
-                key={gift.id}
-                className="m-3 cursor-pointer"
-                onDoubleClick={() => handleGiftDoubleClick(gift.giftId)}
-              >
+              key={gift.id}
+              className="m-3 cursor-pointer"
+              onDoubleClick={() => handleGiftDoubleClick(params.id, gift.giftId)}
+            >
+               
                 <Image src="/images/gifts.jpg" wrapped ui={false} />
                 <Card.Content>
                   <Card.Header>{gift.name}</Card.Header>

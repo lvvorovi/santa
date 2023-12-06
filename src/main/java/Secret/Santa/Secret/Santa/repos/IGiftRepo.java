@@ -1,6 +1,7 @@
 package Secret.Santa.Secret.Santa.repos;
 
 import Secret.Santa.Secret.Santa.models.Gift;
+import Secret.Santa.Secret.Santa.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import java.util.List;
 @Repository
 public interface IGiftRepo extends JpaRepository<Gift, Integer> {
 
-    List<Gift> findByCreatedBy(int createdBy);
+    List<Gift> findByCreatedBy(User user);
 
 
 }

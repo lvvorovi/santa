@@ -6,9 +6,11 @@ import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IUserService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,55 +19,78 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
-    @Autowired
-    IUserRepo iUserRepo;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final UserMapper userMapper;
+    private final IUserRepo iUserRepo;
 
     @Override
     public List<User> getAllUsers() {
-        return iUserRepo.findAll();
+        try {
+            return iUserRepo.findAll();
+        } catch (Exception e) {
+            logger.error("Error retrieving all users", e);
+            throw e;
+        }
     }
 
     @Override
     public User findByUserid(int userid) {
-        Optional<User> optionalLessor = iUserRepo.findById(userid);
-
-        return optionalLessor.orElseThrow(() -> new EntityNotFoundException("User not found with id " + userid));
+        try {
+            Optional<User> optionalLessor = iUserRepo.findById(userid);
+            return optionalLessor.orElseThrow(() -> new RuntimeException("User not found with id: " + userid));
+        } catch (RuntimeException e) {
+            logger.error("Error occurred while retrieving user with ID: {}", userid, e);
+            throw e;
+        }
     }
 
     @Override
-    public User editByUserId(UserDTO userDTO, int userid) {
-        Optional<User> optionalUser = iUserRepo.findById(userid);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if (Objects.nonNull(userDTO.getName())) {
-                user.setName(userDTO.getName());
-            }
-            if (Objects.nonNull(userDTO.getEmail())) {
-                user.setEmail(userDTO.getEmail());
-            }
-            if (Objects.nonNull(userDTO.getPassword())) {
-                user.setPassword(userDTO.getPassword());
-            }
-
-            return iUserRepo.save(user);
+    public UserDTO editByUserId(UserDTO userDTO, int userid) {
+        if (userDTO == null) {
+            throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        throw new EntityNotFoundException(" not found with id " + userid);
+        Optional<User> existingUser = iUserRepo.findById(userid);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user = userMapper.toUser(userDTO, user);
+            iUserRepo.save(user);
+            return userMapper.toUserDTO(user);
+        }
+        throw new EntityNotFoundException("User not found with id " + userid);
     }
 
     @Override
     public User createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-//        user.setGroups(new ArrayList<>());
-        return iUserRepo.save(user);
+        try {
+            User user = new User();
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword());
+            //user.setGroups(new ArrayList<>());
+            return iUserRepo.save(user);
+        } catch (Exception e) {
+            logger.error("Error creating user", e);
+            throw e;
+        }
     }
 
     @Override
     public boolean deleteUserByUserid(int userid) {
-        return false;
+        Optional<User> optionalUser = iUserRepo.findById(userid);
+        if (optionalUser.isPresent()) {
+            try {
+                iUserRepo.deleteById(userid);
+                return true;
+            } catch (Exception e) {
+                logger.error("Error deleting user with ID: {}", userid, e);
+                return false;
+            }
+        } else {
+            logger.error("Attempted to delete a user that does not exist with ID: {}", userid);
+            throw new EntityNotFoundException("User not found with id " + userid);
+        }
     }
 
     @Transactional(readOnly = true)

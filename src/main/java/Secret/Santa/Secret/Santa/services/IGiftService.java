@@ -11,13 +11,13 @@ public interface IGiftService {
 
     Gift getGiftById(int giftId);
 
-    Gift createGift(GiftDTO giftDTO);
+    Gift createGift(Integer userId, GiftDTO giftDTO);
 
     GiftDTO updateGift(int giftId, GiftDTO giftDTO);
 
-    void deleteGift(int giftId);
+    boolean deleteGift(int giftId);
 
     List<Gift> getGiftsCreatedBy(int userId);
 
 
-    }
+}
