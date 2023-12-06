@@ -2,11 +2,12 @@ package Secret.Santa.Secret.Santa.services;
 
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface IUserService {
+public interface IUserService extends UserDetailsService {
     List<User> getAllUsers();
     User findByUserid(int userid);
     UserDTO editByUserId(UserDTO lessorDTO, int userid);
