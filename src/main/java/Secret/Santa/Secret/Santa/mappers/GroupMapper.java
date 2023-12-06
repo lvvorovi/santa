@@ -19,6 +19,9 @@ public class GroupMapper {
     public Group toGroup(GroupDTO groupDTO) {
 
         Group group = new Group();
+        if (groupDTO.getGroupId() != null) {
+            group.setGroupId(groupDTO.getGroupId());
+        }
         group.setName(groupDTO.getName());
         group.setEventDate(groupDTO.getEventDate());
         group.setBudget(groupDTO.getBudget());
@@ -27,7 +30,7 @@ public class GroupMapper {
         group.setGeneratedSanta(groupDTO.getGeneratedSanta());
         User owner = userUtils.getUserById(groupDTO.getOwnerId());
         group.setOwner(owner);
-        
+
 
         return group;
     }

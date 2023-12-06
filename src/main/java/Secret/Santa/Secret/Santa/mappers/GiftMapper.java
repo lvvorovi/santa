@@ -21,12 +21,13 @@ public class GiftMapper {
     public Gift toGift(GiftDTO giftDTO) {
 
         Gift gift = new Gift();
-        gift.setGiftId(giftDTO.getGiftId());
+        if (giftDTO.getGiftId() != null) {
+            gift.setGiftId(giftDTO.getGiftId());
+        }
         gift.setName(giftDTO.getName());
         gift.setDescription(giftDTO.getDescription());
         gift.setLink(giftDTO.getLink());
         gift.setPrice(giftDTO.getPrice());
-
         User user = userUtils.getUserById(giftDTO.getCreatedBy());
         gift.setCreatedBy(user);
 
