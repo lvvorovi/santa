@@ -8,6 +8,7 @@ import Secret.Santa.Secret.Santa.services.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,6 +91,12 @@ public class UserServiceImpl implements IUserService {
             logger.error("Attempted to delete a user that does not exist with ID: {}", userid);
             throw new EntityNotFoundException("User not found with id " + userid);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> getUsersByNameContaining(String nameText) {
+        return iUserRepo.findByNameContainingIgnoreCase(nameText).stream()
+                .map(UserMapper::toUserDTO).collect(Collectors.toList());
     }
 
 

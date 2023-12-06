@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.mappers;
 
+
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.User;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class UserMapper {
     }
 
     public static UserDTO toUserDTO(User user) {
+
         UserDTO userDTO = new UserDTO();
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());

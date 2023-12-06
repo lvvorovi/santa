@@ -1,6 +1,7 @@
 package Secret.Santa.Secret.Santa.services;
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
+import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 

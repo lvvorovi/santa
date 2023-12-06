@@ -3,6 +3,7 @@ package Secret.Santa.Secret.Santa.services.impl;
 import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
+import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
@@ -92,6 +93,7 @@ public class GroupServiceImpl implements IGroupService {
 
     @Override
     public Group createGroup(GroupDTO groupDTO) {
+
         try {
             Group group = new Group();
             group.setName(groupDTO.getName());
@@ -148,6 +150,10 @@ public class GroupServiceImpl implements IGroupService {
                 .orElseThrow(() -> new SantaValidationException("Group does not exist",
                         "id", "Group not found", String.valueOf(groupId)));
 
+        if (existingGroup.getUser().stream().anyMatch(user -> user.getUserId() == userId)) {
+            throw new IllegalArgumentException("User is already in the group");
+        }
+
         var existingUser = userRepo.findById(userId)
                 .orElseThrow(() -> new SantaValidationException("User does not exist",
                         "id", "User not found", String.valueOf(userId)));
@@ -158,6 +164,7 @@ public class GroupServiceImpl implements IGroupService {
 
         return groupRepo.save(existingGroup);
     }
+
 
     public List<User> getAllUsersById(int groupId) {
         return groupRepo.findById(groupId).get().getUser();

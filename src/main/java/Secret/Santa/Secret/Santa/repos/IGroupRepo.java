@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface IGroupRepo extends JpaRepository<Group, Integer> {
     List<Group> findByUserContaining(User user);
-
     List<Group> findByOwner(User user);
 }

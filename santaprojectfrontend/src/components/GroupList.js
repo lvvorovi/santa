@@ -16,7 +16,6 @@ export function GroupList() {
     "/images/santa7.jpg",
   ]);
 
-
   const fetchGroups = async () => {
     try {
       const response = await fetch("/api/v1/groups");
@@ -54,20 +53,22 @@ export function GroupList() {
             className="m-3"
             onDoubleClick={() => handleCardDoubleClick(group.groupId)}
           >
-            <Card centered m-3 className="card">
-              <Image src={getRandomImageUrl()} wrapped ui={false} />
-              <Card.Content>
-                <Card.Header>{group.name}</Card.Header>
-                <Card.Meta>
-                  <span className="date">
-                    Event date is set to {group.eventDate}
-                  </span>
-                </Card.Meta>
-                <Card.Description>
-                  Event budget is {group.budget}Є
-                </Card.Description>
-              </Card.Content>
-            </Card>
+            <Card.Group>
+              <Card centered m-3 className="card">
+                <Image src={getRandomImageUrl()} wrapped ui={false} />
+                <Card.Content>
+                  <Card.Header>{group.name}</Card.Header>
+                  <Card.Meta>
+                    <span className="date">
+                      Event date is set to {group.eventDate}
+                    </span>
+                  </Card.Meta>
+                  <Card.Description>
+                    Event budget is {group.budget}Є
+                  </Card.Description>
+                </Card.Content>
+              </Card>
+            </Card.Group>
           </div>
         ))}
         <div className="m-3">

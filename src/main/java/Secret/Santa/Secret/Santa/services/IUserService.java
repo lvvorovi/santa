@@ -11,6 +11,6 @@ public interface IUserService {
     User findByUserid(int userid);
     UserDTO editByUserId(UserDTO lessorDTO, int userid);
     User createUser(UserDTO lessorDTO);
-
     boolean deleteUserByUserid(int userid);
+    List<UserDTO> getUsersByNameContaining(String nameText);
 }
