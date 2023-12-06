@@ -10,7 +10,7 @@ import { ViewUser } from "./components/ViewUser";
 import { EditGift } from "./components/EditGift";
 import ChatRoom from "./components/ChatRoom";
 
-const apiUrl = "http://localhost:8080";
+// const apiUrl = "http://localhost:8085";
 
 function App() {
   return (
@@ -35,4 +35,4 @@ function App() {
 }
 
 export default App;
-export { apiUrl };
+// export { apiUrl };
