@@ -10,6 +10,7 @@ export function ViewGroup() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState({
+    groupId: "",
     name: "",
     eventDate: "",
     budget: "",
@@ -21,7 +22,7 @@ export function ViewGroup() {
 
   const fetchGroups = async () => {
 
-    fetch("/api/v1/groups/" + params.groupId)
+    fetch("/api/v1/groups/" + parseInt(params.groupId))
       .then((response) => response.json())
       .then(setGroup);
   };
@@ -68,36 +69,40 @@ export function ViewGroup() {
     }
   };
 
+  
   const handleAddUser = async (selectedUser) => {
     setNewUserName(selectedUser.name);
     setFilteredUsers([]);
-
+  
     try {
-      // Fetch user details using the selected user's name
       const response = await fetch(
         `/api/v1/users/search?name=${selectedUser.name}`
       );
-
+  
       if (response.ok) {
-        const user = await response.json();
-
-        // Use the fetched user details to add the user to the group
-        const addResponse = await fetch(
-          `/api/v1/groups/${params.groupId}/users/${user.id}/newUsers`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
+        const users = await response.json();
+        const user = Array.isArray(users) && users.length > 0 ? users[0] : null;
+  
+        if (user) {
+          const addResponse = await fetch(
+            `/api/v1/groups/${parseInt(params.groupId)}/users/${parseInt(user.userId)}/newUsers`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(user),
+            }
+          );
+  
+          if (addResponse.ok) {
+            const updatedGroup = await addResponse.json();
+            setGroup(updatedGroup);
+          } else {
+            console.error("Failed to add user to the group.");
           }
-        );
-
-        if (addResponse.ok) {
-          const updatedGroup = await addResponse.json();
-          setGroup(updatedGroup);
         } else {
-          console.error("Failed to add user to the group.");
+          console.error("User not found.");
         }
       } else {
         console.error("Failed to fetch user details.");
@@ -107,9 +112,12 @@ export function ViewGroup() {
     }
   };
 
+
+
   useEffect(() => {
     fetchGroups();
     fetchUsers();
+    console.log("groupId:", typeof params.groupId);
   }, [params.groupId]);
 
   useEffect(() => {
@@ -148,7 +156,7 @@ export function ViewGroup() {
                     {user.name}
                   </Button>
                 ))}
-                {group.owner && group.owner.userId === Number(params.userId) ? (
+                {group.ownerId && group.ownerId === parseInt(params.userId) ? (
                 addingUser ? (
                   <div>
                     <Input
@@ -183,7 +191,7 @@ export function ViewGroup() {
                 )) : null}
               </a>
             </Card.Content>
-            {group.owner && group.owner.userId === Number(params.userId) ? (
+            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
                 <button className="generate-button" size="large">
                   GENERATE
                 </button>
