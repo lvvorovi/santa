@@ -113,97 +113,96 @@ export function ViewGroup() {
   }, [newUserName]);
 
   return (
-    <div class="ui one column centered equal width grid">
-      <div className="d-flex justify-content-center m-3 centered">
-        <div key={group.groupId} className="m-3 cursor-pointer">
-          <Card>
-            <Image src="/images/santa.jpg" wrapped ui={false} />
-            <Card.Content>
-              <Card.Header>{group.name}</Card.Header>
-              <Card.Meta>
-                <span className="date">
-                  Event date is set to {group.eventDate}
-                </span>
-              </Card.Meta>
-              <Card.Description>
-                Event budget is {group.budget}Є
-              </Card.Description>
-            </Card.Content>
-            <Card.Content extra className="info">
-              <a>
-                <h3>Participants:</h3>
-                <Icon name="user" />
-                {group.user.map((user) => (
-                  <Button
-                    className="button"
-                    content="Standard"
-                    basic
-                    key={user.id}
-                                        
-                  >
-                    {user.name}
-                  </Button>
-                ))}
-                {addingUser ? (
-                  <div>
-                    <Input
-                      placeholder="Enter name"
-                      value={newUserName} // Change 'nameText' to 'newUserName'
-                      onChange={handleNewUserInputChange}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          handleAddUser();
-                        }
-                      }}
-                    />
-
+   
+      <div class="ui one column centered equal width grid">
+        <div className="d-flex justify-content-center m-3 centered">
+          <div key={group.groupId} className="m-3 cursor-pointer">
+            <Card>
+              <Image src="/images/santa.jpg" wrapped ui={false} />
+              <Card.Content>
+                <Card.Header>{group.name}</Card.Header>
+                <Card.Meta>
+                  <span className="date">
+                    Event date is set to {group.eventDate}
+                  </span>
+                </Card.Meta>
+                <Card.Description>
+                  Event budget is {group.budget}Є
+                </Card.Description>
+              </Card.Content>
+              <Card.Content extra className="info">
+                <a>
+                  <h3>Participants:</h3>
+                  <Icon name="user" />
+                  {group.user.map((user) => (
+                    <Button
+                      className="button"
+                      content="Standard"
+                      basic
+                      key={user.id}
+      
+                    >
+                      {user.name}
+                    </Button>
+                  ))}
+                  {addingUser ? (
                     <div>
-                      {filteredUsers.map((user) => (
-                        <div key={user.id} onClick={() => handleAddUser(user)}>
-                          {user.name}
-                        </div>
-                      ))}
+                      <Input
+                        placeholder="Enter name"
+                        value={newUserName} // Change 'nameText' to 'newUserName'
+                        onChange={handleNewUserInputChange}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            handleAddUser();
+                          }
+                        }}
+                      />
+                      <div>
+                        {filteredUsers.map((user) => (
+                          <div key={user.id} onClick={() => handleAddUser(user)}>
+                            {user.name}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <Button
-                    content="Standard"
-                    basic
-                    className="button"
-                    onClick={handleAddNewUser}
-                    color="red"
-                  >
-                    Add new
+                  ) : (
+                    <Button
+                      content="Standard"
+                      basic
+                      className="button"
+                      onClick={handleAddNewUser}
+                      color="red"
+                    >
+                      Add new
+                    </Button>
+                  )}
+                </a>
+              </Card.Content>
+              <button className="generate-button" size="large">
+                GENERATE
+              </button>
+              {/* <Card.Content extra>
+                <a>
+                  <h3>Participants:</h3>
+                  <Icon name="user" />
+                  {group.gifts.map((gift) => (
+                    <Button
+                      className="button"
+                      content="Standard"
+                      basic
+                      key={gift.id}
+                    >
+                      {gift.name},
+                    </Button>
+                  ))}
+                  <Button content="Standard" basic className="button">
+                    Add new{" "}
                   </Button>
-                )}
-              </a>
-            </Card.Content>
-            <button className="generate-button" size="large">
-              GENERATE
-            </button>
-
-            {/* <Card.Content extra>
-              <a>
-                <h3>Participants:</h3>
-                <Icon name="user" />
-                {group.gifts.map((gift) => (
-                  <Button
-                    className="button"
-                    content="Standard"
-                    basic
-                    key={gift.id}
-                  >
-                    {gift.name},
-                  </Button>
-                ))}
-                <Button content="Standard" basic className="button">
-                  Add new{" "}
-                </Button>
-              </a>
-            </Card.Content> */}
-          </Card>
+                </a>
+              </Card.Content> */}
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -45,64 +45,65 @@ export function GroupList() {
   }, []);
 
   return (
-    <div class="ui one column centered equal width grid">
-      <div className="d-flex justify-content-center m-3 centered backgroundImage">
-        {groups.map((group) => (
-          <div
-            key={group.id}
-            className="m-3"
-            onDoubleClick={() => handleCardDoubleClick(group.groupId)}
-          >
-            <Card.Group>
-              <Card centered m-3 className="card">
-                <Image src={getRandomImageUrl()} wrapped ui={false} />
-                <Card.Content>
-                  <Card.Header>{group.name}</Card.Header>
-                  <Card.Meta>
-                    <span className="date">
-                      Event date is set to {group.eventDate}
-                    </span>
-                  </Card.Meta>
-                  <Card.Description>
-                    Event budget is {group.budget}Є
-                  </Card.Description>
-                </Card.Content>
-              </Card>
-            </Card.Group>
-          </div>
-        ))}
-        <div className="m-3">
-          <Button
-            basic
-            color="red"
-            icon
-            className="controls"
-            as={Link}
-            to="/create/group"
-          >
-            Create new event
-          </Button>
-        </div>
-        {/* <Card.Group>
+
+      <div class="ui one column centered equal width grid">
+        <div className="d-flex justify-content-center m-3 centered backgroundImage">
           {groups.map((group) => (
             <div
               key={group.id}
-              className="mb-3 cursor-pointer"
+              className="m-3"
               onDoubleClick={() => handleCardDoubleClick(group.groupId)}
             >
-              <Card>
-                <Card.Content>
-                  <Card.Header>{group.name}</Card.Header>
-                  <Card.Meta>{group.eventDate}</Card.Meta>
-                  <Card.Description>
-                    Event budget is {group.budget}
-                  </Card.Description>
-                </Card.Content>
-              </Card>
+              <Card.Group>
+                <Card centered m-3 className="card">
+                  <Image src={getRandomImageUrl()} wrapped ui={false} />
+                  <Card.Content>
+                    <Card.Header>{group.name}</Card.Header>
+                    <Card.Meta>
+                      <span className="date">
+                        Event date is set to {group.eventDate}
+                      </span>
+                    </Card.Meta>
+                    <Card.Description>
+                      Event budget is {group.budget}Є
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+              </Card.Group>
             </div>
           ))}
-        </Card.Group> */}
+          <div className="m-3">
+            <Button
+              basic
+              color="red"
+              icon
+              className="controls"
+              as={Link}
+              to="/create/group"
+            >
+              Create new event
+            </Button>
+          </div>
+          {/* <Card.Group>
+            {groups.map((group) => (
+              <div
+                key={group.id}
+                className="mb-3 cursor-pointer"
+                onDoubleClick={() => handleCardDoubleClick(group.groupId)}
+              >
+                <Card>
+                  <Card.Content>
+                    <Card.Header>{group.name}</Card.Header>
+                    <Card.Meta>{group.eventDate}</Card.Meta>
+                    <Card.Description>
+                      Event budget is {group.budget}
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+              </div>
+            ))}
+          </Card.Group> */}
+        </div>
       </div>
-    </div>
   );
 }
