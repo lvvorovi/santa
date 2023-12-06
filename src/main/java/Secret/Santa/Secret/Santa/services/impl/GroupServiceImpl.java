@@ -95,11 +95,7 @@ public class GroupServiceImpl implements IGroupService {
             throw new IllegalArgumentException("GroupDTO cannot be null");
         }
         try {
-            Group group = new Group();
-            group.setName(groupDTO.getName());
-            group.setEventDate(groupDTO.getEventDate());
-            group.setBudget(groupDTO.getBudget());
-            Group savedGroup = groupRepo.save(group);
+            Group savedGroup = groupRepo.save(groupMapper.toGroup(groupDTO));
             return groupMapper.toGroupDTO(savedGroup);
 
         } catch (Exception e) {

@@ -15,7 +15,7 @@ export function ViewGroup() {
     budget: "",
     user: [],
     gifts: [],
-    owner: [],
+    ownerId: "",
     // generatedSanta: [],
   });
 

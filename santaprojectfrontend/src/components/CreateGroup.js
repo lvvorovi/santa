@@ -14,7 +14,8 @@ export function CreateGroup() {
   const [eventDate, setEventDate] = useState("");
   const [budget, setBudget] = useState("");
   const [user, setUser] = useState("");
-  const [ownerId, setOwnerId] = useState(Number(params.id));
+  const [groupId, setGroupId] = useState("");
+  const [ownerId, setOwnerId] = useState(parseInt(params.id));
   const [userList, setUserList] = useState([]);
 
   const fetchUsers = async () => {
@@ -48,6 +49,7 @@ export function CreateGroup() {
     console.log("Selected Users:", user);
     console.log("Owner:", ownerId);
     const requestBody = {
+      groupId,
       name,
       eventDate,
       budget,
