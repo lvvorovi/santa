@@ -9,6 +9,7 @@ export function ViewGroup() {
   const [newUserName, setNewUserName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [generated, setGenerated] = useState(false);
   const [group, setGroup] = useState({
     name: "",
     eventDate: "",
@@ -65,40 +66,38 @@ export function ViewGroup() {
   };
 
   const handleAddUser = async (selectedUser) => {
-    if (!selectedUser || !selectedUser.name) {
-      console.error("Invalid selected user:", selectedUser);
-      return;
-    }
-  
     setNewUserName(selectedUser.name);
     setFilteredUsers([]);
   
     try {
-      // Fetch user details using the selected user's name
       const response = await fetch(
         `/api/v1/users/search?name=${selectedUser.name}`
       );
   
       if (response.ok) {
-        const user = await response.json();
+        const users = await response.json();
+        const user = Array.isArray(users) && users.length > 0 ? users[0] : null;
   
-        // Use the fetched user details to add the user to the group
-        const addResponse = await fetch(
-          `/api/v1/groups/${Number(params.id)}/users/${user.id}/newUsers`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
+        if (user) {
+          const addResponse = await fetch(
+            `/api/v1/groups/${parseInt(params.groupId)}/users/${parseInt(user.userId)}/newUsers`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(user),
+            }
+          );
+  
+          if (addResponse.ok) {
+            const updatedGroup = await addResponse.json();
+            setGroup(updatedGroup);
+          } else {
+            console.error("Failed to add user to the group.");
           }
-        );
-  
-        if (addResponse.ok) {
-          const updatedGroup = await addResponse.json();
-          setGroup(updatedGroup);
         } else {
-          console.error("Failed to add user to the group.");
+          console.error("User not found.");
         }
       } else {
         console.error("Failed to fetch user details.");
@@ -107,7 +106,14 @@ export function ViewGroup() {
       console.error("Error adding user:", error);
     }
   };
-  
+
+
+  const handleGenerateButtonClick = async () => {
+    // Perform generation logic here
+
+    // Simulate a delay (replace this with your actual generation logic)
+    setGenerated(true);
+  };
 
   useEffect(() => {
     fetchGroups();
@@ -119,75 +125,82 @@ export function ViewGroup() {
   }, [newUserName]);
 
   return (
-   
-      <div class="ui one column centered equal width grid">
-        <div className="d-flex justify-content-center m-3 centered">
-          <div key={group.groupId} className="m-3 cursor-pointer">
-            <Card>
-              <Image src="/images/santa.jpg" wrapped ui={false} />
-              <Card.Content>
-                <Card.Header>{group.name}</Card.Header>
-                <Card.Meta>
-                  <span className="date">
-                    Event date is set to {group.eventDate}
-                  </span>
-                </Card.Meta>
-                <Card.Description>
-                  Event budget is {group.budget}Є
-                </Card.Description>
-              </Card.Content>
-              <Card.Content extra className="info">
-                <a>
-                  <h3>Participants:</h3>
-                  <Icon name="user" />
-                  {group.user && group.user.map((user) => (
+    <div class="ui one column centered equal width grid">
+      <div className="d-flex justify-content-center m-3 centered">
+        <div key={group.groupId} className="m-3 cursor-pointer">
+          <Card>
+            <Image src="/images/santa.jpg" wrapped ui={false} />
+            <Card.Content>
+              <Card.Header>{group.name}</Card.Header>
+              <Card.Meta>
+                <span className="date">
+                  Event date is set to {group.eventDate}
+                </span>
+              </Card.Meta>
+              <Card.Description>
+                Event budget is {group.budget}Є
+              </Card.Description>
+            </Card.Content>
+            <Card.Content extra className="info">
+              <a>
+                <h3>Participants:</h3>
+                <Icon name="user" />
+                {group.user &&
+                  group.user.map((user) => (
                     <Button
                       className="button"
                       content="Standard"
                       basic
                       key={user.id}
-      
                     >
                       {user.name}
                     </Button>
                   ))}
-                  {addingUser ? (
+                {addingUser ? (
+                  <div>
+                    <Input
+                      placeholder="Enter name"
+                      value={newUserName}
+                      onChange={handleNewUserInputChange}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          handleAddUser();
+                        }
+                      }}
+                    />
                     <div>
-                      <Input
-                        placeholder="Enter name"
-                        value={newUserName} 
-                        onChange={handleNewUserInputChange}
-                        onKeyPress={(e) => {
-                          if (e.key === "Enter") {
-                            handleAddUser();
-                          }
-                        }}
-                      />
-                      <div>
-                        {filteredUsers.map((user) => (
-                          <div key={user.id} onClick={() => handleAddUser(user)}>
-                            {user.name}
-                          </div>
-                        ))}
-                      </div>
+                      {filteredUsers.map((user) => (
+                        <div key={user.id} onClick={() => handleAddUser(user)}>
+                          {user.name}
+                        </div>
+                      ))}
                     </div>
-                  ) : (
-                    <Button
-                      content="Standard"
-                      basic
-                      className="button"
-                      onClick={handleAddNewUser}
-                      color="red"
-                    >
-                      Add new
-                    </Button>
-                  )}
-                </a>
-              </Card.Content>
-              <button className="generate-button" size="large">
-                GENERATE
-              </button>
-              {/* <Card.Content extra>
+                  </div>
+                ) : (
+                  <Button
+                    content="Standard"
+                    basic
+                    className="button"
+                    onClick={handleAddNewUser}
+                    color="red"
+                  >
+                    Add new
+                  </Button>
+                )}
+              </a>
+            </Card.Content>
+            {/* <button className="generate-button" size="large">
+              GENERATE
+            </button> */}
+               <button
+              className="generate-button"
+              size="large"
+              onClick={handleGenerateButtonClick}
+              disabled={generated}
+            >
+              {generated ? "You are secret santa to: SOMEONE" : "GENERATE"}
+            </button>
+            {/* <Card.Content extra>
                 <a>
                   <h3>Participants:</h3>
                   <Icon name="user" />
@@ -206,9 +219,9 @@ export function ViewGroup() {
                   </Button>
                 </a>
               </Card.Content> */}
-            </Card>
-          </div>
+          </Card>
         </div>
       </div>
+    </div>
   );
 }

@@ -25,9 +25,9 @@ public class GroupDTO {
     private int groupId;
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Event date is required")
+    @NotNull(message = "Event date is required")
     private LocalDate eventDate;
-    @NotBlank(message = "Budget is required")
+    @NotNull(message = "Budget is required")
     private double budget;
     private List<User> user;
     private List<Gift> gifts;
