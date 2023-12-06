@@ -19,7 +19,7 @@ export function ViewGroup() {
   });
 
   const fetchGroups = async () => {
-    fetch("/api/v1/groups/" + params.id)
+    fetch("/api/v1/groups/" + Number(params.id))
       .then((response) => response.json())
       .then(setGroup);
   };
@@ -65,21 +65,26 @@ export function ViewGroup() {
   };
 
   const handleAddUser = async (selectedUser) => {
+    if (!selectedUser || !selectedUser.name) {
+      console.error("Invalid selected user:", selectedUser);
+      return;
+    }
+  
     setNewUserName(selectedUser.name);
     setFilteredUsers([]);
-
+  
     try {
       // Fetch user details using the selected user's name
       const response = await fetch(
         `/api/v1/users/search?name=${selectedUser.name}`
       );
-
+  
       if (response.ok) {
         const user = await response.json();
-
+  
         // Use the fetched user details to add the user to the group
         const addResponse = await fetch(
-          `/api/v1/groups/${params.id}/users/${user.id}/newUsers`,
+          `/api/v1/groups/${Number(params.id)}/users/${user.id}/newUsers`,
           {
             method: "POST",
             headers: {
@@ -88,7 +93,7 @@ export function ViewGroup() {
             body: JSON.stringify(user),
           }
         );
-
+  
         if (addResponse.ok) {
           const updatedGroup = await addResponse.json();
           setGroup(updatedGroup);
@@ -102,6 +107,7 @@ export function ViewGroup() {
       console.error("Error adding user:", error);
     }
   };
+  
 
   useEffect(() => {
     fetchGroups();
@@ -134,7 +140,7 @@ export function ViewGroup() {
                 <a>
                   <h3>Participants:</h3>
                   <Icon name="user" />
-                  {group.user.map((user) => (
+                  {group.user && group.user.map((user) => (
                     <Button
                       className="button"
                       content="Standard"
@@ -149,7 +155,7 @@ export function ViewGroup() {
                     <div>
                       <Input
                         placeholder="Enter name"
-                        value={newUserName} // Change 'nameText' to 'newUserName'
+                        value={newUserName} 
                         onChange={handleNewUserInputChange}
                         onKeyPress={(e) => {
                           if (e.key === "Enter") {

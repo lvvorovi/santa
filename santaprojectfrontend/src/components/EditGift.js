@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, Card, Form } from "semantic-ui-react";
+import { Button, Image, Card, Form, Icon } from "semantic-ui-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const JSON_HEADERS = {
@@ -64,6 +64,21 @@ export function EditGift() {
             });
     };
 
+    const deleteGift = () => {
+        fetch(`/api/v1/gifts/${params.giftId}`, {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                navigate(`/users/${params.userId}`);
+            })
+            .catch((error) => {
+                console.error("Error deleting gift:", error);
+            });
+    };
+
     return (
         <div className="ui one column centered equal width grid">
             <div className="d-flex justify-content-center m-3 centered">
@@ -118,14 +133,14 @@ export function EditGift() {
                                 />
                             </Form.Field>
 
-                            <Button
-                                icon
+                            <Button icon
                                 labelPosition="left"
                                 onClick={() => navigate(`/users/${params.userId}`)}
-                            >
+                            > <Icon name="arrow left" />
                                 Back
                             </Button>
                             <Button type="submit">Update</Button>
+                            <Button type="button" onClick={deleteGift}>Delete</Button>
                         </Form>
                     </Card>
                 </div>

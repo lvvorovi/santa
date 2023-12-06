@@ -24,9 +24,9 @@ public class GiftController {
     @Autowired
     private IGiftService giftService;
 
-    private GiftMapper giftMapper;
-    @Autowired
-    private IGiftRepo giftRepo;
+//    private GiftMapper giftMapper;
+//    @Autowired
+//    private IGiftRepo giftRepo;
 
     public GiftController(IGiftService giftService) {
         this.giftService = giftService;
