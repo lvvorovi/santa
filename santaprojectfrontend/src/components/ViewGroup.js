@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GenerateButton } from "./GenerateButton";
+import { GiftList } from "./GiftList";
 
 export function ViewGroup() {
   const params = useParams();
@@ -178,7 +179,7 @@ export function ViewGroup() {
     fetchGroups();
     console.log("ViewGroup - Owner ID:", group.ownerId);
     console.log("All group info: ", group);
-    console.log("ViewGroup - User ID:", parseInt(params.userId)); // Make sure to convert to number
+    console.log("ViewGroup - User ID:", parseInt(params.userId));
     checkSantaPairs();
     fetchUsers();
     console.log("groupId:", typeof params.groupId);
@@ -258,19 +259,6 @@ export function ViewGroup() {
                 ) : null}
               </a>
             </Card.Content>
-            {/* {group.ownerId && group.ownerId === parseInt(params.userId) ? (
-              <button
-                className="generate-button"
-                size="large"
-                onClick={handleGenerateButtonClick}
-              >
-                {generated
-                  ? `You are secret Santa to: ${
-                      assignedRecipient ? assignedRecipient.name : "SOMEONE"
-                    }`
-                  : "GENERATE"}
-              </button>
-            ) : null} */}
             {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <GenerateButton
                 generated={generated}
@@ -278,6 +266,9 @@ export function ViewGroup() {
               />
             ) : null}
           </Card>
+          {generated && assignedRecipient && (
+            <GiftList userId={assignedRecipient.userId} />
+          )}
         </div>
       </div>
     </div>
