@@ -5,10 +5,10 @@ import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGenerateSantaRepo;
-import Secret.Santa.Secret.Santa.repos.IGroupRepo;
-import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class GenerateSantaUtils {
