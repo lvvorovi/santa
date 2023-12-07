@@ -1,29 +1,46 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
 import Secret.Santa.Secret.Santa.mappers.UserMapper;
+import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
+import Secret.Santa.Secret.Santa.models.Gift;
+import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
+import Secret.Santa.Secret.Santa.repos.IGiftRepo;
+import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IUserService;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
     private final IUserRepo iUserRepo;
+    private final IGiftRepo iGiftRepo;
+    private UserUtils userUtils;
+    private final IGroupRepo iGroupRepo;
+    private IGroupRepo groupRepo;
+
+    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
+                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
+        this.userMapper = userMapper;
+        this.iUserRepo = iUserRepo;
+        this.iGiftRepo = iGiftRepo;
+        this.userUtils = userUtils;
+        this.iGroupRepo = iGroupRepo;
+        this.groupRepo = groupRepo;
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -93,21 +110,52 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean deleteUserByUserid(int userid) {
-        Optional<User> optionalUser = iUserRepo.findById(userid);
-        if (optionalUser.isPresent()) {
+    public boolean deleteUserByUserid(int userId) {
+        User user = userUtils.getUserById(userId);
+
+        if (user != null) {
+
+            List<Group> groups = groupRepo.findByUserContaining(user);
+            if (!groups.isEmpty())
+                logger.info("list of groups " + groups);
+
+            for (Group group : groups) {
+                List<User> updatedUsers = group.getUser();
+                updatedUsers.remove(user);
+                group.setUser(updatedUsers);
+            }
+            iGroupRepo.saveAll(groups);
+
+            List<Gift> gifts = iGiftRepo.findByCreatedBy(user);
+            if (!gifts.isEmpty()) {
+                try {
+                    iGiftRepo.deleteByCreatedBy(user);
+                } catch (Exception e) {
+                    logger.error("Error deleting gifts owned by user with ID: {}", userId, e);
+                    return false;
+                }
+            }
             try {
-                iUserRepo.deleteById(userid);
-                return true;
+                iGroupRepo.deleteByOwner(user);
+
             } catch (Exception e) {
-                logger.error("Error deleting user with ID: {}", userid, e);
+                logger.error("Error deleting groups where user is owner with ID: {}", userId, e);
+                return false;
+            }
+            try {
+                iUserRepo.deleteById(userId);
+                return true;
+
+            } catch (Exception e) {
+                logger.error("Error deleting user with ID: {}", userId, e);
                 return false;
             }
         } else {
-            logger.error("Attempted to delete a user that does not exist with ID: {}", userid);
-            throw new EntityNotFoundException("User not found with id " + userid);
+            logger.error("Attempted to delete a user that does not exist with ID: {}", userId);
+            throw new EntityNotFoundException("User not found with id " + userId);
         }
     }
+
 
     @Transactional(readOnly = true)
     public List<UserDTO> getUsersByNameContaining(String nameText) {

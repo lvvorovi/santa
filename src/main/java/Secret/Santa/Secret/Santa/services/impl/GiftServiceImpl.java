@@ -12,6 +12,7 @@ import Secret.Santa.Secret.Santa.services.IGiftService;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
@@ -129,6 +130,7 @@ public class GiftServiceImpl implements IGiftService {
     }
 
 
+    @Transactional
     @Override
     public boolean deleteGift(int giftId) {
         Optional<Gift> optionalGift = iGiftRepo.findById(giftId);

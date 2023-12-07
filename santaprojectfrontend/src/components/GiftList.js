@@ -82,7 +82,7 @@ export function GiftList() {
               ))}
               <Card
                 className="m-3 cursor-pointer"
-                onClick={() => handleCreateGiftClick()}
+                onClick={() => handleCreateGiftClick(params.id)}
                 style={{
                   width: "150px",
                   height: "240px",

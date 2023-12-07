@@ -5,9 +5,11 @@ import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
+import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
+import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -31,13 +33,17 @@ public class GroupServiceImpl implements IGroupService {
 
     private final UserUtils userUtils;
     private final GroupMapper groupMapper;
+    private GroupUtils groupUtils;
+    private IGiftRepo iGiftRepo;
 
     @Autowired
-    public GroupServiceImpl(IGroupRepo groupRepo, IUserRepo userRepo, UserUtils userUtils, GroupMapper groupMapper) {
+    public GroupServiceImpl(IGroupRepo groupRepo, IUserRepo userRepo, UserUtils userUtils, GroupMapper groupMapper, GroupUtils groupUtils, IGiftRepo iGiftRepo) {
         this.groupRepo = groupRepo;
         this.userRepo = userRepo;
         this.userUtils = userUtils;
         this.groupMapper = groupMapper;
+        this.groupUtils = groupUtils;
+        this.iGiftRepo = iGiftRepo;
     }
 
     @Override
@@ -156,10 +162,19 @@ public class GroupServiceImpl implements IGroupService {
 
     @Override
     public boolean deleteGroupByGroupId(int groupId) {
-        Optional<Group> optionalGroup = groupRepo.findById(groupId);
-        if (optionalGroup.isPresent()) {
+        Group group = groupUtils.getGroupById(groupId);
+        if (group != null) {
+
+            group.getUser().clear();
+            groupRepo.save(group);
             try {
-                groupRepo.deleteById(groupId);
+                iGiftRepo.deleteByGroup(group);
+            } catch (Exception e) {
+                logger.error("Error deleting gifts in group with ID: {}", groupId, e);
+                return false;
+            }
+            try {
+                groupRepo.delete(group);
                 return true;
             } catch (Exception e) {
                 logger.error("Error deleting group with ID: {}", groupId, e);
