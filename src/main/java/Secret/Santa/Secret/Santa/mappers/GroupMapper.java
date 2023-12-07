@@ -26,7 +26,7 @@ public class GroupMapper {
         group.setEventDate(groupDTO.getEventDate());
         group.setBudget(groupDTO.getBudget());
         group.setUser(groupDTO.getUser());
-        group.setGifts(groupDTO.getGifts());
+//        group.setGifts(groupDTO.getGifts());
         group.setGeneratedSanta(groupDTO.getGeneratedSanta());
         User owner = userUtils.getUserById(groupDTO.getOwnerId());
         group.setOwner(owner);
@@ -46,7 +46,7 @@ public class GroupMapper {
         groupDTO.setBudget(group.getBudget());
 
         groupDTO.setUser(group.getUser());
-        groupDTO.setGifts(group.getGifts());
+//        groupDTO.setGifts(group.getGifts());
         groupDTO.setGeneratedSanta(group.getGeneratedSanta());
         groupDTO.setOwnerId(group.getOwner().getUserId());
 
