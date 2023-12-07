@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
+import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
@@ -114,9 +115,10 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
         Group group = groupUtils.getGroupById(groupId);
         List<User> usersInGroup = group.getUser();//userUtils.getUsersInGroup(group);
 
-        if (usersInGroup.size() < 2) {
+        if (usersInGroup.size() <= 2) {
             logger.error("Not enough participants in the group to generate Secret Santa pairs.");
-            return;
+            throw new SantaValidationException("Exceeded maximum attempts to find a recipient for Santa: ", "", "", "");
+//            return;
         }
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
@@ -125,7 +127,7 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
         int maxAttempts = 100;
         for (int i = 0; i < shuffledUsers.size(); i++) {
-            User santa = shuffledUsers.get(i);
+            User santa = usersInGroup.get(i);
             int attempts = 0;
 
             do {
@@ -137,7 +139,7 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
                     break;
                 }
 
-                if (!santa.equals(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient)) {
+                if (!santa.equals(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient, group)) {
                     GenerateSanta santaPair = new GenerateSanta();
                     santaPair.setGroup(group);
                     santaPair.setSanta(santa);

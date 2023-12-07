@@ -25,5 +25,5 @@ public interface IGenerateSantaRepo extends JpaRepository<GenerateSanta, Integer
 
     Optional<GenerateSanta> findByRecipientAndGroup(User user, Group group);
 
-    boolean existsBySantaAndRecipient(User user1, User user2);
+    boolean existsBySantaAndRecipientAndGroup(User user1, User user2, Group group);
 }
