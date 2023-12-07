@@ -3,6 +3,7 @@ import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GenerateButton } from "./GenerateButton";
 import { GiftList } from "./GiftList";
+import { WishList } from "./WishList";
 
 export function ViewGroup() {
   const params = useParams();
@@ -11,12 +12,7 @@ export function ViewGroup() {
   const [newUserName, setNewUserName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [generated, setGenerated] = useState(false);
-  const [assignedRecipient, setAssignedRecipient] = useState({
-    userId: "",
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [assignedRecipient, setAssignedRecipient] = useState("");
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState({
     groupId: "",
@@ -120,15 +116,30 @@ export function ViewGroup() {
   };
 
   const checkSantaPairs = async () => {
+    const userId = parseInt(params.userId);
     const groupId = parseInt(params.groupId);
+    console.log("!!!userId", userId);
+
     try {
       const response = await fetch(
-        `/api/v1/generate_santa/all_in_group/${groupId}`
+        `/api/v1/generate_santa/santa_group/${userId}?groupId=${groupId}`
       );
+
       if (response.ok) {
         const santaPairs = await response.json();
-        if (santaPairs.length > 0) {
+        console.log("santapair", santaPairs);
+
+        // Check if santaPairs is an object and has 'santa' and 'recipient' properties
+        if (
+          santaPairs &&
+          typeof santaPairs === "object" &&
+          santaPairs.hasOwnProperty("santa") &&
+          santaPairs.hasOwnProperty("recipient")
+        ) {
+          setAssignedRecipient(santaPairs.recipient);
           setGenerated(true);
+        } else {
+          console.error("Invalid format of Santa pairs data.");
         }
       } else {
         console.error("Failed to fetch Santa pairs.");
@@ -137,6 +148,8 @@ export function ViewGroup() {
       console.error("Error checking Santa pairs:", error);
     }
   };
+
+
 
   // const handleGenerateButtonClick = async () => {
   //   const groupId = parseInt(params.groupId, 10);
@@ -274,7 +287,7 @@ export function ViewGroup() {
                 ) : null}
               </a>
             </Card.Content>
-            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
+            {/* {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <GenerateButton
                 generated={generated}
                 recipientName={assignedRecipient ? assignedRecipient.name : ""}
@@ -284,7 +297,23 @@ export function ViewGroup() {
                 Naughty or Nice lists <br />
                 are being prepared
               </button>
-            )}
+            )} */}
+            <button
+              fluid
+              className="generate-button"
+              size="large"
+              onClick={group.ownerId === parseInt(params.userId) ? generated={generated} : null}
+              style={{ display: group.ownerId === parseInt(params.userId) || (generated && assignedRecipient) ? "block" : "none" }}
+            >
+              {group.ownerId === parseInt(params.userId) && !generated
+                ? "GENERATE"
+                : generated
+                  ? `You are secret Santa to ${assignedRecipient ? assignedRecipient.name : assignedRecipient.name}`
+                  : null
+              }
+            </button>
+
+
           </Card>
 
           {console.log(
@@ -296,7 +325,7 @@ export function ViewGroup() {
         </div>
       </div>
       {generated && assignedRecipient && (
-        <GiftList userId={assignedRecipient.userId} />
+        <WishList recipientId={assignedRecipient.userId} />
       )}
     </div>
   );
