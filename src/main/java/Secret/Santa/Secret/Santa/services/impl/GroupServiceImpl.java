@@ -1,7 +1,7 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
-import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
+import Secret.Santa.Secret.Santa.mappers.GroupMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
@@ -10,11 +10,10 @@ import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGroupService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +94,14 @@ public class GroupServiceImpl implements IGroupService {
             throw new IllegalArgumentException("GroupDTO cannot be null");
         }
         try {
-            Group savedGroup = groupRepo.save(groupMapper.toGroup(groupDTO));
+            Group group = groupMapper.toGroup(groupDTO);
+
+            User owner = userRepo.findById(groupDTO.getOwnerId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + groupDTO.getOwnerId()));
+            group.getUser().add(owner);
+//            group.setUser(Collections.singletonList(owner));
+
+            Group savedGroup = groupRepo.save(group);
             return groupMapper.toGroupDTO(savedGroup);
 
         } catch (Exception e) {
