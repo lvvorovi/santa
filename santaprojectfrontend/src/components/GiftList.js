@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 export function GiftList() {
   const params = useParams();
   const [gifts, setGifts] = useState([]);
+  const [user, setUser] = useState();
 
   const [giftImage, setGiftImage] = useState([
     "/images/gift1.jpg",
@@ -34,6 +35,19 @@ export function GiftList() {
     }
   };
 
+  const fetchUser = async () => {
+    try {
+      const response = await fetch("/api/v1/users/" + params.id);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const user = await response.json();
+      setUser(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
   const getRandomGiftImageUrl = () => {
     const randomIndex = Math.floor(Math.random() * giftImage.length);
     return giftImage[randomIndex];
@@ -51,6 +65,7 @@ export function GiftList() {
 
   useEffect(() => {
     fetchGifts();
+    fetchUser();
   }, [params.id]);
 
   return (
@@ -58,7 +73,9 @@ export function GiftList() {
       <div>
         <Card style={{ width: "1300px", backgroundColor: "rgb(250, 110, 110" }}>
           <Card.Content>
-            <Card.Header style={{ color: "white" }}>Gift Wishlist</Card.Header>
+            <Card.Header style={{ color: "white" }}>
+              {user ? `${user.name}'s Gift Wishlist` : "Gift Wishlist"}
+            </Card.Header>
           </Card.Content>
           <Card.Content>
             <Card.Group style={{ display: "flex", justifyContent: "center" }}>

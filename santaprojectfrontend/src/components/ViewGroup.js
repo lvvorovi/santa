@@ -11,7 +11,12 @@ export function ViewGroup() {
   const [newUserName, setNewUserName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [generated, setGenerated] = useState(false);
-  const [assignedRecipient, setAssignedRecipient] = useState(null);
+  const [assignedRecipient, setAssignedRecipient] = useState({
+    userId: "",
+    name: "",
+    email: "",
+    password: "",
+  });
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState({
     groupId: "",
@@ -47,12 +52,6 @@ export function ViewGroup() {
     setNewUserName(e.target.value);
   };
 
-  //   const fetchFilteredUsers = async () => {
-  //     fetch(`/api/v1/users/name-filter/${nameText}?`)
-  //       .then((response) => response.json())
-  //       .then((jsonRespone) => setUsers(jsonRespone));
-  //   };
-
   const fetchFilteredUsers = async () => {
     if (newUserName.trim() !== "") {
       try {
@@ -60,7 +59,6 @@ export function ViewGroup() {
           `/api/v1/users/search?name=${newUserName}`
         );
         if (response.ok) {
-          
           const matchingUsers = await response.json();
           console.log("matchingUsers", matchingUsers);
           setFilteredUsers(matchingUsers);
@@ -105,7 +103,6 @@ export function ViewGroup() {
           if (addResponse.ok) {
             const updatedGroup = await addResponse.json();
             setGroup(updatedGroup);
-            // Reset the state for adding users
             setAddingUser(false);
             setNewUserName("");
           } else {
@@ -123,14 +120,13 @@ export function ViewGroup() {
   };
 
   const checkSantaPairs = async () => {
-    const groupId = parseInt(params.groupId, 10);
+    const groupId = parseInt(params.groupId);
     try {
       const response = await fetch(
         `/api/v1/generate_santa/all_in_group/${groupId}`
       );
       if (response.ok) {
         const santaPairs = await response.json();
-        // If there are Santa pairs, set doneGenerating to true
         if (santaPairs.length > 0) {
           setGenerated(true);
         }
@@ -190,6 +186,23 @@ export function ViewGroup() {
   useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();
   }, [newUserName]);
+
+  useEffect(() => {
+    console.log(
+      "Generated:",
+      generated,
+      "Assigned Recipient:",
+      assignedRecipient
+    );
+
+    if (assignedRecipient) {
+      console.log("Recipient Name:", assignedRecipient.name);
+    }
+
+    if (generated && assignedRecipient) {
+      console.log("Fetching GiftList for User ID:", assignedRecipient.userId);
+    }
+  }, [generated, assignedRecipient]);
 
   return (
     <div className="ui one column centered equal width grid">
@@ -266,13 +279,26 @@ export function ViewGroup() {
                 generated={generated}
                 recipientName={assignedRecipient ? assignedRecipient.name : ""}
               />
-            ) : null}
+            ) : (
+              <button className="generate-button">
+                Naughty or Nice lists <br />
+                are being prepared
+              </button>
+            )}
           </Card>
-          {generated && assignedRecipient && (
-            <GiftList userId={assignedRecipient.userId} />
+
+          {/* Log generated and assignedRecipient values here */}
+          {console.log(
+            "Generated:",
+            generated,
+            "Assigned Recipient:",
+            assignedRecipient
           )}
         </div>
       </div>
+      {generated && assignedRecipient && (
+        <GiftList userId={assignedRecipient.userId} />
+      )}
     </div>
   );
 }
