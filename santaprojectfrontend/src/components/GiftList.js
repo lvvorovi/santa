@@ -40,9 +40,14 @@ export function GiftList() {
     return giftImage[randomIndex];
   };
 
-  const handleGiftDoubleClick = (userId, giftId) => {
+  const handleGiftClick = (userId, giftId) => {
     console.log(`Card clicked for gift ID ${giftId} of user ID ${userId}`);
     navigate(`/users/${userId}/gifts/${giftId}`);
+  };
+
+  const handleCreateGiftClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/gift/${userId}`);
   };
 
   useEffect(() => {
@@ -62,9 +67,7 @@ export function GiftList() {
                 <Card
                   key={gift.id}
                   className="m-3 cursor-pointer"
-                  onDoubleClick={() =>
-                    handleGiftDoubleClick(params.id, gift.giftId)
-                  }
+                  onClick={() => handleGiftClick(params.id, gift.giftId)}
                   style={{ width: "150px", height: "240px" }}
                 >
                   <Image src={getRandomGiftImageUrl()} wrapped ui={false} />
@@ -80,7 +83,7 @@ export function GiftList() {
               ))}
               <Card
                 className="m-3 cursor-pointer"
-                //   onClick={() => handleAddNewGift()}
+                onClick={() => handleCreateGiftClick()}
                 style={{
                   width: "150px",
                   height: "240px",

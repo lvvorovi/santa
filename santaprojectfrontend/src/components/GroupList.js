@@ -36,10 +36,15 @@ export function GroupList() {
     return imageUrls[randomIndex];
   };
 
-  const handleGroupDoubleClick = (userId, groupId) => {
+  const handleGroupClick = (userId, groupId) => {
     console.log("groupId:", typeof groupId);
     console.log(`Card clicked for group ID ${groupId}`);
     navigate(`/users/${userId}/groups/${groupId}`);
+  };
+
+  const handleCreateGroupClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/group/${userId}`);
   };
 
   useEffect(() => {
@@ -61,8 +66,8 @@ export function GroupList() {
                 <Card
                   key={group.id}
                   className="m-3 cursor-pointer"
-                  onDoubleClick={() =>
-                    handleGroupDoubleClick(params.id, group.groupId)
+                  onClick={() =>
+                    handleGroupClick(params.id, group.groupId)
                   }
                   style={{ width: "200px", height: "350px" }}
                 >
@@ -82,7 +87,7 @@ export function GroupList() {
               ))}
               <Card
                 className="m-3 cursor-pointer"
-                //   onClick={() => handleAddNewGroup()}
+                onClick={() => handleCreateGroupClick()}
                 style={{
                   width: "200px",
                   height: "350px",

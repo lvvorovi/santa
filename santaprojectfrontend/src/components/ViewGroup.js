@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { GenerateButton } from "./GenerateButton";
 
 export function ViewGroup() {
   const params = useParams();
@@ -118,10 +119,13 @@ export function ViewGroup() {
   };
 
   const handleGenerateButtonClick = async () => {
-    const groupId = parseInt(params.groupId, 10); // Convert to number
+    const groupId = parseInt(params.groupId, 10);
+    console.log("Group ID:", groupId);
+    console.log("User ID:", parseInt(params.userId));
     const response = await generateSanta(groupId); // Pass groupId
     if (response && response.recipient) {
-      setAssignedRecipient(response.recipient);
+      console.log("recipient is: ", response.recipient);
+      // setAssignedRecipient(response.recipient);
     }
     setGenerated(true);
   };
@@ -129,7 +133,7 @@ export function ViewGroup() {
   const generateSanta = async (groupId) => {
     try {
       const response = await fetch(
-        `/api/v1/generate_santa/random/${groupId}`, // Use groupId
+        `/api/v1/generate_santa/random/${groupId}`, 
         {
           method: "POST",
           headers: {
@@ -140,8 +144,8 @@ export function ViewGroup() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result);
-        return result; // Return the result
+        console.log("GENERATED RESULTS ARE: ",result);
+        return result; 
       } else {
         console.error("Failed to generate Santa.");
         return null;
@@ -154,6 +158,9 @@ export function ViewGroup() {
 
   useEffect(() => {
     fetchGroups();
+    console.log("ViewGroup - Owner ID:", group.ownerId);
+    console.log("ViewGroup - User ID:", parseInt(params.userId)); // Make sure to convert to number
+
     fetchUsers();
     console.log("groupId:", typeof params.groupId);
   }, [params.groupId]);
@@ -232,7 +239,7 @@ export function ViewGroup() {
                 ) : null}
               </a>
             </Card.Content>
-            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
+            {/* {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <button
                 className="generate-button"
                 size="large"
@@ -244,7 +251,16 @@ export function ViewGroup() {
                     }`
                   : "GENERATE"}
               </button>
+            ) : null} */}
+            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
+              <GenerateButton
+                onGenerateButtonClick={handleGenerateButtonClick}
+                generated={generated}
+                // recipientName={assignedRecipient ? assignedRecipient.name : ""}
+              />
             ) : null}
+
+            {/* <GenerateButton /> */}
           </Card>
         </div>
       </div>

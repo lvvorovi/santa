@@ -58,25 +58,25 @@ export function ViewUser() {
     }
   };
 
-  const handleGroupDoubleClick = (userId, groupId) => {
-    console.log("groupId:", typeof groupId);
-    console.log(`Card clicked for group ID ${groupId}`);
-    navigate(`/users/${userId}/groups/${groupId}`);
-  };
+  // const handleGroupDoubleClick = (userId, groupId) => {
+  //   console.log("groupId:", typeof groupId);
+  //   console.log(`Card clicked for group ID ${groupId}`);
+  //   navigate(`/users/${userId}/groups/${groupId}`);
+  // };
 
-  const handleGiftDoubleClick = (userId, giftId) => {
-    console.log(`Card clicked for gift ID ${giftId} of user ID ${userId}`);
-    navigate(`/users/${userId}/gifts/${giftId}`);
-  };
+  // const handleGiftDoubleClick = (userId, giftId) => {
+  //   console.log(`Card clicked for gift ID ${giftId} of user ID ${userId}`);
+  //   navigate(`/users/${userId}/gifts/${giftId}`);
+  // };
 
-  const handleCreateGiftClick = (userId) => {
-    console.log(`Card clicked for gift ID ${userId}`);
-    navigate(`/create/gift/${userId}`);
-  };
-  const handleCreateGroupClick = (userId) => {
-    console.log(`Card clicked for gift ID ${userId}`);
-    navigate(`/create/group/${userId}`);
-  };
+  // const handleCreateGiftClick = (userId) => {
+  //   console.log(`Card clicked for gift ID ${userId}`);
+  //   navigate(`/create/gift/${userId}`);
+  // };
+  // const handleCreateGroupClick = (userId) => {
+  //   console.log(`Card clicked for gift ID ${userId}`);
+  //   navigate(`/create/group/${userId}`);
+  // };
 
   useEffect(() => {
     fetchUser();
@@ -114,11 +114,14 @@ export function ViewUser() {
                     fontSize: "1.5em",
                     // marginBottom: "5px",
                     textAlign: "center",
+                    // fontFamily: "Times-Roman",
+                    // fontWeight: "bold",
                   }}
                 >
                   Welcome <b>{user.name}</b>!
                 </Card.Header>
-                <Card.Meta style={{ fontSize: "1.2em", color: "red" }}>
+                <Card.Meta style={{ fontSize: "1.2em", color: "red", fontFamily: "Times-Italic",
+ }}>
                   <span className="date">
                     <br />
                     Are you ready to be <b>Secret Santa </b>
