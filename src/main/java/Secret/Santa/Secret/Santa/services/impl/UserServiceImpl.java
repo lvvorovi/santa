@@ -30,18 +30,6 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepo iUserRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = iUserRepo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("USER"))); // Assign role - USER
-    }
-
-
-    @Override
     public List<UserDTO> getAllUsers() {
         try {
             List<User> users = iUserRepo.findAll();

@@ -1,39 +1,50 @@
 package Secret.Santa.Secret.Santa.controllers;
 
-import Secret.Santa.Secret.Santa.confs.AuthenticationResponse;
-import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
-import Secret.Santa.Secret.Santa.utils.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import Secret.Santa.Secret.Santa.authentification.AuthenticationRequest;
+import Secret.Santa.Secret.Santa.authentification.AuthenticationResponse;
+import Secret.Santa.Secret.Santa.authentification.AuthenticationService;
+import Secret.Santa.Secret.Santa.authentification.RegisterRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationService service;
 
-    @Autowired
-    private JwtUtil jwtUtil;
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody UserDTO userDTO) {
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+            @RequestBody RegisterRequest request
+    ) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new RuntimeException("Incorrect username or password", e);
+            AuthenticationResponse response = service.register(request);
+            return ResponseEntity.ok(response);
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Username already exists"));
         }
+    }
 
-        final String jwt = jwtUtil.generateToken(userDTO.getEmail());
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
+            @RequestBody AuthenticationRequest request
+    ) {
+        try{
+            AuthenticationResponse response = service.login(request);
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Password is incorrect"));
+        }
     }
 }
-
-

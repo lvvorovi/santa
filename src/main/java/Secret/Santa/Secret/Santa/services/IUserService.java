@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface IUserService extends UserDetailsService {
+public interface IUserService  {
     List<UserDTO> getAllUsers();
     UserDTO findByUserid(int userid);
     UserDTO editByUserId(UserDTO lessorDTO);
