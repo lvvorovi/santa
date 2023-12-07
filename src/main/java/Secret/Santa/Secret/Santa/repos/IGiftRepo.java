@@ -1,6 +1,7 @@
 package Secret.Santa.Secret.Santa.repos;
 
 import Secret.Santa.Secret.Santa.models.Gift;
+import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,10 @@ public interface IGiftRepo extends JpaRepository<Gift, Integer> {
     @Modifying
     @Query("DELETE FROM Gift g WHERE g.createdBy = :user")
     void deleteByCreatedBy(@Param("user") User user);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Gift g WHERE g.group = :group")
+    void deleteByGroup(@Param("group") Group group);
 }
 

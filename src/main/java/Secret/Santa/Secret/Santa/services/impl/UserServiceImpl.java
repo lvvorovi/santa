@@ -3,6 +3,7 @@ package Secret.Santa.Secret.Santa.services.impl;
 import Secret.Santa.Secret.Santa.mappers.UserMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
+import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
@@ -125,11 +126,14 @@ public class UserServiceImpl implements IUserService {
             }
             iGroupRepo.saveAll(groups);
 
-            try {
-                iGiftRepo.deleteByCreatedBy(user);
-            } catch (Exception e) {
-                logger.error("Error deleting gifts owned by user with ID: {}", userId, e);
-                return false;
+            List<Gift> gifts = iGiftRepo.findByCreatedBy(user);
+            if (!gifts.isEmpty()) {
+                try {
+                    iGiftRepo.deleteByCreatedBy(user);
+                } catch (Exception e) {
+                    logger.error("Error deleting gifts owned by user with ID: {}", userId, e);
+                    return false;
+                }
             }
             try {
                 iGroupRepo.deleteByOwner(user);
@@ -139,7 +143,7 @@ public class UserServiceImpl implements IUserService {
                 return false;
             }
             try {
-                iUserRepo.delete(user);
+                iUserRepo.deleteById(userId);
                 return true;
 
             } catch (Exception e) {

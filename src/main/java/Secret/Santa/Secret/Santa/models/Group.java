@@ -30,7 +30,7 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)//, cascade = CascadeType.ALL)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     @JoinTable(
             name = "users_in_groups",
@@ -40,9 +40,9 @@ public class Group {
     private List<User> user;
 
 
-//    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private List<Gift> gifts;
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Gift> gifts;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
 //    @JsonIgnore
