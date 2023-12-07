@@ -87,7 +87,7 @@ export function GroupList() {
               ))}
               <Card
                 className="m-3 cursor-pointer"
-                onClick={() => handleCreateGroupClick()}
+                onClick={() => handleCreateGroupClick(params.id)}
                 style={{
                   width: "200px",
                   height: "350px",

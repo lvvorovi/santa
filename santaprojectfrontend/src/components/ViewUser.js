@@ -69,14 +69,14 @@ export function ViewUser() {
   //   navigate(`/users/${userId}/gifts/${giftId}`);
   // };
 
-  // const handleCreateGiftClick = (userId) => {
-  //   console.log(`Card clicked for gift ID ${userId}`);
-  //   navigate(`/create/gift/${userId}`);
-  // };
-  // const handleCreateGroupClick = (userId) => {
-  //   console.log(`Card clicked for gift ID ${userId}`);
-  //   navigate(`/create/group/${userId}`);
-  // };
+  const handleCreateGiftClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/gift/${userId}`);
+  };
+  const handleCreateGroupClick = (userId) => {
+    console.log(`Card clicked for gift ID ${userId}`);
+    navigate(`/create/group/${userId}`);
+  };
 
   useEffect(() => {
     fetchUser();
@@ -215,8 +215,8 @@ export function ViewUser() {
           </div>
         </div> */}
       </div>
-      <GroupList />
-      <GiftList />
+      <GroupList handleCreateGiftClick={handleCreateGiftClick}/>
+      <GiftList handleCreateGroupClick={handleCreateGroupClick}/>
     </div>
   );
 }

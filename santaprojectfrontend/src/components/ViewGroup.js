@@ -58,7 +58,9 @@ export function ViewGroup() {
           `/api/v1/users/search?name=${newUserName}`
         );
         if (response.ok) {
+          
           const matchingUsers = await response.json();
+          console.log("matchingUsers", matchingUsers);
           setFilteredUsers(matchingUsers);
         } else {
           console.error("Failed to fetch filtered users.");
@@ -83,7 +85,7 @@ export function ViewGroup() {
       if (response.ok) {
         const users = await response.json();
         const user = Array.isArray(users) && users.length > 0 ? users[0] : null;
-
+        console.log("user", user);
         if (user) {
           const addResponse = await fetch(
             `/api/v1/groups/${parseInt(params.groupId)}/users/${parseInt(
@@ -163,7 +165,7 @@ export function ViewGroup() {
 
     fetchUsers();
     console.log("groupId:", typeof params.groupId);
-  }, [params.groupId]);
+  }, [parseInt(params.groupId)]);
 
   useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();

@@ -29,7 +29,7 @@ function App() {
             <Route path="/create/group/:id" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
             <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
-            <Route path="/chatroom" element={<ChatRoom />} />
+            {/* <Route path="/chatroom" element={<ChatRoom />} /> */}
           </Routes>
         </div>
       </HashRouter>

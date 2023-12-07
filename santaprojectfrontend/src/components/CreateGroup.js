@@ -47,9 +47,9 @@ export function CreateGroup() {
 
   const createGroup = () => {
     console.log("Selected Users:", user);
-    console.log("Owner:", ownerId);
+    console.log("Owner:", typeof ownerId);
     const requestBody = {
-      groupId,
+      // groupId,
       name,
       eventDate,
       budget,

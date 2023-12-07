@@ -49,7 +49,7 @@ export function CreateGift() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch(`/api/v1/groups/user/${params.id}/groups`);
+      const response = await fetch(`/api/v1/groups/user/${parseInt(params.id)}/groups`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
