@@ -20,7 +20,7 @@ export function ViewGroup() {
     user: [],
     gifts: [],
     ownerId: "",
-    // generatedSanta: [],
+    generatedSanta: [],
   });
 
   const fetchGroups = async () => {
@@ -38,7 +38,7 @@ export function ViewGroup() {
   };
 
   const handleAddNewUser = () => {
-    console.log(users)
+    console.log(users);
     setAddingUser(true);
   };
 
@@ -141,44 +141,45 @@ export function ViewGroup() {
     }
   };
 
-  const handleGenerateButtonClick = async () => {
-    const groupId = parseInt(params.groupId, 10);
-    console.log("Group ID:", groupId);
-    console.log("User ID:", parseInt(params.userId));
-    const response = await generateSanta(groupId); // Pass groupId
-    if (response && response.recipient) {
-      console.log("recipient is: ", response.recipient);
-      // setAssignedRecipient(response.recipient);
-    }
-    setGenerated(true);
-  };
+  // const handleGenerateButtonClick = async () => {
+  //   const groupId = parseInt(params.groupId, 10);
+  //   console.log("Group ID:", groupId);
+  //   console.log("User ID:", parseInt(params.userId));
+  //   const response = await generateSanta(groupId);
+  //   if (response && response.recipient) {
+  //     console.log("recipient is: ", response.recipient);
+  //     // setAssignedRecipient(response.recipient);
+  //   }
+  //   setGenerated(true);
+  // };
 
-  const generateSanta = async (groupId) => {
-    try {
-      const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  // const generateSanta = async (groupId) => {
+  //   try {
+  //     const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("GENERATED RESULTS ARE: ", result);
-        return result;
-      } else {
-        console.error("Failed to generate Santa.");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error generating Santa:", error);
-      return null;
-    }
-  };
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       console.log("GENERATED RESULTS ARE: ", result);
+  //       return result;
+  //     } else {
+  //       console.error("Failed to generate Santa.");
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error generating Santa:", error);
+  //     return null;
+  //   }
+  // };
 
   useEffect(() => {
     fetchGroups();
     console.log("ViewGroup - Owner ID:", group.ownerId);
+    console.log("All group info: ", group);
     console.log("ViewGroup - User ID:", parseInt(params.userId)); // Make sure to convert to number
     checkSantaPairs();
     fetchUsers();
@@ -274,13 +275,10 @@ export function ViewGroup() {
             ) : null} */}
             {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <GenerateButton
-                onGenerateButtonClick={handleGenerateButtonClick}
                 generated={generated}
-                // recipientName={assignedRecipient ? assignedRecipient.name : ""}
+                recipientName={assignedRecipient ? assignedRecipient.name : ""}
               />
             ) : null}
-
-            {/* <GenerateButton /> */}
           </Card>
         </div>
       </div>
