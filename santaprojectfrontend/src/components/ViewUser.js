@@ -3,6 +3,7 @@ import { Card, Image, Header, Button } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 import { GiftList } from "./GiftList";
+import { GroupList } from "./GroupList";
 
 export function ViewUser() {
   const navigate = useNavigate();
@@ -85,46 +86,52 @@ export function ViewUser() {
 
   return (
     <div className="ui centered container">
-      <div style={{ display: "flex" }}>
+      <div>
         <Card
-          style={{ width: "150px", display: "flex", alignItems: "center" }}
+          style={{
+            width: "1300px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
           centered
         >
           <Card.Content>
             <Image src="/images/user.png" circular size="small" centered />
           </Card.Content>
-        </Card>
-        <Card
-          style={{
-            width: "300px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-          centered
-        >
-          <Card.Content
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <div style={{ flex: "1", textAlign: "center" }}></div>
-            <div style={{ flex: "2", textAlign: "center" }}>
-              <Card.Header style={{ fontSize: "1.5em", marginBottom: "5px" }}>
-                {user.name}
-              </Card.Header>
-              <Card.Meta style={{ fontSize: "1.2em" }}>
-                <span className="date">{user.email}</span>
-              </Card.Meta>
+          <Card.Content>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <div>
+                <Card.Header
+                  style={{
+                    fontSize: "1.5em",
+                    // marginBottom: "5px",
+                    textAlign: "center",
+                  }}
+                >
+                  Welcome <b>{user.name}</b>!
+                </Card.Header>
+                <Card.Meta style={{ fontSize: "1.2em", color: "red" }}>
+                  <span className="date">
+                    <br />
+                    Are you ready to be <b>Secret Santa </b>
+                    for someone special?
+                  </span>
+                </Card.Meta>
+              </div>
             </div>
           </Card.Content>
         </Card>
       </div>
       <div className="ui two column stackable grid">
-        <div className="column">
+        {/* <div className="column">
           <div className="ui" style={{ textAlign: "center" }}>
             <Header as="h2">Group List</Header>
             <Button
@@ -203,8 +210,9 @@ export function ViewUser() {
               </Card>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
+      <GroupList />
       <GiftList />
     </div>
   );

@@ -19,8 +19,8 @@ export function Navbar() {
   //   };
 
   return (
-    <Segment color="red" inverted>
-      <Menu color="red" inverted secondary>
+    <Segment style={{ backgroundColor: "rgb(250, 110, 110" }} inverted>
+      <Menu style={{ backgroundColor: "rgb(250, 110, 110" }} inverted secondary>
         {/* <Menu.Item>
           <img alt="logo" src={car} />
         </Menu.Item> */}
