@@ -287,7 +287,6 @@ export function ViewGroup() {
             )}
           </Card>
 
-          {/* Log generated and assignedRecipient values here */}
           {console.log(
             "Generated:",
             generated,
