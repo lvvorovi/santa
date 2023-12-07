@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.authentification.AuthenticationResponse;
 import Secret.Santa.Secret.Santa.authentification.AuthenticationService;
 import Secret.Santa.Secret.Santa.authentification.RegisterRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationService service;
@@ -44,6 +46,7 @@ public class AuthenticationController {
             AuthenticationResponse response = service.login(request);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e){
+            log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Password is incorrect"));
         }
     }

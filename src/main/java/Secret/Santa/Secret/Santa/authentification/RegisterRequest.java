@@ -1,5 +1,6 @@
 package Secret.Santa.Secret.Santa.authentification;
 
+import Secret.Santa.Secret.Santa.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,5 @@ public class RegisterRequest {
     private String name;
     private String email;
     private String password;
-    //private Role role;
+    private Role role;
 }

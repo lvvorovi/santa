@@ -2,6 +2,7 @@ package Secret.Santa.Secret.Santa.services.impl;
 
 import Secret.Santa.Secret.Santa.mappers.UserMapper;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
+import Secret.Santa.Secret.Santa.models.Role;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IUserService;
@@ -9,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +26,17 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
     private final IUserRepo iUserRepo;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = iUserRepo.findByEmail(username) //TODO check if this is correct
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user;
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -82,11 +91,15 @@ public class UserServiceImpl implements IUserService {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
+        if(iUserRepo.existsByEmail(userDTO.getEmail())){
+            throw new IllegalArgumentException("User with this email already registered");
+        }
         try {
             User user = new User();
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
             user.setPassword(userDTO.getPassword());
+            user.setRole(Role.USER);
             User savedUser = iUserRepo.save(user);
             return userMapper.toUserDTO(savedUser);
 

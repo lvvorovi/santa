@@ -28,7 +28,7 @@ public class UserDTO {
         userDTO.setName(request.getName());
         userDTO.setEmail(request.getEmail());
         userDTO.setPassword(request.getPassword());
-        //userDTO.setRole(request.getRole());
+        userDTO.setRole(request.getRole());
         return userDTO;
     }
     public static UserDTO fromAuthenticationRequest(AuthenticationRequest request) {

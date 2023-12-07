@@ -76,6 +76,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(req ->
                         req
+                                .requestMatchers("/api/v1/auth/**")
+                                .permitAll()
 //                                .requestMatchers(HttpMethod.GET, "/api/v1/groups/**").authenticated()
 //                                .requestMatchers(HttpMethod.POST, "/api/v1/groups/**").authenticated()
 //                                .requestMatchers(HttpMethod.PUT, "/api/v1/groups/**").authenticated()
@@ -93,8 +95,7 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").authenticated()
 //                                .requestMatchers(WHITE_LIST_URL)
 //                                .permitAll()
-                                .anyRequest()
-                                .permitAll()
+                                .anyRequest().authenticated()
                                 //.authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
