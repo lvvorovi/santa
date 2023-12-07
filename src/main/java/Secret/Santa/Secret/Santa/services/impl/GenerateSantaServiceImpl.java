@@ -1,6 +1,5 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
-import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
@@ -10,10 +9,10 @@ import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
 import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,23 +109,72 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
         }
     }
 
+//    @Override
+//    public void randomSantaGenerator(Integer groupId) {
+//        Group group = groupUtils.getGroupById(groupId);
+//        List<User> usersInGroup = group.getUser();//userUtils.getUsersInGroup(group);
+//
+//        List<User> shuffledUsers = new ArrayList<>(usersInGroup);
+//        Collections.shuffle(shuffledUsers);
+//
+//        List<User> recipients = new ArrayList<>(shuffledUsers);
+//
+//        int maxAttempts = 100;
+//        for (int i = 0; i < shuffledUsers.size(); i++) {
+//            User santa = shuffledUsers.get(i);
+//            int attempts = 0;
+//
+//            do {
+//                User recipient = recipients.get((i + attempts) % shuffledUsers.size()); // Circular selection of recipients
+//                attempts++;
+//
+//                if (attempts > maxAttempts) {
+//                    logger.error("Exceeded maximum attempts to find a recipient for Santa: " + santa);
+//                    break;
+//                }
+//
+//                if (!santa.equals(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient)) {
+//                    GenerateSanta santaPair = new GenerateSanta();
+//                    santaPair.setGroup(group);
+//                    santaPair.setSanta(santa);
+//                    santaPair.setRecipient(recipient);
+//
+//                    generateSantaRepository.save(santaPair);
+//                    break;
+//                }
+//            } while (true);
+//        }
+//
+//    }
+
     @Override
     public void randomSantaGenerator(Integer groupId) {
         Group group = groupUtils.getGroupById(groupId);
-        List<User> usersInGroup = group.getUser();//userUtils.getUsersInGroup(group);
+        List<User> usersInGroup = group.getUser();
+
+        if (usersInGroup.size() < 2) {
+            logger.error("Not enough participants in the group to generate Secret Santa pairs.");
+            return;
+        }
 
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
 
-        List<User> recipients = new ArrayList<>(shuffledUsers);
-
         int maxAttempts = 100;
         for (int i = 0; i < shuffledUsers.size(); i++) {
             User santa = shuffledUsers.get(i);
+            List<User> remainingRecipients = new ArrayList<>(shuffledUsers);
+            remainingRecipients.remove(santa); // Remove Santa from potential recipients
+
             int attempts = 0;
 
             do {
-                User recipient = recipients.get((i + attempts) % shuffledUsers.size()); // Circular selection of recipients
+                if (remainingRecipients.isEmpty()) {
+                    logger.error("No available recipients for Santa: " + santa);
+                    break;
+                }
+
+                User recipient = remainingRecipients.remove((i + attempts) % remainingRecipients.size()); // Circular selection of remaining recipients
                 attempts++;
 
                 if (attempts > maxAttempts) {
@@ -134,7 +182,7 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
                     break;
                 }
 
-                if (!santa.equals(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient)) {
+                if (!generateSantaUtils.alreadyPaired(santa, recipient)) {
                     GenerateSanta santaPair = new GenerateSanta();
                     santaPair.setGroup(group);
                     santaPair.setSanta(santa);
@@ -145,7 +193,6 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
                 }
             } while (true);
         }
-
     }
 
 

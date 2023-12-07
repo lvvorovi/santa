@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card, Icon, Image, Button } from "semantic-ui-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./SecretSanta.css";
 
-export function GroupList() {
+export function GroupList({ handleCreateGroupClick }) {
   const navigate = useNavigate();
+  const params = useParams();
   const [groups, setGroups] = useState([]);
   const [imageUrls, setImageUrls] = useState([
     "/images/santa1.jpg",
@@ -30,78 +31,92 @@ export function GroupList() {
     }
   };
 
-  const handleCardDoubleClick = (groupId) => {
-    console.log(`Card clicked for group ID ${groupId}`);
-    navigate(`/groups/${groupId}`);
-  };
-
-  const getRandomImageUrl = () => {
+  const getRandomGroupImageUrl = () => {
     const randomIndex = Math.floor(Math.random() * imageUrls.length);
     return imageUrls[randomIndex];
   };
+
+  const handleGroupClick = (userId, groupId) => {
+    console.log("groupId:", typeof groupId);
+    console.log(`Card clicked for group ID ${groupId}`);
+    navigate(`/users/${userId}/groups/${groupId}`);
+  };
+
+  // const handleCreateGroupClick = (userId) => {
+  //   console.log("groupId:", typeof groupId);
+  //   navigate(`/create/group/${userId}`);
+  // };
 
   useEffect(() => {
     fetchGroups();
   }, []);
 
   return (
-    <div class="ui one column centered equal width grid">
-      <div className="d-flex justify-content-center m-3 centered backgroundImage">
-        {groups.map((group) => (
-          <div
-            key={group.id}
-            className="m-3"
-            onDoubleClick={() => handleCardDoubleClick(group.groupId)}
-          >
-            <Card.Group>
-              <Card centered m-3 className="card">
-                <Image src={getRandomImageUrl()} wrapped ui={false} />
-                <Card.Content>
-                  <Card.Header>{group.name}</Card.Header>
-                  <Card.Meta>
-                    <span className="date">
-                      Event date is set to {group.eventDate}
-                    </span>
-                  </Card.Meta>
-                  <Card.Description>
-                    Event budget is {group.budget}Є
-                  </Card.Description>
+    <div>
+      <div>
+        <Card style={{ width: "1300px", backgroundColor: "rgb(250, 110, 110" }}>
+          <Card.Content>
+            <Card.Header style={{ color: "white" }}>
+              Attending events:
+            </Card.Header>
+          </Card.Content>
+          <Card.Content>
+            <Card.Group style={{ display: "flex", justifyContent: "center" }}>
+              {groups.map((group) => (
+                <Card
+                  key={group.id}
+                  className="m-3 cursor-pointer"
+                  onClick={() => handleGroupClick(params.id, group.groupId)}
+                  style={{ width: "200px", height: "350px" }}
+                >
+                  <Image src={getRandomGroupImageUrl()} wrapped ui={false} />
+                  <Card.Content>
+                    <Card.Header>{group.name}</Card.Header>
+                    <Card.Meta>
+                      <span className="date">
+                        Event date is set to
+                        <br /> {group.eventDate}
+                      </span>
+                    </Card.Meta>
+                    <Card.Description>
+                      Event budget is {group.budget}Є
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+              ))}
+              <Card
+                className="m-3 cursor-pointer"
+                onClick={() => handleCreateGroupClick()}
+                style={{
+                  width: "200px",
+                  height: "350px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  backgroundColor: "rgba(250, 140, 140)",
+                }}
+              >
+                <Card.Content
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Card.Header
+                    style={{
+                      fontSize: "20px",
+                      //   paddingTop: "150px",
+                      color: "grey",
+                    }}
+                  >
+                    Add New Group
+                  </Card.Header>
                 </Card.Content>
               </Card>
             </Card.Group>
-          </div>
-        ))}
-        <div className="m-3">
-          <Button
-            basic
-            color="red"
-            icon
-            className="controls"
-            as={Link}
-            to="/create/group"
-          >
-            Create new event
-          </Button>
-        </div>
-        {/* <Card.Group>
-          {groups.map((group) => (
-            <div
-              key={group.id}
-              className="mb-3 cursor-pointer"
-              onDoubleClick={() => handleCardDoubleClick(group.groupId)}
-            >
-              <Card>
-                <Card.Content>
-                  <Card.Header>{group.name}</Card.Header>
-                  <Card.Meta>{group.eventDate}</Card.Meta>
-                  <Card.Description>
-                    Event budget is {group.budget}
-                  </Card.Description>
-                </Card.Content>
-              </Card>
-            </div>
-          ))}
-        </Card.Group> */}
+          </Card.Content>
+        </Card>
       </div>
     </div>
   );

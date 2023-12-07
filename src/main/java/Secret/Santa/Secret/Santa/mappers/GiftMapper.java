@@ -40,9 +40,7 @@ public class GiftMapper {
     public GiftDTO toGiftDTO(Gift gift) {
 
         GiftDTO giftDTO = new GiftDTO();
-        if (gift.getGiftId() != null) {
-            giftDTO.setGiftId(gift.getGiftId());
-        }
+        giftDTO.setGiftId(gift.getGiftId());
         giftDTO.setName(gift.getName());
         giftDTO.setDescription(gift.getDescription());
         giftDTO.setLink(gift.getLink());
