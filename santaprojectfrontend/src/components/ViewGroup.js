@@ -12,10 +12,10 @@ export function ViewGroup() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [generated, setGenerated] = useState(false);
   const [assignedRecipient, setAssignedRecipient] = useState({
-    userId: "",
-    name: "",
-    email: "",
-    password: "",
+    // userId: "",
+    // name: "",
+    // email: "",
+    // password: "",
   });
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState({
@@ -30,8 +30,8 @@ export function ViewGroup() {
   });
 
   const fetchGroups = async () => {
-    const groupId = parseInt(params.groupId, 10);
-    console.log("groupId:", groupId, typeof groupId); // Log the value and type
+    const groupId = parseInt(params.groupId);
+    console.log("groupId:", groupId, typeof groupId); 
     fetch("/api/v1/groups/" + groupId)
       .then((response) => response.json())
       .then(setGroup);
@@ -125,6 +125,7 @@ export function ViewGroup() {
       const response = await fetch(
         `/api/v1/generate_santa/all_in_group/${groupId}`
       );
+      console.log("RESPONSAS pafecinus pairs: ", response.json);
       if (response.ok) {
         const santaPairs = await response.json();
         if (santaPairs.length > 0) {
@@ -277,7 +278,7 @@ export function ViewGroup() {
             {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <GenerateButton
                 generated={generated}
-                recipientName={assignedRecipient ? assignedRecipient.name : ""}
+                // recipientName={assignedRecipient ? assignedRecipient.name : ""}
               />
             ) : (
               <button className="generate-button">

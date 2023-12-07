@@ -36,7 +36,6 @@ export function GenerateButton({
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        // Update state or perform other actions as needed
       } else {
         console.error("Failed to generate Santa.");
       }
@@ -54,14 +53,14 @@ export function GenerateButton({
       if (response.ok) {
         const generateSanta = await response.json();
         console.log("generate santa response:", generateSanta);
-        return generateSanta?.recipient?.name || "SOMEONE";
+        return generateSanta?.recipient?.name;
       } else {
         console.error("Failed to fetch generateSanta");
-        return "SOMEONE";
+        return "XXX";
       }
     } catch (error) {
       console.error("Error fetching generateSanta:", error);
-      return "SOMEONE";
+      return "UUU";
     }
   };
 
