@@ -1,27 +1,11 @@
 // import React, { useState, useEffect } from "react";
-// import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
-// import { Link, useNavigate, useParams } from "react-router-dom";
+// import { Button } from "semantic-ui-react";
+// import { useParams } from "react-router-dom";
 
-// export function GenerateButton({
-//   generated,
-//   recipientName,
-// }) {
+// export function GenerateButton({ generated, onGenerate }) {
 //   const params = useParams();
 
-//   const [assignedRecipient, setAssignedRecipient] = useState(null);
-//   const [santaPairs, setSantaPairs] = useState({});
 //   const [myRecipient, setMyRecipient] = useState(null);
-//   const [group, setGroup] = useState({
-//     groupId: "",
-//     name: "",
-//     eventDate: "",
-//     budget: "",
-//     user: [],
-//     gifts: [],
-//     ownerId: "",
-//     generatedSanta: [],
-//   });
-
 
 //   const generateSanta = async () => {
 //     try {
@@ -36,7 +20,7 @@
 //       if (response.ok) {
 //         const result = await response.json();
 //         console.log(result);
-//         // Update state or perform other actions as needed
+//         onGenerate(result); // Pass the generated Santa pairs to the parent component
 //       } else {
 //         console.error("Failed to generate Santa.");
 //       }
@@ -72,16 +56,43 @@
 //     );
 //   }, [params.groupId, params.userId]);
 
+//   const handleClick = () => {
+//     if (!generated) {
+//       generateSanta();
+//     }
+//   };
+
 //   return (
 //     <div>
-//       <button
+//       <Button
 //         fluid
 //         className="generate-button"
 //         size="large"
-//         onClick={generateSanta}
+//         onClick={handleClick}
 //       >
 //         {generated ? `You are secret Santa to ${myRecipient}` : "GENERATE"}
-//       </button>
+//       </Button>
 //     </div>
 //   );
 // }
+
+
+//   // return (
+//   //   <div>
+//   //     <button
+//   //       fluid
+//   //       className="generate-button"
+//   //       size="large"
+//   //       onClick={group.ownerId === parseInt(params.userId) ? generated = { generated } : null}
+//   //       style={{ display: group.ownerId === parseInt(params.userId) || (generated && assignedRecipient) ? "block" : "none" }}
+//   //     >
+//   //       {group.ownerId === parseInt(params.userId) && !generated
+//   //         ? "GENERATE"
+//   //         : generated
+//   //           ? `You are secret Santa to ${assignedRecipient ? assignedRecipient.name : assignedRecipient.name}`
+//   //           : null
+//   //       }
+//   //     </button>
+//   //   </div>
+//   // );
+

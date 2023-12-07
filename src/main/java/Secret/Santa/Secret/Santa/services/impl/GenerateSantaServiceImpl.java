@@ -110,7 +110,11 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
     @Override
     public void randomSantaGenerator(Integer groupId) {
+
         Group group = groupUtils.getGroupById(groupId);
+        if (generateSantaUtils.existsByGroup(group)) {
+            throw new SantaValidationException("Generate santa for group exits: ", "", "", "");
+        }
         List<User> usersInGroup = group.getUser();
 
         if (usersInGroup.size() <= 2) {

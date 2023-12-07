@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { GenerateButton } from "./GenerateButton";
-import { GiftList } from "./GiftList";
 import { WishList } from "./WishList";
 
 export function ViewGroup() {
@@ -25,6 +23,9 @@ export function ViewGroup() {
     generatedSanta: [],
   });
 
+  const [myRecipient, setMyRecipient] = useState(null);
+  const [santaPairs, setSantaPairs] = useState({});
+
   const fetchGroups = async () => {
     const groupId = parseInt(params.groupId, 10);
     console.log("groupId:", groupId, typeof groupId); // Log the value and type
@@ -46,6 +47,12 @@ export function ViewGroup() {
 
   const handleNewUserInputChange = (e) => {
     setNewUserName(e.target.value);
+  };
+
+  const handleGenerate = () => {
+    if (group.ownerId === parseInt(params.userId)) {
+      setGenerated(!generated); // Toggle 'generated' state
+    }
   };
 
   const fetchFilteredUsers = async () => {
@@ -149,42 +156,56 @@ export function ViewGroup() {
     }
   };
 
+  const fetchMyRecipient = async (userId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/generate_santa/santa_group/${userId}?groupId=${params.groupId}`
+      );
 
+      if (response.ok) {
+        const generateSanta = await response.json();
+        console.log("generate santa response:", generateSanta);
+        return generateSanta?.recipient?.name || "SOMEONE";
+      } else {
+        console.error("Failed to fetch generateSanta");
+        return "SOMEONE";
+      }
+    } catch (error) {
+      console.error("Error fetching generateSanta:", error);
+      return "SOMEONE";
+    }
+  };
 
-  // const handleGenerateButtonClick = async () => {
-  //   const groupId = parseInt(params.groupId, 10);
-  //   console.log("Group ID:", groupId);
-  //   console.log("User ID:", parseInt(params.userId));
-  //   const response = await generateSanta(groupId);
-  //   if (response && response.recipient) {
-  //     console.log("recipient is: ", response.recipient);
-  //     // setAssignedRecipient(response.recipient);
-  //   }
-  //   setGenerated(true);
-  // };
+  const generateSanta = async () => {
+    try {
+      const groupId = parseInt(params.groupId);
+      const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  // const generateSanta = async (groupId) => {
-  //   try {
-  //     const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        // Update state or perform other actions as needed
+      } else {
+        console.error("Failed to generate Santa.");
+      }
+    } catch (error) {
+      console.error("Error generating Santa:", error);
+    }
+  };
 
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       console.log("GENERATED RESULTS ARE: ", result);
-  //       return result;
-  //     } else {
-  //       console.error("Failed to generate Santa.");
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error generating Santa:", error);
-  //     return null;
-  //   }
-  // };
+  const handleGenerateButtonClick = () => {
+    if (group.ownerId === parseInt(params.userId)) {
+      generateSanta();
+      fetchMyRecipient(params.userId).then((recipient) =>
+        setMyRecipient(recipient)
+      );
+    }
+  };
 
   useEffect(() => {
     fetchGroups();
@@ -287,33 +308,28 @@ export function ViewGroup() {
                 ) : null}
               </a>
             </Card.Content>
-            {/* {group.ownerId && group.ownerId === parseInt(params.userId) ? (
-              <GenerateButton
-                generated={generated}
-                recipientName={assignedRecipient ? assignedRecipient.name : ""}
-              />
-            ) : (
-              <button className="generate-button">
-                Naughty or Nice lists <br />
-                are being prepared
-              </button>
-            )} */}
+
             <button
               fluid
               className="generate-button"
               size="large"
-              onClick={group.ownerId === parseInt(params.userId) ? generated={generated} : null}
-              style={{ display: group.ownerId === parseInt(params.userId) || (generated && assignedRecipient) ? "block" : "none" }}
+              onClick={handleGenerateButtonClick}
+              style={{
+                display:
+                  group.ownerId === parseInt(params.userId) ||
+                  (generated && assignedRecipient)
+                    ? "block"
+                    : "none",
+              }}
             >
               {group.ownerId === parseInt(params.userId) && !generated
                 ? "GENERATE"
                 : generated
-                  ? `You are secret Santa to ${assignedRecipient ? assignedRecipient.name : assignedRecipient.name}`
-                  : null
-              }
+                ? `You are secret Santa to ${
+                    assignedRecipient ? assignedRecipient.name : ""
+                  }`
+                : null}
             </button>
-
-
           </Card>
 
           {console.log(
