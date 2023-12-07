@@ -58,7 +58,8 @@ export function GenerateButton({
 
   return (
     <div>
-      <Button
+      <button
+        fluid
         className="generate-button"
         size="large"
         onClick={onGenerateButtonClick}
@@ -67,7 +68,7 @@ export function GenerateButton({
         {generated
           ? `You are secret Santa to: ${recipientName || "SOMEONE"}`
           : "GENERATE"}
-      </Button>
+      </button>
     </div>
   );
 }

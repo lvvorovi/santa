@@ -3,7 +3,7 @@ import { Card, Icon, Image, Button } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "./SecretSanta.css";
 
-export function GroupList() {
+export function GroupList({ handleCreateGroupClick }) {
   const navigate = useNavigate();
   const params = useParams();
   const [groups, setGroups] = useState([]);
@@ -42,10 +42,10 @@ export function GroupList() {
     navigate(`/users/${userId}/groups/${groupId}`);
   };
 
-  const handleCreateGroupClick = (userId) => {
-    console.log(`Card clicked for gift ID ${userId}`);
-    navigate(`/create/group/${userId}`);
-  };
+  // const handleCreateGroupClick = (userId) => {
+  //   console.log("groupId:", typeof groupId);
+  //   navigate(`/create/group/${userId}`);
+  // };
 
   useEffect(() => {
     fetchGroups();
@@ -66,9 +66,7 @@ export function GroupList() {
                 <Card
                   key={group.id}
                   className="m-3 cursor-pointer"
-                  onClick={() =>
-                    handleGroupClick(params.id, group.groupId)
-                  }
+                  onClick={() => handleGroupClick(params.id, group.groupId)}
                   style={{ width: "200px", height: "350px" }}
                 >
                   <Image src={getRandomGroupImageUrl()} wrapped ui={false} />
@@ -76,7 +74,8 @@ export function GroupList() {
                     <Card.Header>{group.name}</Card.Header>
                     <Card.Meta>
                       <span className="date">
-                        Event date is set to {group.eventDate}
+                        Event date is set to
+                        <br /> {group.eventDate}
                       </span>
                     </Card.Meta>
                     <Card.Description>

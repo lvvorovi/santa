@@ -38,6 +38,7 @@ export function ViewGroup() {
   };
 
   const handleAddNewUser = () => {
+    console.log(users)
     setAddingUser(true);
   };
 
@@ -120,6 +121,26 @@ export function ViewGroup() {
     }
   };
 
+  const checkSantaPairs = async () => {
+    const groupId = parseInt(params.groupId, 10);
+    try {
+      const response = await fetch(
+        `/api/v1/generate_santa/all_in_group/${groupId}`
+      );
+      if (response.ok) {
+        const santaPairs = await response.json();
+        // If there are Santa pairs, set doneGenerating to true
+        if (santaPairs.length > 0) {
+          setGenerated(true);
+        }
+      } else {
+        console.error("Failed to fetch Santa pairs.");
+      }
+    } catch (error) {
+      console.error("Error checking Santa pairs:", error);
+    }
+  };
+
   const handleGenerateButtonClick = async () => {
     const groupId = parseInt(params.groupId, 10);
     console.log("Group ID:", groupId);
@@ -134,20 +155,17 @@ export function ViewGroup() {
 
   const generateSanta = async (groupId) => {
     try {
-      const response = await fetch(
-        `/api/v1/generate_santa/random/${groupId}`, 
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const result = await response.json();
-        console.log("GENERATED RESULTS ARE: ",result);
-        return result; 
+        console.log("GENERATED RESULTS ARE: ", result);
+        return result;
       } else {
         console.error("Failed to generate Santa.");
         return null;
@@ -162,7 +180,7 @@ export function ViewGroup() {
     fetchGroups();
     console.log("ViewGroup - Owner ID:", group.ownerId);
     console.log("ViewGroup - User ID:", parseInt(params.userId)); // Make sure to convert to number
-
+    checkSantaPairs();
     fetchUsers();
     console.log("groupId:", typeof params.groupId);
   }, [parseInt(params.groupId)]);

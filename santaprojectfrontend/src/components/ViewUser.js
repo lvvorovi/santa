@@ -69,20 +69,28 @@ export function ViewUser() {
   //   navigate(`/users/${userId}/gifts/${giftId}`);
   // };
 
-  const handleCreateGiftClick = (userId) => {
-    console.log(`Card clicked for gift ID ${userId}`);
-    navigate(`/create/gift/${userId}`);
-  };
-  const handleCreateGroupClick = (userId) => {
-    console.log(`Card clicked for gift ID ${userId}`);
-    navigate(`/create/group/${userId}`);
-  };
+  // const handleCreateGiftClick = (userId) => {
+  //   console.log(`Card clicked for gift ID ${userId}`);
+  //   navigate(`/create/gift/${userId}`);
+  // };
+  // const handleCreateGroupClick = (userId) => {
+  //   console.log(`Card clicked for gift ID ${userId}`);
+  //   navigate(`/create/group/${userId}`);
+  // };
 
   useEffect(() => {
     fetchUser();
     fetchGroups();
     fetchGifts();
   }, [params]);
+
+  const handleCreateGroupClick = () => {
+    navigate(`/create/group/${params.id}`);
+  };
+
+  const handleCreateGiftClick = () => {
+    navigate(`/create/gift/${params.id}`);
+  };
 
   return (
     <div className="ui centered container">
@@ -120,8 +128,13 @@ export function ViewUser() {
                 >
                   Welcome <b>{user.name}</b>!
                 </Card.Header>
-                <Card.Meta style={{ fontSize: "1.2em", color: "red", fontFamily: "Times-Italic",
- }}>
+                <Card.Meta
+                  style={{
+                    fontSize: "1.2em",
+                    color: "red",
+                    fontFamily: "Times-Italic",
+                  }}
+                >
                   <span className="date">
                     <br />
                     Are you ready to be <b>Secret Santa </b>
@@ -215,8 +228,8 @@ export function ViewUser() {
           </div>
         </div> */}
       </div>
-      <GroupList handleCreateGiftClick={handleCreateGiftClick}/>
-      <GiftList handleCreateGroupClick={handleCreateGroupClick}/>
+      <GroupList handleCreateGroupClick={handleCreateGroupClick} />
+      <GiftList handleCreateGiftClick={handleCreateGiftClick} />
     </div>
   );
 }
