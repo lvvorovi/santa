@@ -1,6 +1,5 @@
 package Secret.Santa.Secret.Santa.services.impl;
 
-import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
 import Secret.Santa.Secret.Santa.models.Group;
@@ -10,10 +9,10 @@ import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
 import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
 import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -153,6 +152,11 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
         Group group = groupUtils.getGroupById(groupId);
         List<User> usersInGroup = group.getUser();
 
+        if (usersInGroup.size() < 2) {
+            logger.error("Not enough participants in the group to generate Secret Santa pairs.");
+            return;
+        }
+
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
 
@@ -166,7 +170,6 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
             do {
                 if (remainingRecipients.isEmpty()) {
-                    // No more recipients available
                     logger.error("No available recipients for Santa: " + santa);
                     break;
                 }
@@ -191,7 +194,6 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
             } while (true);
         }
     }
-
 
 
 }

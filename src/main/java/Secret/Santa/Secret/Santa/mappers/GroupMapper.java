@@ -19,9 +19,9 @@ public class GroupMapper {
     public Group toGroup(GroupDTO groupDTO) {
 
         Group group = new Group();
-        if (groupDTO.getGroupId() != null) {
+//        if (groupDTO.getGroupId() != null) {
             group.setGroupId(groupDTO.getGroupId());
-        }
+//        }
         group.setName(groupDTO.getName());
         group.setEventDate(groupDTO.getEventDate());
         group.setBudget(groupDTO.getBudget());
