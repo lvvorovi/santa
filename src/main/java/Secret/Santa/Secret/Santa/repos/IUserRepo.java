@@ -15,9 +15,12 @@ import java.util.Optional;
 
 @Repository
 public interface IUserRepo extends JpaRepository<User, Integer> {
+    Optional<User> findByEmail(String email);
+//    List<User> findByGroups(Group group);
+List<User> findByNameContainingIgnoreCase(String nameText);
 
-    //    List<User> findByGroups(Group group);
-    List<User> findByNameContainingIgnoreCase(String nameText);
+    boolean existsByEmail(String email);
+
 
     @Modifying
     @Query(value = "DELETE FROM `users_in_groups` WHERE `user_id` = :USERID", nativeQuery = true)

@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
+import Secret.Santa.Secret.Santa.models.Role;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
@@ -12,6 +13,11 @@ import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IUserService;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -20,10 +26,11 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 //@RequiredArgsConstructor
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
     private final IUserRepo iUserRepo;
@@ -40,6 +47,13 @@ public class UserServiceImpl implements IUserService {
         this.userUtils = userUtils;
         this.iGroupRepo = iGroupRepo;
         this.groupRepo = groupRepo;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = iUserRepo.findByEmail(username) //TODO check if this is correct
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user;
     }
 
     @Override
@@ -95,11 +109,15 @@ public class UserServiceImpl implements IUserService {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
+        if(iUserRepo.existsByEmail(userDTO.getEmail())){
+            throw new IllegalArgumentException("User with this email already registered");
+        }
         try {
             User user = new User();
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
             user.setPassword(userDTO.getPassword());
+            user.setRole(Role.USER);
             User savedUser = iUserRepo.save(user);
             return userMapper.toUserDTO(savedUser);
 
