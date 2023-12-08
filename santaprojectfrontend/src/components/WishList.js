@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Card, Image } from "semantic-ui-react";
 import { useParams, useNavigate } from "react-router-dom";
 
-export function GiftList() {
+export function WishList({ recipientId }) {
   const params = useParams();
   const [gifts, setGifts] = useState([]);
   const [user, setUser] = useState();
-  const [recipient, setRecipient] = useState(null);
 
   const [giftImage, setGiftImage] = useState([
     "/images/gift1.jpg",
@@ -22,9 +21,24 @@ export function GiftList() {
 
   const navigate = useNavigate();
 
+  // const fetchGifts = async () => {
+  //   try {
+  //     const response = await fetch("/api/v1/gifts/createdBy/" + params.id);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+  //     const jsonResponse = await response.json();
+  //     setGifts(jsonResponse);
+  //     console.log("Fetched Gifts:", jsonResponse);
+  //   } catch (error) {
+  //     console.error("Error fetching gifts:", error);
+  //   }
+  // };
+
   const fetchGifts = async () => {
     try {
-      const response = await fetch("/api/v1/gifts/createdBy/" + params.id);
+      const id = parseInt(recipientId);
+      const response = await fetch("/api/v1/gifts/createdBy/" + id);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -36,22 +50,19 @@ export function GiftList() {
     }
   };
 
-  const fetchRecipient = async () => {
+  const fetchUser = async () => {
     try {
-      const response = await fetch(`/api/v1/users/${params.id}`);
-      
+      const id = parseInt(recipientId);
+      const response = await fetch(`/api/v1/users/${id}`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch user. Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
       const user = await response.json();
-      setRecipient(user);
+      setUser(user);
     } catch (error) {
       console.error("Error fetching user:", error);
     }
   };
-  
-  
 
   const getRandomGiftImageUrl = () => {
     const randomIndex = Math.floor(Math.random() * giftImage.length);
@@ -69,8 +80,13 @@ export function GiftList() {
   };
 
   useEffect(() => {
-    fetchGifts();
-    fetchRecipient();
+    if (recipientId) {
+      fetchGifts();
+    }
+  }, [recipientId]);
+
+  useEffect(() => {
+    fetchUser();
   }, [params.id]);
 
   return (
@@ -79,7 +95,7 @@ export function GiftList() {
         <Card style={{ width: "1300px", backgroundColor: "rgb(250, 110, 110" }}>
           <Card.Content>
             <Card.Header style={{ color: "white" }}>
-            {recipient ? `${recipient.name}'s Gift Wishlist` : "Gift Wishlist"}
+              {user ? `${user.name}'s Gift Wishlist` : "Gift Wishlist"}
             </Card.Header>
           </Card.Content>
           <Card.Content>

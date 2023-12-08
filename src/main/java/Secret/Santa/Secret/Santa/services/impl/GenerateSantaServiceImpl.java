@@ -108,68 +108,13 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
         }
     }
 
-//    @Override
-//    public void randomSantaGenerator(Integer groupId) {
-//        Group group = groupUtils.getGroupById(groupId);
-//        List<User> usersInGroup = group.getUser();
-//
-//        if (usersInGroup.size() <= 2) {
-//            logger.error("Not enough participants in the group to generate Secret Santa pairs.");
-//            throw new SantaValidationException("Exceeded maximum attempts to find a recipient for Santa: ", "", "", "");
-//        }
-//
-//        List<User> shuffledUsers = new ArrayList<>(usersInGroup);
-//        Collections.shuffle(shuffledUsers);
-//
-//        System.out.println(shuffledUsers);
-//
-//
-//        int maxAttempts = 100;
-//        Set<User> pairedSantas = new HashSet<>();
-//        Map<User, User> pairings = new HashMap<>();
-//
-//        for (int i = 0; i < shuffledUsers.size(); i++) {
-//            User santa = usersInGroup.get(i);
-//
-//            if (pairedSantas.contains(santa)) {
-//                continue;
-//            }
-//
-//            User recipient = null;
-//            int attempts = 0;
-//
-//            while (attempts <= maxAttempts) {
-//                recipient = shuffledUsers.get((i + attempts + 1) % shuffledUsers.size());
-//
-//                if (!pairedSantas.contains(recipient) && !generateSantaUtils.alreadyPaired(santa, recipient, group)) {
-//                    pairedSantas.add(santa);
-//                    pairedSantas.add(recipient);
-//                    pairings.put(santa, recipient);
-//                    pairings.put(recipient, santa);
-//                    break;
-//                }
-//
-//                attempts++;
-//            }
-//
-//            if (attempts > maxAttempts) {
-//                logger.error("Exceeded maximum attempts to find a recipient for Santa: " + santa);
-//                break;
-//            }
-//        }
-//
-//        for (Map.Entry<User, User> entry : pairings.entrySet()) {
-//            GenerateSanta santaPair = new GenerateSanta();
-//            santaPair.setGroup(group);
-//            santaPair.setSanta(entry.getKey());
-//            santaPair.setRecipient(entry.getValue());
-//            generateSantaRepository.save(santaPair);
-//        }
-//    }
-
     @Override
     public void randomSantaGenerator(Integer groupId) {
+
         Group group = groupUtils.getGroupById(groupId);
+        if (generateSantaUtils.existsByGroup(group)) {
+            throw new SantaValidationException("Generate santa for group exits: ", "", "", "");
+        }
         List<User> usersInGroup = group.getUser();
 
         if (usersInGroup.size() <= 2) {
@@ -179,9 +124,6 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
 
         List<User> shuffledUsers = new ArrayList<>(usersInGroup);
         Collections.shuffle(shuffledUsers);
-
-        System.out.println("SHUFFLED USERS" + shuffledUsers);
-
 
         int maxAttempts = 100;
         Set<User> pairedSantas = new HashSet<>();

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { GenerateButton } from "./GenerateButton";
-import { GiftList } from "./GiftList";
+import { WishList } from "./WishList";
 
 export function ViewGroup() {
   const params = useParams();
@@ -11,12 +10,7 @@ export function ViewGroup() {
   const [newUserName, setNewUserName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [generated, setGenerated] = useState(false);
-  const [assignedRecipient, setAssignedRecipient] = useState({
-    // userId: "",
-    // name: "",
-    // email: "",
-    // password: "",
-  });
+  const [assignedRecipient, setAssignedRecipient] = useState("");
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState({
     groupId: "",
@@ -28,6 +22,9 @@ export function ViewGroup() {
     ownerId: "",
     generatedSanta: [],
   });
+
+  const [myRecipient, setMyRecipient] = useState(null);
+  const [santaPairs, setSantaPairs] = useState({});
 
   const fetchGroups = async () => {
     const groupId = parseInt(params.groupId);
@@ -44,7 +41,6 @@ export function ViewGroup() {
   };
 
   const handleAddNewUser = () => {
-    console.log(users);
     setAddingUser(true);
   };
 
@@ -52,7 +48,7 @@ export function ViewGroup() {
     setNewUserName(e.target.value);
   };
 
-  const fetchFilteredUsers = async () => {
+   const fetchFilteredUsers = async () => {
     if (newUserName.trim() !== "") {
       try {
         const response = await fetch(
@@ -85,7 +81,6 @@ export function ViewGroup() {
       if (response.ok) {
         const users = await response.json();
         const user = Array.isArray(users) && users.length > 0 ? users[0] : null;
-        console.log("user", user);
         if (user) {
           const addResponse = await fetch(
             `/api/v1/groups/${parseInt(params.groupId)}/users/${parseInt(
@@ -120,16 +115,29 @@ export function ViewGroup() {
   };
 
   const checkSantaPairs = async () => {
+    const userId = parseInt(params.userId);
     const groupId = parseInt(params.groupId);
+    console.log("!!!userId", userId);
+
     try {
       const response = await fetch(
-        `/api/v1/generate_santa/all_in_group/${groupId}`
+        `/api/v1/generate_santa/santa_group/${userId}?groupId=${groupId}`
       );
-      console.log("RESPONSAS pafecinus pairs: ", response.json);
+
       if (response.ok) {
         const santaPairs = await response.json();
-        if (santaPairs.length > 0) {
-          // setGenerated(true);
+        console.log("santapair", santaPairs);
+
+        if (
+          santaPairs &&
+          typeof santaPairs === "object" &&
+          santaPairs.hasOwnProperty("santa") &&
+          santaPairs.hasOwnProperty("recipient")
+        ) {
+          setAssignedRecipient(santaPairs.recipient);
+          setGenerated(true);
+        } else {
+          console.error("Invalid format of Santa pairs data.");
         }
       } else {
         console.error("Failed to fetch Santa pairs.");
@@ -139,43 +147,54 @@ export function ViewGroup() {
     }
   };
 
-  // const handleGenerateButtonClick = async () => {
-  //   const groupId = parseInt(params.groupId, 10);
-  //   console.log("Group ID:", groupId);
-  //   console.log("User ID:", parseInt(params.userId));
-  //   const response = await generateSanta(groupId);
-  //   if (response && response.recipient) {
-  //     console.log("recipient is: ", response.recipient);
-  //     // setAssignedRecipient(response.recipient);
-  //   }
-  //   setGenerated(true);
-  // };
+  const generateSantaAndAssignRecipient = async () => {
+    try {
+      const groupId = parseInt(params.groupId);
 
-  // const generateSanta = async (groupId) => {
-  //   try {
-  //     const response = await fetch(`/api/v1/generate_santa/random/${groupId}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+      const generateSantaResponse = await fetch(
+        `/api/v1/generate_santa/random/${groupId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       console.log("GENERATED RESULTS ARE: ", result);
-  //       return result;
-  //     } else {
-  //       console.error("Failed to generate Santa.");
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error generating Santa:", error);
-  //     return null;
-  //   }
-  // };
+      if (!generateSantaResponse.ok) {
+        console.error("Failed to generate Santa.");
+        return null;
+      }
 
-  const handleGeneratedButtonClick = () => {
-    setGenerated(true);
+      const generatedSanta = await generateSantaResponse.json();
+
+      const assignRecipientResponse = await fetch(
+        `/api/v1/generate_santa/santa_group/${params.userId}?groupId=${groupId}`
+      );
+
+      if (!assignRecipientResponse.ok) {
+        console.error("Failed to fetch generateSanta.");
+        return null;
+      }
+
+      const assignedRecipient = await assignRecipientResponse.json();
+
+      console.log("Generated Santa:", generatedSanta);
+      console.log("Assigned Recipient:", assignedRecipient);
+
+      return assignedRecipient?.recipient?.name || "SOMEONE";
+    } catch (error) {
+      console.error("Error in generateSantaAndAssignRecipient:", error);
+      return "SOMEONE";
+    }
+  };
+
+  const handleGenerateButtonClick = async () => {
+    if (group.ownerId === parseInt(params.userId)) {
+      const recipient = await generateSantaAndAssignRecipient();
+      setMyRecipient(recipient);
+      setGenerated(true);
+    }
   };
 
   useEffect(() => {
@@ -184,18 +203,24 @@ export function ViewGroup() {
   }, [parseInt(params.groupId)]);
 
   useEffect(() => {
+    checkSantaPairs();
+  }, [parseInt(params.groupId)]);
+
+  useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();
   }, [newUserName]);
 
   useEffect(() => {
-    if (assignedRecipient) {
-      console.log("Recipient Name:", assignedRecipient.name);
-    }
-
-    if (generated && assignedRecipient) {
-      console.log("Fetching GiftList for User ID:", assignedRecipient.userId);
+    if (generated && assignedRecipient && assignedRecipient.recipient) {
+      setGenerated(true);
     }
   }, [generated, assignedRecipient]);
+
+  useEffect(() => {
+    if (generated) {
+      checkSantaPairs();
+    }
+  }, [generated]);
 
   return (
     <div className="ui one column centered equal width grid">
@@ -267,23 +292,30 @@ export function ViewGroup() {
                 ) : null}
               </a>
             </Card.Content>
-            {group.ownerId && group.ownerId === parseInt(params.userId) ? (
-              <GenerateButton
-                onClick={handleGeneratedButtonClick}
-                // generated={generated}
-                // recipientName={assignedRecipient ? assignedRecipient.name : ""}
-              />
-            ) : (
-              <button className="generate-button">
-                Naughty or Nice lists <br />
-                are being prepared
-              </button>
-            )}
+
+            <button
+              fluid
+              className="generate-button"
+              size="large"
+              onClick={handleGenerateButtonClick}
+            >
+              {group.ownerId === parseInt(params.userId)
+                ? generated
+                  ? `You are secret Santa to ${
+                      assignedRecipient ? assignedRecipient.name : ""
+                    }`
+                  : "GENERATE"
+                : generated
+                ? `You Secret Santa to ${
+                    assignedRecipient ? assignedRecipient.name : ""
+                  }`
+                : "Naughty or Nice List is being prepared"}
+            </button>
           </Card>
         </div>
       </div>
       {generated && assignedRecipient && (
-        <GiftList userId={assignedRecipient.userId} />
+        <WishList recipientId={assignedRecipient.userId} />
       )}
     </div>
   );

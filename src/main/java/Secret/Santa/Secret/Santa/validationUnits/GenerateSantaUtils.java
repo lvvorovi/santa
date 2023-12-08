@@ -33,6 +33,13 @@ public class GenerateSantaUtils {
                         "Generate_Santa not found", String.valueOf(user.getUserId())));
     }
 
+    public boolean existsByGroup(Group group) {
+        if (generateSantaRepo.existsByGroup(group)) {
+            return true;
+        }
+        return false;
+    }
+
     public GenerateSanta getByUserAndGroup(User user, Group group) {
         return generateSantaRepo.findByRecipientAndGroup(user, group)
                 .orElseThrow(() -> new SantaValidationException("Generate_Santa does not exist", "id",
