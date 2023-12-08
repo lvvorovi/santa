@@ -104,4 +104,12 @@ public class UserController {
         return ok(matchingUsers);
     }
 
+    @GetMapping("/users/{username}")
+    public ResponseEntity<Integer> getUserByUsername(@Valid
+                                                     @PathVariable(name = "username") String username) {
+
+        User user = iUserService.loadUserByEmail(username);
+        return ResponseEntity.ok(user.getUserId());
+    }
+
 }

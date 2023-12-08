@@ -28,7 +28,7 @@ export function GiftList() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: 'Bearer' + localStorage.getItem('token'), 
+          Authorization: "Bearer " + localStorage.getItem('token'), 
         },
       });
       if (!response.ok) {
@@ -48,7 +48,7 @@ export function GiftList() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: 'Bearer' + localStorage.getItem('token'), 
+          Authorization: "Bearer " + localStorage.getItem('token'), 
         },
       });
       

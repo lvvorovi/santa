@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
 import { Button, Form, Grid, Segment } from "semantic-ui-react";
@@ -13,32 +13,14 @@ export function getUsername() {
   return null;
 }
 
-export function setUsernameIndex() {
-  const username = getUsername();
-  const hash = username
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-  const index = (hash % 25) + 1;
-  localStorage.setItem("avatar", index);
-  return index;
-}
-
 export function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState({});
+  const [userId, setUserId] = useState("");
+  const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [user, setUser] = useState("");
-  const [role, setRole] = useState("");
-  const navigate = useNavigate();
   const { appState, setAppState } = useContext(AuthContext);
-  const [state, setState] = useState({
-    email: "",
-    username: "",
-    password: "",
-    loading: false,
-  });
+  const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -52,49 +34,80 @@ export function LoginPage() {
     navigate(`/auth/register`);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     if (!appState.isAuthenticated) {
       setAppState({ type: "LOADING", value: true });
-      event.preventDefault();
 
       const credentials = {
         email: email,
         password: password,
       };
 
-      fetch("/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-        body: JSON.stringify(credentials),
-      })
-        .then(applyResult)
-        .catch((error) => {
-          setError("An error occurred. Please try again later.");
+      try {
+        const response = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(credentials),
         });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("DATA:", data);
+          localStorage.setItem("token", data.access_token);
+          console.log("ACCESS TOKEN", data.access_token);
+          console.log("LOCAL STORAGE", localStorage);
+          
+          setAppState({ type: "LOGIN", value: true });
+          console.log("USER ID", data.user.userId);
+          navigate(`/users/${data.user.userId}`);
+        } else {
+          setError("Login failed. Please try again.");
+        }
+      } catch (error) {
+        setError("An error occurred. Please try again later.");
+      } finally {
+        setAppState({ type: "LOADING", value: false });
+      }
     } else {
       alert("You are already logged in");
       setAppState({ type: "AUTHENTICATED", value: true });
     }
   };
 
-  const applyResult = (result) => {
-    if (result.ok) {
-      result.json().then((data) => {
-        console.log("DATA:", data);
-        localStorage.setItem("token", data);
-        setUsernameIndex();
-        console.log("USERNAME INDEX:", getUsername());
-        console.log("LOCAL STORAGE", localStorage);
-        setAppState({ type: "LOGIN", value: true });
-        navigate(`/users/${data.userId}`);
+  const fetchUser = async () => {
+    try {
+      const email = getUsername();
+      const response = await fetch(`/api/v1/users/${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
-    } else {
-      setError("Login failed. Please try again.");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const jsonResponse = await response.json();
+      setUser(jsonResponse);
+
+      console.log("Fetched User:", jsonResponse);
+    } catch (error) {
+      console.error("Error fetching user:", error);
     }
   };
+
+  // Add useEffect to automatically fetch user data after login
+  useEffect(() => {
+    if (appState.isAuthenticated) {
+      fetchUser();
+    }
+  }, [appState.isAuthenticated]);
 
   return (
     <Grid centered columns={2}>
