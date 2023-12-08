@@ -3,7 +3,7 @@ import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export function GenerateButton({
-  generated,
+  // generated,
   recipientName,
 }) {
   const params = useParams();
@@ -11,6 +11,7 @@ export function GenerateButton({
   const [assignedRecipient, setAssignedRecipient] = useState(null);
   const [santaPairs, setSantaPairs] = useState({});
   const [myRecipient, setMyRecipient] = useState(null);
+  const [generated, setGenerated] = useState(false);
   const [group, setGroup] = useState({
     groupId: "",
     name: "",
@@ -21,7 +22,6 @@ export function GenerateButton({
     ownerId: "",
     generatedSanta: [],
   });
-
 
   const generateSanta = async () => {
     try {

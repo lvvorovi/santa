@@ -31,7 +31,7 @@ export function ViewGroup() {
 
   const fetchGroups = async () => {
     const groupId = parseInt(params.groupId);
-    console.log("groupId:", groupId, typeof groupId); 
+    console.log("groupId:", groupId, typeof groupId);
     fetch("/api/v1/groups/" + groupId)
       .then((response) => response.json())
       .then(setGroup);
@@ -129,7 +129,7 @@ export function ViewGroup() {
       if (response.ok) {
         const santaPairs = await response.json();
         if (santaPairs.length > 0) {
-          setGenerated(true);
+          // setGenerated(true);
         }
       } else {
         console.error("Failed to fetch Santa pairs.");
@@ -174,14 +174,13 @@ export function ViewGroup() {
   //   }
   // };
 
+  const handleGeneratedButtonClick = () => {
+    setGenerated(true);
+  };
+
   useEffect(() => {
     fetchGroups();
-    console.log("ViewGroup - Owner ID:", group.ownerId);
-    console.log("All group info: ", group);
-    console.log("ViewGroup - User ID:", parseInt(params.userId));
-    checkSantaPairs();
     fetchUsers();
-    console.log("groupId:", typeof params.groupId);
   }, [parseInt(params.groupId)]);
 
   useEffect(() => {
@@ -189,13 +188,6 @@ export function ViewGroup() {
   }, [newUserName]);
 
   useEffect(() => {
-    console.log(
-      "Generated:",
-      generated,
-      "Assigned Recipient:",
-      assignedRecipient
-    );
-
     if (assignedRecipient) {
       console.log("Recipient Name:", assignedRecipient.name);
     }
@@ -241,7 +233,7 @@ export function ViewGroup() {
                     <div>
                       <Input
                         placeholder="Enter name"
-                        value={newUserName} // Change 'nameText' to 'newUserName'
+                        value={newUserName}
                         onChange={handleNewUserInputChange}
                         onKeyPress={(e) => {
                           if (e.key === "Enter") {
@@ -277,7 +269,8 @@ export function ViewGroup() {
             </Card.Content>
             {group.ownerId && group.ownerId === parseInt(params.userId) ? (
               <GenerateButton
-                generated={generated}
+                onClick={handleGeneratedButtonClick}
+                // generated={generated}
                 // recipientName={assignedRecipient ? assignedRecipient.name : ""}
               />
             ) : (
@@ -287,13 +280,6 @@ export function ViewGroup() {
               </button>
             )}
           </Card>
-
-          {console.log(
-            "Generated:",
-            generated,
-            "Assigned Recipient:",
-            assignedRecipient
-          )}
         </div>
       </div>
       {generated && assignedRecipient && (
