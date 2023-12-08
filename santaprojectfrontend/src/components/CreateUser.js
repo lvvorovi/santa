@@ -39,6 +39,7 @@ export function CreateUser() {
       });
 
       if (response.ok) {
+        console.log("User created succesfully")
         navigate("/login");
       } else {
         const errorMessage = await response.text();
@@ -89,15 +90,16 @@ export function CreateUser() {
                   />
                 </Form.Field>
               </Form.Group>
-              <Button
-                fluid
-                type="submit"
-                color="white"
-                inverted
-                onClick={createUser}
-              >
-                Confirm
-              </Button>
+              <Form.Field>
+                <Button
+                  fluid
+                  color="white"
+                  inverted
+                  onClick={createUser}
+                >
+                  Confirm
+                </Button>
+              </Form.Field>
             </Form>
             {error && <p style={{ color: "red" }}>{error}</p>}
           </Segment>
