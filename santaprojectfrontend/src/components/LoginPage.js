@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useHref, useNavigate } from "react-router-dom";
+import { useHref, useNavigate, Link } from "react-router-dom";
 // import AuthContext from '../AuthContext';
 import {
   Button,
@@ -33,6 +33,10 @@ export function LoginPage() {
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+  };
+
+  const handleRegisterClick = () => {
+    navigate(`/users/create`);
   };
 
   //   const handleSubmit = (event) => {
@@ -88,8 +92,8 @@ export function LoginPage() {
     <Grid centered columns={2}>
       <Grid.Column>
         <h2>Log in</h2>
-        <Segment color="red" inverted>
-          <Form color="red" inverted>
+        <Segment style={{ backgroundColor: "rgb(250, 110, 110" }} inverted>
+          <Form style={{ backgroundColor: "rgb(250, 110, 110" }} inverted>
             <Form.Group widths="equal">
               <Form.Field>
                 <label>User name</label>
@@ -113,12 +117,22 @@ export function LoginPage() {
               </Form.Field>
             </Form.Group>
             <Button
+              fluid
               type="submit"
               color="white"
               inverted
               //   onClick={handleSubmit}
             >
               Confirm
+            </Button>
+            <Button
+              className="create mt-2"
+              color="white"
+              inverted
+              fluid
+              onClick={handleRegisterClick}
+            >
+              Register
             </Button>
           </Form>
         </Segment>
