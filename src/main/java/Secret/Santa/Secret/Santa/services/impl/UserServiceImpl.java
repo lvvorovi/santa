@@ -180,8 +180,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<UserDTO> getUsersByNameContaining(String nameText) {
-        return iUserRepo.findByNameContainingIgnoreCase(nameText).stream()
-                .map(userMapper::toUserDTO).collect(Collectors.toList());
+        try {
+            List<User> users = iUserRepo.findByNameContainingIgnoreCase(nameText);
+            return users.stream()
+                    .map(userMapper::toUserDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving users with name containing: {}", nameText, e);
+            throw e; 
+        }
     }
 
 
