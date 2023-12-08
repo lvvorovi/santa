@@ -3,6 +3,7 @@ package Secret.Santa.Secret.Santa.services.impl;
 import Secret.Santa.Secret.Santa.mappers.UserMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
 import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
+import Secret.Santa.Secret.Santa.models.Role;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.Role;
@@ -23,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collections;
@@ -109,7 +112,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        if (iUserRepo.existsByEmail(userDTO.getEmail())) {
+        if(iUserRepo.existsByEmail(userDTO.getEmail())){
             throw new IllegalArgumentException("User with this email already registered");
         }
         try {
