@@ -21,20 +21,6 @@ export function WishList({ recipientId }) {
 
   const navigate = useNavigate();
 
-  // const fetchGifts = async () => {
-  //   try {
-  //     const response = await fetch("/api/v1/gifts/createdBy/" + params.id);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-  //     const jsonResponse = await response.json();
-  //     setGifts(jsonResponse);
-  //     console.log("Fetched Gifts:", jsonResponse);
-  //   } catch (error) {
-  //     console.error("Error fetching gifts:", error);
-  //   }
-  // };
-
   const fetchGifts = async () => {
     try {
       const id = parseInt(recipientId);
