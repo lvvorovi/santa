@@ -22,5 +22,7 @@ public interface IGenerateSantaService {
 
     void randomSantaGenerator(Integer groupId);
 
+//    List<GenerateSanta> randomSantaGenerator(Integer groupId);
+
 //    void shuffleAndSaveSecretSantaPairs(Group group);
 }

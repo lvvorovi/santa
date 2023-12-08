@@ -6,6 +6,7 @@ export function GiftList() {
   const params = useParams();
   const [gifts, setGifts] = useState([]);
   const [user, setUser] = useState();
+  const [recipient, setRecipient] = useState(null);
 
   const [giftImage, setGiftImage] = useState([
     "/images/gift1.jpg",
@@ -35,18 +36,22 @@ export function GiftList() {
     }
   };
 
-  const fetchUser = async () => {
+  const fetchRecipient = async () => {
     try {
-      const response = await fetch("/api/v1/users/" + params.id);
+      const response = await fetch(`/api/v1/users/${params.id}`);
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Failed to fetch user. Status: ${response.status}`);
       }
+  
       const user = await response.json();
-      setUser(user);
+      setRecipient(user);
     } catch (error) {
       console.error("Error fetching user:", error);
     }
   };
+  
+  
 
   const getRandomGiftImageUrl = () => {
     const randomIndex = Math.floor(Math.random() * giftImage.length);
@@ -65,7 +70,7 @@ export function GiftList() {
 
   useEffect(() => {
     fetchGifts();
-    fetchUser();
+    fetchRecipient();
   }, [params.id]);
 
   return (
@@ -74,7 +79,7 @@ export function GiftList() {
         <Card style={{ width: "1300px", backgroundColor: "rgb(250, 110, 110" }}>
           <Card.Content>
             <Card.Header style={{ color: "white" }}>
-              {user ? `${user.name}'s Gift Wishlist` : "Gift Wishlist"}
+            {recipient ? `${recipient.name}'s Gift Wishlist` : "Gift Wishlist"}
             </Card.Header>
           </Card.Content>
           <Card.Content>

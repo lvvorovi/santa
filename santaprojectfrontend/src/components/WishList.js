@@ -38,7 +38,8 @@ export function WishList({ recipientId }) {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch("/api/v1/users/" + params.id);
+      const id = parseInt(recipientId);
+      const response = await fetch(`/api/v1/users/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -73,7 +74,6 @@ export function WishList({ recipientId }) {
   useEffect(() => {
     fetchUser();
   }, [params.id]);
-
 
   return (
     <div>
