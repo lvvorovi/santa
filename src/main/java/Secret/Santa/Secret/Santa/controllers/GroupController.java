@@ -111,15 +111,21 @@ public class GroupController {
     @PostMapping("/{groupId}/users/{userId}/newUsers")
     public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @Valid @PathVariable int userId) {
 
-        var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
+            var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
 
-        return ok(updatedGroup);
+            return ok(updatedGroup);
+
     }
 
     @GetMapping(value = "/{groupId}/users")
     @ResponseBody
     public List<User> getAllUsersById(@PathVariable int groupId) {
-        return iGroupService.getAllUsersById(groupId);
+        try {
+            return iGroupService.getAllUsersById(groupId);
+        } catch (Exception e) {
+            logger.error("Error retrieving users for group with ID: {}", groupId, e);
+            throw new RuntimeException("Failed to retrieve users for group", e);
+        }
     }
 
 }
