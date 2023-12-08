@@ -41,15 +41,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IGroupRepo iGroupRepo;
     private IGroupRepo groupRepo;
 
-    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
-                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
-        this.userMapper = userMapper;
-        this.iUserRepo = iUserRepo;
-        this.iGiftRepo = iGiftRepo;
-        this.userUtils = userUtils;
-        this.iGroupRepo = iGroupRepo;
-        this.groupRepo = groupRepo;
-    }
+//    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
+//                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
+//        this.userMapper = userMapper;
+//        this.iUserRepo = iUserRepo;
+//        this.iGiftRepo = iGiftRepo;
+//        this.userUtils = userUtils;
+//        this.iGroupRepo = iGroupRepo;
+//        this.groupRepo = groupRepo;
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -33,8 +33,7 @@ public class SecurityConfig {
                                                     "/swagger-ui/",
                                                     "/v3/api-docs/",
                                                     "/v3/api-docs.yaml",
-                                                    "/swagger-ui.html",
-                                                    "/error"};
+                                                    "/swagger-ui.html"};
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
