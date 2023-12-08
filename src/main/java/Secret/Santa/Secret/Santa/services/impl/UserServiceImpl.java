@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.Collections;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService, UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
@@ -39,15 +39,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IGroupRepo iGroupRepo;
     private IGroupRepo groupRepo;
 
-    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
-                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
-        this.userMapper = userMapper;
-        this.iUserRepo = iUserRepo;
-        this.iGiftRepo = iGiftRepo;
-        this.userUtils = userUtils;
-        this.iGroupRepo = iGroupRepo;
-        this.groupRepo = groupRepo;
-    }
+//    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
+//                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
+//        this.userMapper = userMapper;
+//        this.iUserRepo = iUserRepo;
+//        this.iGiftRepo = iGiftRepo;
+//        this.userUtils = userUtils;
+//        this.iGroupRepo = iGroupRepo;
+//        this.groupRepo = groupRepo;
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -109,7 +109,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        if(iUserRepo.existsByEmail(userDTO.getEmail())){
+        if (iUserRepo.existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("User with this email already registered");
         }
         try {
