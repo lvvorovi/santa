@@ -8,6 +8,8 @@ import { CreateGift } from "./components/CreateGift";
 import { CreateGroup } from "./components/CreateGroup";
 import { ViewUser } from "./components/ViewUser";
 import { EditGift } from "./components/EditGift";
+import { LoginPage } from "./components/LoginPage";
+import { Navbar } from "./components/Navbar";
 import ChatRoom from "./components/ChatRoom";
 
 // const apiUrl = "http://localhost:8085";
@@ -15,18 +17,19 @@ import ChatRoom from "./components/ChatRoom";
 function App() {
   return (
     <div className="App">
-      <h1>HO-HO-HO</h1>
       <HashRouter>
+        <Navbar />
         <div className="container">
           <Routes>
             <Route path="/" element={<GroupList />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/users" element={<CreateUser />} />
             <Route path="/create/gift/:id" element={<CreateGift />} />
             <Route path="/users/:userId/groups/:groupId" element={<ViewGroup />} />
             <Route path="/create/group/:id" element={<CreateGroup />} />
             <Route path="/users/:id" element={<ViewUser />} />
             <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
-            <Route path="/chatroom" element={<ChatRoom />} />
+            {/* <Route path="/chatroom" element={<ChatRoom />} /> */}
           </Routes>
         </div>
       </HashRouter>

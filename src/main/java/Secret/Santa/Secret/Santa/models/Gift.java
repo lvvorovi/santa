@@ -16,7 +16,7 @@ public class Gift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gift_id")
-    private int giftId;
+    private Integer giftId;
     @Column(name = "Name")
     private String name;
     @Column(name = "Description")
@@ -28,11 +28,11 @@ public class Gift {
 //    @Column(name = "Created_by")
 //    private int createdBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)//cascade = CascadeType.ALL)
     @JoinColumn(name = "created_by", referencedColumnName = "user_id")
     private User createdBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)//cascade = CascadeType.ALL)
     @JoinColumn(
             name = "group_id",
             referencedColumnName = "group_id")

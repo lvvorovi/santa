@@ -32,7 +32,7 @@ public class GroupDTO {
     private List<User> user;
     private List<Gift> gifts;
     private List<GenerateSanta> generatedSanta;
-    //    @NotNull(message = "Owner is required")
+    @NotNull(message = "Owner is required")
     private Integer ownerId;
-//    private User owner;
+
 }

@@ -25,10 +25,8 @@ public class GiftDTO {
     @Positive
     @NotNull
     private double price;
-    //    @NotNull
-    private int createdBy;
-    @NotNull
-    private int groupId;
-//    @NotNull
-//    private Group group;
+    @NotNull(message = "Creator required")
+    private Integer createdBy;
+    @NotNull(message = "Group required")
+    private Integer groupId;
 }

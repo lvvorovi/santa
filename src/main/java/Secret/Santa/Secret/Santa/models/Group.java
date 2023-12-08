@@ -22,7 +22,7 @@ public class Group {
     @Column(name = "group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Setter(value = AccessLevel.NONE)
-    private int groupId;
+    private Integer groupId;
     @Column(name = "Name")
     private String name;
     @Column(name = "Date")
@@ -30,11 +30,13 @@ public class Group {
     @Column(name = "Budget")
     private double budget;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)//, cascade = CascadeType.ALL)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
-    @JoinTable(name = "users_in_groups",
+    @JoinTable(
+            name = "users_in_groups",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    )
     private List<User> user;
 
 
