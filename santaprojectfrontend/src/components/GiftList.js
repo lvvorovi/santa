@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 export function GiftList() {
   const params = useParams();
   const [gifts, setGifts] = useState([]);
-  const [user, setUser] = useState();
   const [recipient, setRecipient] = useState(null);
 
   const [giftImage, setGiftImage] = useState([

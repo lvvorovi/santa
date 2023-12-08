@@ -1,21 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
 import { Button, Form, Grid, Segment } from "semantic-ui-react";
-import { jwtDecode } from "jwt-decode";
-
-export function getUsername() {
-  const token = localStorage.getItem("token");
-  if (token !== null) {
-    const decoded = jwtDecode(token);
-    return decoded.sub;
-  }
-  return null;
-}
 
 export function LoginPage() {
-  const [user, setUser] = useState({});
-  const [userId, setUserId] = useState("");
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -49,20 +37,16 @@ export function LoginPage() {
         const response = await fetch("/api/v1/auth/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(credentials),
         });
 
         if (response.ok) {
           const data = await response.json();
-          console.log("DATA:", data);
           localStorage.setItem("token", data.access_token);
-          console.log("ACCESS TOKEN", data.access_token);
-          console.log("LOCAL STORAGE", localStorage);
-          
+
           setAppState({ type: "LOGIN", value: true });
-          console.log("USER ID", data.user.userId);
           navigate(`/users/${data.user.userId}`);
         } else {
           setError("Login failed. Please try again.");
@@ -77,37 +61,6 @@ export function LoginPage() {
       setAppState({ type: "AUTHENTICATED", value: true });
     }
   };
-
-  const fetchUser = async () => {
-    try {
-      const email = getUsername();
-      const response = await fetch(`/api/v1/users/${email}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const jsonResponse = await response.json();
-      setUser(jsonResponse);
-
-      console.log("Fetched User:", jsonResponse);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
-
-  // Add useEffect to automatically fetch user data after login
-  useEffect(() => {
-    if (appState.isAuthenticated) {
-      fetchUser();
-    }
-  }, [appState.isAuthenticated]);
 
   return (
     <Grid centered columns={2}>

@@ -1,8 +1,6 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { GroupList } from "./components/GroupList";
 import { ViewGroup } from "./components/ViewGroup";
 import { CreateUser } from "./components/CreateUser";
 import { CreateGift } from "./components/CreateGift";
@@ -15,7 +13,6 @@ import ChatRoom from "./components/ChatRoom";
 import { Container } from "semantic-ui-react";
 import AuthContext from "./AuthContext";
 
-// const apiUrl = "http://localhost:8085";
 
 function App() {
   var initState = {

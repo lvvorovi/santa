@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, Card, Icon, Input } from "semantic-ui-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { WishList } from "./WishList";
 
 export function ViewGroup() {
@@ -29,13 +29,25 @@ export function ViewGroup() {
   const fetchGroups = async () => {
     const groupId = parseInt(params.groupId);
     console.log("groupId:", groupId, typeof groupId);
-    fetch("/api/v1/groups/" + groupId)
+    fetch("/api/v1/groups/" + groupId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
       .then((response) => response.json())
       .then(setGroup);
   };
 
   const fetchUsers = async () => {
-    fetch("/api/v1/users")
+    fetch("/api/v1/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
       .then((response) => response.json())
       .then(setUsers);
   };
@@ -48,11 +60,18 @@ export function ViewGroup() {
     setNewUserName(e.target.value);
   };
 
-   const fetchFilteredUsers = async () => {
+  const fetchFilteredUsers = async () => {
     if (newUserName.trim() !== "") {
       try {
         const response = await fetch(
-          `/api/v1/users/search?name=${newUserName}`
+          `/api/v1/users/search?name=${newUserName}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
         );
         if (response.ok) {
           const matchingUsers = await response.json();
@@ -74,7 +93,14 @@ export function ViewGroup() {
 
     try {
       const response = await fetch(
-        `/api/v1/users/search?name=${selectedUser.name}`
+        `/api/v1/users/search?name=${selectedUser.name}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
       );
 
       if (response.ok) {
@@ -89,6 +115,7 @@ export function ViewGroup() {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("token"),
               },
               body: JSON.stringify(user),
             }
@@ -120,14 +147,20 @@ export function ViewGroup() {
 
     try {
       const response = await fetch(
-        `/api/v1/generate_santa/santa_group/${userId}?groupId=${groupId}`
+        `/api/v1/generate_santa/santa_group/${userId}?groupId=${groupId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
       );
 
       if (response.ok) {
         const santaPairs = await response.json();
         console.log("santapair", santaPairs);
 
-        // Check if santaPairs is an object and has 'santa' and 'recipient' properties
         if (
           santaPairs &&
           typeof santaPairs === "object" &&
@@ -169,7 +202,14 @@ export function ViewGroup() {
       const generatedSanta = await generateSantaResponse.json();
 
       const assignRecipientResponse = await fetch(
-        `/api/v1/generate_santa/santa_group/${params.userId}?groupId=${groupId}`
+        `/api/v1/generate_santa/santa_group/${params.userId}?groupId=${groupId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
       );
 
       if (!assignRecipientResponse.ok) {

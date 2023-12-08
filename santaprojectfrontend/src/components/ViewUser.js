@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Card, Image, Header, Button } from "semantic-ui-react";
+import { Card, Image } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { GiftList } from "./GiftList";
 import { GroupList } from "./GroupList";
 import AuthContext from "../AuthContext";
@@ -14,7 +14,7 @@ export function ViewUser() {
     email: "",
   });
 
-  const { appState, setAppState } = useContext(AuthContext);
+  // const { appState, setAppState } = useContext(AuthContext);
 
   const fetchUser = async () => {
     try {

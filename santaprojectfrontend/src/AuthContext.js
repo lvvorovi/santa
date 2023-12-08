@@ -1,8 +1,3 @@
-// import { createContext } from 'react';
-
-// const AuthContext = createContext();
-
-// export default AuthContext;
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
@@ -26,7 +21,6 @@ function AuthProvider({ children }) {
     }
     storedUser = JSON.parse(storedUser)
 
-    // if user has token expired, logout user
     if (Date.now() > storedUser.data.exp * 1000) {
       userLogout()
       return false

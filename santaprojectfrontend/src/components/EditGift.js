@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const JSON_HEADERS = {
     "Content-Type": "application/json",
-};
+    Authorization: "Bearer " + localStorage.getItem("token"),
+  };
 
 export function EditGift() {
     const params = useParams();
@@ -23,7 +24,13 @@ export function EditGift() {
 
     const fetchGiftDetails = async (id) => {
         try {
-            const response = await fetch(`/api/v1/gifts/${id}`);
+            const response = await fetch(`/api/v1/gifts/${id}`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + localStorage.getItem('token'), 
+                },
+              });
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

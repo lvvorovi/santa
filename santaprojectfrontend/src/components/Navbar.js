@@ -1,13 +1,12 @@
-import { React, useContext, useState, useEffect } from "react";
+import { React, useContext } from "react";
 import { Segment, Menu, Button } from "semantic-ui-react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
 import { NavLink } from "react-router-dom";
 
 export function Navbar() {
   const { appState, setAppState } = useContext(AuthContext);
   const navigate = useNavigate();
-  //   const [username, setUsername] = useState("");
 
   // const logoutHandler = async () => {
   //   fetch("/logout", {
@@ -30,9 +29,6 @@ export function Navbar() {
   return (
     <Segment style={{ backgroundColor: "rgb(250, 110, 110" }} inverted>
       <Menu style={{ backgroundColor: "rgb(250, 110, 110" }} inverted secondary>
-        {/* <Menu.Item>
-          <img alt="logo" src={car} />
-        </Menu.Item> */}
         <Menu.Item
           as={NavLink}
           exact
@@ -59,7 +55,6 @@ export function Navbar() {
           name="logout"
           content="Log out"
         />
-        {/* )} */}
       </Menu>
     </Segment>
   );
