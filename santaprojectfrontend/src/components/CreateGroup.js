@@ -30,21 +30,7 @@ export function CreateGroup() {
       console.error("Error fetching users:", error);
     }
   };
-
-  //   const createGroup = () => {
-  //     console.log("Selected Users:", user);
-  //     fetch("/api/v1/groups", {
-  //       method: "POST",
-  //       headers: JSON_HEADERS,
-  //       body: JSON.stringify({
-  //         name,
-  //         eventDate,
-  //         budget,
-  //         user,
-  //       }),
-  //     }).then(() => navigate("/"));
-  //   };
-
+  
   const createGroup = () => {
     console.log("Selected Users:", user);
     console.log("Owner:", typeof ownerId);

@@ -63,7 +63,6 @@ export function ViewGroup() {
         );
         if (response.ok) {
           const matchingUsers = await response.json();
-          console.log("matchingUsers", matchingUsers);
           setFilteredUsers(matchingUsers);
         } else {
           console.error("Failed to fetch filtered users.");
@@ -88,7 +87,6 @@ export function ViewGroup() {
       if (response.ok) {
         const users = await response.json();
         const user = Array.isArray(users) && users.length > 0 ? users[0] : null;
-        console.log("user", user);
         if (user) {
           const addResponse = await fetch(
             `/api/v1/groups/${parseInt(params.groupId)}/users/${parseInt(
@@ -125,7 +123,6 @@ export function ViewGroup() {
   const checkSantaPairs = async () => {
     const userId = parseInt(params.userId);
     const groupId = parseInt(params.groupId);
-    console.log("!!!userId", userId);
 
     try {
       const response = await fetch(
@@ -134,9 +131,7 @@ export function ViewGroup() {
 
       if (response.ok) {
         const santaPairs = await response.json();
-        console.log("santapair", santaPairs);
 
-        // Check if santaPairs is an object and has 'santa' and 'recipient' properties
         if (
           santaPairs &&
           typeof santaPairs === "object" &&
@@ -164,7 +159,6 @@ export function ViewGroup() {
 
       if (response.ok) {
         const generateSanta = await response.json();
-        console.log("generate santa response:", generateSanta);
         return generateSanta?.recipient?.name || "SOMEONE";
       } else {
         console.error("Failed to fetch generateSanta");
@@ -185,11 +179,8 @@ export function ViewGroup() {
           "Content-Type": "application/json",
         },
       });
-
       if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        // Update state or perform other actions as needed
+        window.location.reload();
       } else {
         console.error("Failed to generate Santa.");
       }
@@ -220,23 +211,6 @@ export function ViewGroup() {
   useEffect(() => {
     newUserName.length > 0 ? fetchFilteredUsers() : fetchUsers();
   }, [newUserName]);
-
-  useEffect(() => {
-    console.log(
-      "Generated:",
-      generated,
-      "Assigned Recipient:",
-      assignedRecipient
-    );
-
-    if (assignedRecipient) {
-      console.log("Recipient Name:", assignedRecipient.name);
-    }
-
-    if (generated && assignedRecipient) {
-      console.log("Fetching GiftList for User ID:", assignedRecipient.userId);
-    }
-  }, [generated, assignedRecipient]);
 
   return (
     <div className="ui one column centered equal width grid">

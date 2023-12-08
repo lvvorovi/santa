@@ -42,14 +42,9 @@ export function GroupList({ handleCreateGroupClick }) {
     navigate(`/users/${userId}/groups/${groupId}`);
   };
 
-  // const handleCreateGroupClick = (userId) => {
-  //   console.log("groupId:", typeof groupId);
-  //   navigate(`/create/group/${userId}`);
-  // };
-
   useEffect(() => {
     fetchGroups();
-  }, []);
+  }, [params.id]);
 
   return (
     <div>
