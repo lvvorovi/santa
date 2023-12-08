@@ -27,6 +27,7 @@ function App() {
             <Route path="/create/gift/:id" element={<CreateGift />} />
             <Route path="/users/:userId/groups/:groupId" element={<ViewGroup />} />
             <Route path="/create/group/:id" element={<CreateGroup />} />
+            <Route path="/users/create" element={<CreateUser />} />
             <Route path="/users/:id" element={<ViewUser />} />
             <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
             {/* <Route path="/chatroom" element={<ChatRoom />} /> */}
