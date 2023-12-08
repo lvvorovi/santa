@@ -38,9 +38,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final UserMapper userMapper;
     private final IUserRepo iUserRepo;
     private final IGiftRepo iGiftRepo;
-    private UserUtils userUtils;
+    private final UserUtils userUtils;
     private final IGroupRepo iGroupRepo;
-    private IGroupRepo groupRepo;
+    private final IGroupRepo groupRepo;
 
 //    public UserServiceImpl(UserMapper userMapper, IUserRepo iUserRepo, IGiftRepo iGiftRepo, UserUtils userUtils,
 //                           IGroupRepo iGroupRepo, GroupServiceImpl groupService, IGroupRepo groupRepo) {
@@ -112,7 +112,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
         }
-        if(iUserRepo.existsByEmail(userDTO.getEmail())){
+        if (iUserRepo.existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("User with this email already registered");
         }
         try {
