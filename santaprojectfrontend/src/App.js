@@ -12,6 +12,7 @@ import { Navbar } from "./components/Navbar";
 import ChatRoom from "./components/ChatRoom";
 import { Container } from "semantic-ui-react";
 import AuthContext from "./AuthContext";
+import { HomePage } from "./components/HomePage";
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
             <Navbar />
             <div className="container">
               <Routes>
-                <Route path="/" element={<LoginPage />} />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/auth/login" element={<LoginPage />} />
                 <Route path="/auth/register" element={<CreateUser />} />
                 <Route path="/users/:id" element={<ViewUser />} />
