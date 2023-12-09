@@ -1,12 +1,10 @@
 package Secret.Santa.Secret.Santa.controllers;
 
-import Secret.Santa.Secret.Santa.mappers.GiftMapper;
 import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
-import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
-import Secret.Santa.Secret.Santa.validationUnits.GiftUtils;
-import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.GiftUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.UserUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -104,13 +102,15 @@ public class GiftController {
     }
 
     @GetMapping("/createdBy/{userId}")
-    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId) {
-
+    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId, Principal principal) {
+        String authenticatedEmail = principal.getName();
         try {
-
-            List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
-            return ResponseEntity.ok(userGifts);
-
+            if (userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
+                List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
+                return ResponseEntity.ok(userGifts);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
+            }
         } catch (Exception e) {
             logger.error("Error retrieving gifts created by user with ID: {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

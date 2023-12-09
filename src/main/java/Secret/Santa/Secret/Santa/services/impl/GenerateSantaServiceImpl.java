@@ -7,9 +7,9 @@ import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IGenerateSantaRepo;
 import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
-import Secret.Santa.Secret.Santa.validationUnits.GenerateSantaUtils;
-import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
-import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.GenerateSantaUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.GroupUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +31,6 @@ public class GenerateSantaServiceImpl implements IGenerateSantaService {
     private final GenerateSantaUtils generateSantaUtils;
     private final GroupUtils groupUtils;
     private final UserUtils userUtils;
-
-
-//    public GenerateSantaServiceImpl(IGenerateSantaRepo generateSantaRepository,
-//                                    GenerateSantaUtils generateSantaUtils, GroupUtils groupUtils, UserUtils userUtils) {
-//        this.generateSantaRepository = generateSantaRepository;
-//        this.generateSantaUtils = generateSantaUtils;
-//        this.groupUtils = groupUtils;
-//        this.userUtils = userUtils;
-//    }
 
     @Override
     public List<GenerateSanta> getAllGenerateSantaByGroup(Integer groupId) {

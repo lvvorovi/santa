@@ -2,10 +2,8 @@ package Secret.Santa.Secret.Santa.controllers;
 
 import Secret.Santa.Secret.Santa.models.DTO.GenerateSantaDTO;
 import Secret.Santa.Secret.Santa.models.GenerateSanta;
-import Secret.Santa.Secret.Santa.repos.IGroupRepo;
-import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IGenerateSantaService;
-import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.repos.IUserRepo;
 import Secret.Santa.Secret.Santa.services.IUserService;
+import Secret.Santa.Secret.Santa.services.validationUnits.UserUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
