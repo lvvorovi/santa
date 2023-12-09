@@ -102,13 +102,15 @@ public class GiftController {
     }
 
     @GetMapping("/createdBy/{userId}")
-    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId) {
-
+    public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId, Principal principal) {
+        String authenticatedEmail = principal.getName();
         try {
-
-            List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
-            return ResponseEntity.ok(userGifts);
-
+            if (userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
+                List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
+                return ResponseEntity.ok(userGifts);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
+            }
         } catch (Exception e) {
             logger.error("Error retrieving gifts created by user with ID: {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
