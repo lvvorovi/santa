@@ -3,6 +3,7 @@ package Secret.Santa.Secret.Santa.validationUnits;
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.repos.IGroupRepo;
+import Secret.Santa.Secret.Santa.services.validationUnits.GroupUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

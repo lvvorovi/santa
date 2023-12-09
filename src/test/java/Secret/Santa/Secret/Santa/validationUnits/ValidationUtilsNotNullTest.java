@@ -1,9 +1,8 @@
 package Secret.Santa.Secret.Santa.validationUnits;
 
 import Secret.Santa.Secret.Santa.exception.SantaValidationException;
+import Secret.Santa.Secret.Santa.services.validationUnits.ValidationUtilsNotNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

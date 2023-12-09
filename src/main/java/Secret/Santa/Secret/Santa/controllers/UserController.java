@@ -18,16 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 @RestController
 @RequestMapping("/api/v1/users")
 @Validated
 @RequiredArgsConstructor
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    private final IUserRepo iUserRepo;
+
     @Autowired
     private final IUserService iUserService;
 
@@ -66,7 +63,6 @@ public class UserController {
             if (userDTO.getEmail().equals(authenticatedEmail)) {
                 return ResponseEntity.ok(userDTO);
             } else {
-                // Return 403 Forbidden if the authenticated user doesn't match
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         } catch (Exception e) {
@@ -107,12 +103,6 @@ public class UserController {
             return ResponseEntity.internalServerError().body("Error occurred while deleting user");
         }
     }
-
-//    @GetMapping(path = "name-filter/{nameText}")
-//    @ResponseBody
-//    public List<UserDTO> getUsersByNameContaining(@PathVariable String nameText) {
-//        return iUserService.getUsersByNameContaining(nameText);
-//    }
 
     @GetMapping("/search")
     public ResponseEntity<List<UserDTO>> searchUsersByName(@RequestParam String name) {

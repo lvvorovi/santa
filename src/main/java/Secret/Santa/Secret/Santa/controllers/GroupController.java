@@ -2,14 +2,10 @@ package Secret.Santa.Secret.Santa.controllers;
 
 
 import Secret.Santa.Secret.Santa.models.DTO.GroupDTO;
-import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
-import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.services.IGroupService;
-import Secret.Santa.Secret.Santa.services.IUserService;
-import Secret.Santa.Secret.Santa.services.impl.UserServiceImpl;
-import Secret.Santa.Secret.Santa.validationUnits.GroupUtils;
-import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.GroupUtils;
+import Secret.Santa.Secret.Santa.services.validationUnits.UserUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +32,6 @@ public class GroupController {
     private final IGroupService iGroupService;
     private final UserUtils userUtils;
     private final GroupUtils groupUtils;
-    private final IUserService iUserService;
 
     @GetMapping
     public ResponseEntity<List<GroupDTO>> getAllGroups() {
@@ -56,16 +51,8 @@ public class GroupController {
 
         try {
             GroupDTO groupDTO = iGroupService.getGroupById(groupId);
-
-//            boolean isUserInGroup = groupUtils.isUserInGroup(groupId, principal.getName());
-
-            // if (groupUtils.isUserInGroup(groupId, principal.getName())) {
             return ResponseEntity.ok(groupDTO);
-            //  } else {
 
-            //      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
-            // }
         } catch (Exception e) {
             logger.error("Failed to get group with ID: {}", groupId, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -168,37 +155,18 @@ public class GroupController {
             @PathVariable int groupId,
             Principal principal) {
 
-        // Fetch authenticated user's email
         String authenticatedEmail = principal.getName();
 
-        // Verify if the authenticated user's email matches the user's email in the URL
         if (!userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
             throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Check if the user is a member of the specified group
         boolean isUserInGroup = groupUtils.isUserInGroup(userId, groupId);
         if (!isUserInGroup) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
         }
 
-        // Fetch and return group details
         GroupDTO groupDTO = iGroupService.getGroupById(groupId);
         return ResponseEntity.ok(groupDTO);
     }
-//    private int getUserIdFromPrincipal(Principal principal) {
-//        // Implement logic to extract the authenticated user's ID from the Principal object
-//        // For example, if your Principal contains UserDetails, you might retrieve ID from UserDetails
-//        // This method will depend on how you manage authentication
-//        // Return the authenticated user's ID
-//    }
-//
-//    private boolean isUserInGroup(int userId, int groupId) {
-//        // Implement logic to check if the specified user is a member of the specified group
-//        // This might involve querying your data storage to verify the user's membership in the group
-//        return groupUtils.isUserInGroup(userId, groupId);
-//    }
-
 }
