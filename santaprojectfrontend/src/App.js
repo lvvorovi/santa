@@ -1,5 +1,5 @@
 import "./App.css";
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ViewGroup } from "./components/ViewGroup";
 import { CreateUser } from "./components/CreateUser";
@@ -53,6 +53,10 @@ function App() {
     }
   };
   const [appState, setAppState] = useReducer(auth, initState);
+
+  useEffect(() => {
+    console.log("AppState changed:", appState);
+  });
 
   return (
     <div className="App">
