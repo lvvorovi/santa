@@ -116,7 +116,6 @@ export function WishList({ recipientId }) {
                 <Card
                   key={gift.id}
                   className="m-3 cursor-pointer"
-                  // onClick={() => handleGiftClick(params.id, gift.giftId)}
                   style={{ width: "170px", height: "270px" }}
                 >
                   <Image src={getRandomGiftImageUrl()} wrapped ui={false} />
@@ -135,35 +134,6 @@ export function WishList({ recipientId }) {
                   </Card.Content>
                 </Card>
               ))}
-              {/* <Card
-                className="m-3 cursor-pointer"
-                onClick={() => handleCreateGiftClick(params.id)}
-                style={{
-                  width: "150px",
-                  height: "240px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  backgroundColor: "rgba(250, 140, 140)",
-                }}
-              >
-                <Card.Content
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Card.Header
-                    style={{
-                      fontSize: "20px",
-                      color: "grey",
-                    }}
-                  >
-                    Add New Gift
-                  </Card.Header>
-                </Card.Content>
-              </Card> */}
             </Card.Group>
           </Card.Content>
         </Card>
