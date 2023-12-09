@@ -100,8 +100,13 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseEntity<List<UserDTO>> searchUsersByName(@RequestParam String name) {
-        List<UserDTO> matchingUsers = iUserService.getUsersByNameContaining(name);
-        return ok(matchingUsers);
+        try {
+            List<UserDTO> matchingUsers = iUserService.getUsersByNameContaining(name);
+            return ResponseEntity.ok(matchingUsers);
+        } catch (Exception e) {
+            logger.error("Error searching users with name containing '{}'", name, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/users/{username}")

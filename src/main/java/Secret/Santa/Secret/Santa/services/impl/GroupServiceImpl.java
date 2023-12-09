@@ -209,8 +209,14 @@ public class GroupServiceImpl implements IGroupService {
 
 
     public List<User> getAllUsersById(int groupId) {
-        return groupRepo.findById(groupId).get().getUser();
-
+        try {
+            return groupRepo.findById(groupId)
+                    .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId))
+                    .getUser();
+        } catch (Exception e) {
+            logger.error("Error retrieving users for group with ID: {}", groupId, e);
+            throw e;
+        }
     }
 
 }

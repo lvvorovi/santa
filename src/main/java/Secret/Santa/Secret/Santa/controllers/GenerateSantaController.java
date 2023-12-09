@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/generate_santa")
 public class GenerateSantaController {
-
+    private static final Logger logger = LoggerFactory.getLogger(GenerateSantaController.class);
     @Autowired
     private final IGenerateSantaService generateSantaService;
 
@@ -48,24 +49,36 @@ public class GenerateSantaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGenerateSantaBySantaId(@PathVariable("id") Integer id) {
-        generateSantaService.deleteGenerateSantaById(id);
-        return ResponseEntity.ok("GenerateSanta with ID " + id + " deleted successfully");
+        try {
+            generateSantaService.deleteGenerateSantaById(id);
+            return ResponseEntity.ok("GenerateSanta with ID " + id + " deleted successfully");
+        } catch (Exception e) {
+            logger.error("Error deleting GenerateSanta by ID: {}", id, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/groups/{groupId}")
     public ResponseEntity<String> deleteGenerateSantaByGroup(@PathVariable("groupId") Integer groupId) {
-
-        generateSantaService.deleteGenerateSantaByGroup(groupId);
-        return ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
+        try {
+            generateSantaService.deleteGenerateSantaByGroup(groupId);
+            return ResponseEntity.ok("GenerateSanta entries for Group ID " + groupId + " deleted successfully");
+        } catch (Exception e) {
+            logger.error("Error deleting GenerateSanta entries for group ID: {}", groupId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteGenerateSantaByUser(@PathVariable("userId") Integer userId,
                                                             @RequestParam Integer groupId) {
-
-        generateSantaService.deleteGenerateSantaByUser(userId, groupId);
-        return ResponseEntity.ok("GenerateSanta entries for User ID " + userId + " in Group ID " + groupId + " deleted successfully");
-
+        try {
+            generateSantaService.deleteGenerateSantaByUser(userId, groupId);
+            return ResponseEntity.ok("GenerateSanta entries for User ID " + userId + " in Group ID " + groupId + " deleted successfully");
+        } catch (Exception e) {
+            logger.error("Error deleting GenerateSanta entries for user ID: {} in group ID: {}", userId, groupId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/random/{groupId}")

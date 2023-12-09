@@ -150,7 +150,12 @@ public class GiftServiceImpl implements IGiftService {
 
     @Override
     public List<Gift> getGiftsCreatedBy(int userId) {
-        User user = userUtils.getUserById(userId);
-        return iGiftRepo.findByCreatedBy(user);
+        try {
+            User user = userUtils.getUserById(userId);
+            return iGiftRepo.findByCreatedBy(user);
+        } catch (Exception e) {
+            logger.error("Error retrieving gifts created by user with ID: {}", userId, e);
+            throw e;
+        }
     }
 }
