@@ -46,7 +46,7 @@ export function CreateGroup() {
       name,
       eventDate,
       budget,
-      user,
+      user: user || [],
       ownerId,
     };
     console.log("Request Body:", JSON.stringify(requestBody));

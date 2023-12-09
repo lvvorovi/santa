@@ -28,8 +28,9 @@ export function ViewGroup() {
 
   const fetchGroups = async () => {
     const groupId = parseInt(params.groupId);
+    const userId = parseInt(params.userId);
     console.log("groupId:", groupId, typeof groupId);
-    fetch("/api/v1/groups/" + groupId, {
+    fetch(`/api/v1/groups/users/${userId}/groups/${groupId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -240,7 +241,7 @@ export function ViewGroup() {
   useEffect(() => {
     fetchGroups();
     fetchUsers();
-  }, [parseInt(params.groupId)]);
+  }, [parseInt(params.groupId), parseInt(params.userId)]);
 
   useEffect(() => {
     checkSantaPairs();

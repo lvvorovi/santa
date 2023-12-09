@@ -26,6 +26,7 @@ public class UserUtils {
                         "User not found", String.valueOf(id)));
     }
 
+
 //    public List<User> getUsersInGroup(Group group) {
 //        List<User> usersInGroup = userRepository.findByGroups(group);
 //
