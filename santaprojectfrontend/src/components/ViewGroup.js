@@ -144,7 +144,6 @@ export function ViewGroup() {
   const checkSantaPairs = async () => {
     const userId = parseInt(params.userId);
     const groupId = parseInt(params.groupId);
-    console.log("!!!userId", userId);
 
     try {
       const response = await fetch(
@@ -160,7 +159,6 @@ export function ViewGroup() {
 
       if (response.ok) {
         const santaPairs = await response.json();
-        console.log("santapair", santaPairs);
 
         if (
           santaPairs &&

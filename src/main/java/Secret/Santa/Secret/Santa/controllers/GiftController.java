@@ -5,6 +5,7 @@ import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
+import Secret.Santa.Secret.Santa.validationUnits.GiftUtils;
 import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class GiftController {
     private final IGiftService giftService;
 
     private final UserUtils userUtils;
+    private final GiftUtils giftUtils;
 
     @GetMapping
     public ResponseEntity<List<GiftDTO>> getAllGifts() {
@@ -43,13 +45,20 @@ public class GiftController {
         }
     }
 
-    @GetMapping("/{giftId}")
+    @GetMapping("/users/{userId}/gifts/{giftId}")
     public ResponseEntity<GiftDTO> getGiftById(@Valid
                                                @Min(value = 1, message = "ID must be a non-negative integer and greater than 0")
-                                               @PathVariable int giftId) {
+                                               @PathVariable int userId, @PathVariable int giftId, Principal principal) {
+        String authenticatedEmail = principal.getName();
+
+        giftUtils.giftBelongsToUser(userId, giftId);
         try {
-            GiftDTO giftDTO = giftService.getGiftById(giftId);
-            return ResponseEntity.ok(giftDTO);
+            if (userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
+                GiftDTO giftDTO = giftService.getGiftById(giftId);
+                return ResponseEntity.ok(giftDTO);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's group");
+            }
         } catch (Exception e) {
             logger.error("Error retrieving gift with ID: {}", giftId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -68,10 +77,15 @@ public class GiftController {
     }
 
     @PutMapping
-    public ResponseEntity<GiftDTO> updateGift(@RequestBody GiftDTO giftDTO) {
+    public ResponseEntity<GiftDTO> updateGift(@RequestBody GiftDTO giftDTO, Principal principal) {
+        String authenticatedEmail = principal.getName();
         try {
-            GiftDTO updatedGiftDTO = giftService.updateGift(giftDTO);
-            return new ResponseEntity<>(updatedGiftDTO, HttpStatus.OK);
+            if (userUtils.getUserById(giftDTO.getCreatedBy()).getEmail().equals(authenticatedEmail)) {
+                GiftDTO updatedGiftDTO = giftService.updateGift(giftDTO);
+                return new ResponseEntity<>(updatedGiftDTO, HttpStatus.OK);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's gifts");
+            }
         } catch (Exception e) {
             logger.error("Error updating gift with ID: {}", giftDTO.getGiftId(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -96,7 +110,7 @@ public class GiftController {
 
             List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
             return ResponseEntity.ok(userGifts);
-          
+
         } catch (Exception e) {
             logger.error("Error retrieving gifts created by user with ID: {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
