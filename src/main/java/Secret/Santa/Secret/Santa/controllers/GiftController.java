@@ -5,33 +5,32 @@ import Secret.Santa.Secret.Santa.models.DTO.GiftDTO;
 import Secret.Santa.Secret.Santa.models.Gift;
 import Secret.Santa.Secret.Santa.repos.IGiftRepo;
 import Secret.Santa.Secret.Santa.services.IGiftService;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/gifts")
 @Validated
+@RequiredArgsConstructor
 public class GiftController {
     private static final Logger logger = LoggerFactory.getLogger(GiftController.class);
     @Autowired
-    private IGiftService giftService;
+    private final IGiftService giftService;
 
-//    private GiftMapper giftMapper;
-//    @Autowired
-//    private IGiftRepo giftRepo;
-
-    public GiftController(IGiftService giftService) {
-        this.giftService = giftService;
-    }
+    private final UserUtils userUtils;
 
     @GetMapping
     public ResponseEntity<List<GiftDTO>> getAllGifts() {
@@ -92,9 +91,12 @@ public class GiftController {
 
     @GetMapping("/createdBy/{userId}")
     public ResponseEntity<List<Gift>> getGiftsCreatedByUser(@PathVariable int userId) {
+
         try {
+
             List<Gift> userGifts = giftService.getGiftsCreatedBy(userId);
             return ResponseEntity.ok(userGifts);
+          
         } catch (Exception e) {
             logger.error("Error retrieving gifts created by user with ID: {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -6,26 +6,32 @@ import Secret.Santa.Secret.Santa.models.DTO.UserDTO;
 import Secret.Santa.Secret.Santa.models.Group;
 import Secret.Santa.Secret.Santa.models.User;
 import Secret.Santa.Secret.Santa.services.IGroupService;
+import Secret.Santa.Secret.Santa.validationUnits.UserUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/v1/groups")
+@RequiredArgsConstructor
 public class GroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
     @Autowired
-    private IGroupService iGroupService;
+    private final IGroupService iGroupService;
+    private final UserUtils userUtils;
 
     @GetMapping
     public ResponseEntity<List<GroupDTO>> getAllGroups() {
@@ -74,9 +80,15 @@ public class GroupController {
     }
 
     @GetMapping("/user/{userId}/groups")
-    public List<GroupDTO> getAllGroupsForUser(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForUser(@PathVariable("userId") Integer userId, Principal principal) {
+
+        String authenticatedEmail = principal.getName();
         try {
-            return iGroupService.getAllGroupsForUser(userId);
+            if (userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
+                return iGroupService.getAllGroupsForUser(userId);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
+            }
         } catch (Exception e) {
             logger.error("Error retrieving groups for user with ID: {}", userId, e);
             throw e;
@@ -84,9 +96,16 @@ public class GroupController {
     }
 
     @GetMapping("/owner/{userId}/groups")
-    public List<GroupDTO> getAllGroupsForOwner(@PathVariable("userId") Integer userId) {
+    public List<GroupDTO> getAllGroupsForOwner(@PathVariable("userId") Integer userId, Principal principal) {
+        String authenticatedEmail = principal.getName();
+
         try {
-            return iGroupService.getAllGroupsForOwner(userId);
+            if (userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
+                return iGroupService.getAllGroupsForOwner(userId);
+            } else {
+                throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
+            }
+
         } catch (Exception e) {
             logger.error("Error retrieving groups for owner with ID: {}", userId, e);
             throw e;
@@ -111,9 +130,9 @@ public class GroupController {
     @PostMapping("/{groupId}/users/{userId}/newUsers")
     public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @Valid @PathVariable int userId) {
 
-            var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
+        var updatedGroup = iGroupService.addUserToGroup(groupId, userId);
 
-            return ok(updatedGroup);
+        return ok(updatedGroup);
 
     }
 
