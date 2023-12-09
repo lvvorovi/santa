@@ -10,9 +10,9 @@ import {
   Header,
   Container,
 } from "semantic-ui-react";
+import "./SecretSanta.css";
 
 export function HomePage() {
-  const [error, setError] = useState("");
   const [imageUrls, setImageUrls] = useState(["/images/secretSantaSanta.jpg"]);
 
   const { appState, setAppState } = useContext(AuthContext);
@@ -40,8 +40,10 @@ export function HomePage() {
               <Form>
                 <Button
                   className="create mt-2"
-                  color="red"
-                  basic
+                  style={{
+                    backgroundColor: "rgb(250, 110, 110)",
+                    color: "white",
+                  }}
                   fluid
                   onClick={handleRegisterClick}
                 >
