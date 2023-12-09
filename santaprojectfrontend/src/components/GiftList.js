@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 export function GiftList() {
   const params = useParams();
   const [gifts, setGifts] = useState([]);
-  const [user, setUser] = useState();
   const [recipient, setRecipient] = useState(null);
 
   const [giftImage, setGiftImage] = useState([
@@ -24,7 +23,13 @@ export function GiftList() {
 
   const fetchGifts = async () => {
     try {
-      const response = await fetch("/api/v1/gifts/createdBy/" + params.id);
+      const response = await fetch("/api/v1/gifts/createdBy/" + params.id, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem('token'), 
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -38,7 +43,13 @@ export function GiftList() {
 
   const fetchRecipient = async () => {
     try {
-      const response = await fetch(`/api/v1/users/${params.id}`);
+      const response = await fetch(`/api/v1/users/${params.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem('token'), 
+        },
+      });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch user. Status: ${response.status}`);

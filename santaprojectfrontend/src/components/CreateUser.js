@@ -9,7 +9,7 @@ const JSON_HEADERS = {
 export function CreateUser() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState(""); // Add email state
+  const [email, setEmail] = useState(""); 
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -27,29 +27,30 @@ export function CreateUser() {
 
   const createUser = async () => {
     try {
-      const response = await fetch("/api/v1/users", {
+      const response = await fetch("/api/v1/auth/register", {
         method: "POST",
         headers: JSON_HEADERS,
         body: JSON.stringify({
           name: userName,
           email: email,
           password: password,
-           
+          role: "USER",
         }),
       });
-
+  
       if (response.ok) {
-        console.log("User created succesfully")
-        navigate("/login");
+        console.log("User registered successfully");
+        navigate("/auth/login");
       } else {
         const errorMessage = await response.text();
-        setError(`User was not created: ${response.status} - ${errorMessage}`);
+        setError(`User registration failed: ${response.status} - ${errorMessage}`);
       }
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error registering user:", error);
       setError("An unexpected error occurred. Please try again later.");
     }
   };
+  
 
   return (
     <div>

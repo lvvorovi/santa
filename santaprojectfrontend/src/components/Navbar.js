@@ -1,29 +1,34 @@
-import { React, useContext, useState, useEffect } from "react";
+import { React, useContext } from "react";
 import { Segment, Menu, Button } from "semantic-ui-react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-// import AuthContext from "../AuthContext";
+import {  useNavigate } from "react-router-dom";
+import AuthContext from "../AuthContext";
 import { NavLink } from "react-router-dom";
 
 export function Navbar() {
-  //   const { appState, setAppState } = useContext(AuthContext);
+  const { appState, setAppState } = useContext(AuthContext);
   const navigate = useNavigate();
-  //   const [username, setUsername] = useState("");
 
-  //   const logoutHandler = async () => {
-  //     fetch("/logout", {
-  //       method: "POST",
-  //     }).then((response) => {
+  // const logoutHandler = async () => {
+  //   fetch("/logout", {
+  //     method: "POST",
+  //   })
+  //     .then(localStorage.clear)
+  //     .then((response) => {
   //       setAppState({ type: "LOGOUT" });
   //       navigate("/", { replace: true });
   //     });
-  //   };
+  // };
+  const logoutHandler = () => {
+    console.log("LOG OUT");
+    localStorage.clear();
+
+    setAppState({ type: "LOGOUT" });
+    navigate("/", { replace: true });
+  };
 
   return (
     <Segment style={{ backgroundColor: "rgb(250, 110, 110" }} inverted>
       <Menu style={{ backgroundColor: "rgb(250, 110, 110" }} inverted secondary>
-        {/* <Menu.Item>
-          <img alt="logo" src={car} />
-        </Menu.Item> */}
         <Menu.Item
           as={NavLink}
           exact
@@ -37,7 +42,7 @@ export function Navbar() {
           position="right"
           as={NavLink}
           exact
-          to="/login"
+          to="/auth/login"
           name="login"
           content="Log in"
         />
@@ -46,11 +51,10 @@ export function Navbar() {
         <Menu.Item
           position="right"
           as={Button}
-          //   onClick={logoutHandler}
+          onClick={logoutHandler}
           name="logout"
           content="Log out"
         />
-        {/* )} */}
       </Menu>
     </Segment>
   );
