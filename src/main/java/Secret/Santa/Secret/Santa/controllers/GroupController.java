@@ -173,13 +173,15 @@ public class GroupController {
 
         // Verify if the authenticated user's email matches the user's email in the URL
         if (!userUtils.getUserById(userId).getEmail().equals(authenticatedEmail)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         // Check if the user is a member of the specified group
         boolean isUserInGroup = groupUtils.isUserInGroup(userId, groupId);
         if (!isUserInGroup) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessDeniedException("Authenticated user does not have access to this user's groups");
         }
 
         // Fetch and return group details
