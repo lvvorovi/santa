@@ -18,6 +18,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - uses: actions/setup-node@v3
+        with:
           node-version: "20"
       - name: Run the Maven verify phase
         run: mvn --batch-mode --update-snapshots verify
