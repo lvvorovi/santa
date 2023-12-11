@@ -9,7 +9,6 @@ import { ViewUser } from "./components/ViewUser";
 import { EditGift } from "./components/EditGift";
 import { LoginPage } from "./components/LoginPage";
 import { Navbar } from "./components/Navbar";
-import ChatRoom from "./components/ChatRoom";
 import { Container } from "semantic-ui-react";
 import AuthContext from "./AuthContext";
 import { HomePage } from "./components/HomePage";
@@ -75,7 +74,6 @@ function App() {
                 <Route path="/create/group/:id" element={<CreateGroup />} />
                 <Route path="/create/gift/:id" element={<CreateGift />} />
                 <Route path="/users/:userId/gifts/:giftId" element={<EditGift />} />
-                {/* <Route path="/chatroom" element={<ChatRoom />} /> */}
               </Routes>
             </div>
           </Router>
