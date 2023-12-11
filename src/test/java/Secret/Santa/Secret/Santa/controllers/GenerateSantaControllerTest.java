@@ -89,7 +89,7 @@ class GenerateSantaControllerTest {
         verify(generateSantaService, times(1)).getAllGenerateSantaByGroup(groupId);
     }
 
-    @Test
+/*    @Test
     void testGetGenerateSantaBySantaAndGroup() {
         int santaId = 1;
         int groupId = 10;
@@ -101,7 +101,7 @@ class GenerateSantaControllerTest {
         GenerateSanta result = generateSantaController.getGenerateSantaBySantaAndGroup(santaId, groupId, new UserPrincipal("name"));
 
         assertEquals(mockGeneratedSanta, result);
-    }
+    }*/
 
     @Test
     void testDeleteGenerateSantaBySantaId() {

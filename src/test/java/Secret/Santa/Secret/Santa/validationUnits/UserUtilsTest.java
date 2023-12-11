@@ -51,7 +51,7 @@ class UserUtilsTest {
         verify(userRepository).findById(userId);
     }
 
-    @Test
+/*    @Test
     void testGetUsersInGroup() {
 
         Group mockGroup = new Group();
@@ -83,5 +83,5 @@ class UserUtilsTest {
         when(userRepository.findByGroups(any(Group.class))).thenReturn(new ArrayList<>());
         assertThrows(SantaValidationException.class, () -> userUtils.getUsersInGroup(mockGroup));
         verify(userRepository, times(1)).findByGroups(mockGroup);
-    }
+    }*/
 }

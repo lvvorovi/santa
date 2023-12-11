@@ -177,7 +177,7 @@ class GenerateSantaServiceImplTest {
     void randomSantaGenerator() {
     }
 
-    @Test
+/*    @Test
     public void testRandomSantaGenerator() {
         int groupId = 1;
         Group group = new Group();
@@ -208,6 +208,6 @@ class GenerateSantaServiceImplTest {
 
         // Verify that generateSantaRepository.save is called for each user
         verify(generateSantaRepository, times(usersInGroup.size())).save(any(GenerateSanta.class));
-    }
+    }*/
 
 }

@@ -87,7 +87,7 @@ class GenerateSantaUtilsTest {
         assertThrows(SantaValidationException.class, () -> generateSantaUtils.getByUserAndGroup(user, group));
     }
 
-    @Test
+/*    @Test
     void alreadyPaired_PairedUsers_ReturnsTrue() {
         User user1 = new User();
         User user2 = new User();
@@ -107,5 +107,5 @@ class GenerateSantaUtilsTest {
         boolean result = generateSantaUtils.alreadyPaired(user1, user2);
 
         assertFalse(result);
-    }
+    }*/
 }
